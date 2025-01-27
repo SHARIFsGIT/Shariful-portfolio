@@ -1,16 +1,14 @@
-import { CalcButton } from './calc-button'
-import { IconBackspace, IconPlusMinus } from '@tabler/icons-react'
-import { VscPercentage } from 'react-icons/vsc'
+import { refineExp } from '@/app/utils/refineExp'
 import {
-  IconCalculator,
+  IconBackspace, IconCalculator,
   IconDivide,
   IconEqual,
   IconMinus,
-  IconPlus,
-  IconX,
+  IconPlus, IconPlusMinus, IconX
 } from '@tabler/icons-react'
 import { useEffect, useRef, useState } from 'react'
-import { refineExp } from '@/app/utils/refineExp'
+import { VscPercentage } from 'react-icons/vsc'
+import { CalcButton } from './calc-button'
 
 export function Calculator() {
   const [history, setHistory] = useState('')
