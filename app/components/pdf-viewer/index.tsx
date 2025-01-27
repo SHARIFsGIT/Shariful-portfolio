@@ -1,7 +1,6 @@
 import { Viewer, Worker } from '@react-pdf-viewer/core'
 import '@react-pdf-viewer/core/lib/styles/index.css'
-import { getFilePlugin } from '@react-pdf-viewer/get-file'
-import { RenderDownloadProps } from '@react-pdf-viewer/get-file'
+import { getFilePlugin, RenderDownloadProps } from '@react-pdf-viewer/get-file'
 import { IconDownload } from '@tabler/icons-react'
 
 export function PDFViewer({ id }: { id: string }) {

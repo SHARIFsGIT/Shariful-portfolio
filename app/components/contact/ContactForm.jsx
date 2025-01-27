@@ -127,7 +127,7 @@ const ContactForm = () => {
         <div className="flex justify-center gap-20">
           <button
             type="submit"
-            className="duration-800 rounded bg-green-500 px-6 py-2 font-semibold text-white transition-colors hover:bg-green-400 hover:text-gray-900"
+            className="duration-800 rounded bg-green-500 px-6 py-2 font-semibold text-white transition-colors hover:bg-green-500 hover:text-gray-900"
           >
             SUBMIT
           </button>
@@ -135,7 +135,7 @@ const ContactForm = () => {
           <button
             type="button"
             onClick={handleCancel}
-            className="duration-800 rounded bg-red-500 px-6 py-2 font-semibold text-white transition-colors hover:bg-red-400 hover:text-gray-900"
+            className="duration-800 rounded bg-red-500 px-6 py-2 font-semibold text-white transition-colors hover:bg-red-500 hover:text-gray-900"
           >
             CANCEL
           </button>

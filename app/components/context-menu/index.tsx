@@ -57,7 +57,7 @@ export function ContextMenu({
             Get Info
           </li>
           <li className="relative !mb-2 flex items-center justify-between !text-[#888888] after:absolute after:bottom-[-4px] after:left-0 after:h-[1px] after:w-full after:bg-[#5a5a5a] after:content-['']">
-            <span>Import From Iphone</span>
+            <span>Import From iPhone</span>
             <IoIosArrowForward />
           </li>
           <li
@@ -111,9 +111,9 @@ export function ContextMenu({
               </div>
             </div>
           </li>
-          <li className="!text-[#888888]">Clean Up</li>
+          <li className="!text-[#888888]">Delete History</li>
           <li className="flex items-center justify-between !text-[#888888]">
-            <span>Clean Up By</span>
+            <span>Clear By</span>
             <IoIosArrowForward />
           </li>
           <li className="group/view flex items-center justify-between">

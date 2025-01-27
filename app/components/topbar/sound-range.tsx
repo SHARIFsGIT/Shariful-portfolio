@@ -1,10 +1,10 @@
 import { setMusicStatus, setVolume } from '@/app/features/settings'
 import { useDispatch, useSelector } from '@/app/store'
-import { useEffect, useRef } from 'react'
-import { HiMiniSpeakerWave, HiMiniSpeakerXMark } from 'react-icons/hi2'
 import musicIcon from '@/public/assets/icons/Music.png'
 import Image from 'next/image'
+import { useEffect, useRef } from 'react'
 import { FaForward, FaPause, FaPlay } from 'react-icons/fa'
+import { HiMiniSpeakerWave, HiMiniSpeakerXMark } from 'react-icons/hi2'
 
 export function SoundRange({ audio }: { audio?: HTMLAudioElement }) {
   const soundThumb = useRef<HTMLButtonElement>(null)
@@ -123,7 +123,7 @@ export function SoundRange({ audio }: { audio?: HTMLAudioElement }) {
             <Image alt="" src={musicIcon} width={30} height={30} />
           </div>
           <h2 className="font-medium">
-            {music_status === 'playing' ? 'Pehli Bhi Main' : 'Music'}
+            {music_status === 'playing' ? '[Linkin Park] In The End' : 'Music'}
           </h2>
         </div>
         <div className="flex items-center gap-2">

@@ -1,21 +1,21 @@
 'use client'
 
+import { useClickOutside } from '@/app/hooks/use-click-outside'
+import { useSelector } from '@/app/store'
 import notch from '@/public/assets/icons/Сhelka.svg'
+import { IconCast, IconRectangle } from '@tabler/icons-react'
 import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'
 import { IoIosBatteryFull, IoIosMoon } from 'react-icons/io'
 import { IoSearch } from 'react-icons/io5'
 import { TaskbarClock } from '../taskbar/clock'
 import { Weather } from '../taskbar/weather'
+import { BrandApple } from './brand-apple'
 import { BrightnessRange } from './brightness-range'
 import { ControlCenter } from './control-center'
 import { connections } from './control-center-data'
 import { InternetConnection } from './internet-connection'
 import { SoundRange } from './sound-range'
-import { useClickOutside } from '@/app/hooks/use-click-outside'
-import { IconCast, IconRectangle } from '@tabler/icons-react'
-import { useSelector } from '@/app/store'
-import { BrandApple } from './brand-apple'
 
 export function Topbar() {
   const [isOpenCC, setIsOpenCC] = useState(false)
@@ -25,7 +25,7 @@ export function Topbar() {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      audio.current = new Audio('/assets/music/pehle_bhi_main.mp3')
+      audio.current = new Audio('/assets/music/Linkin Park  In The End Mellen Gi  Tommee Profitt Remix.mp3')
     }
   }, [])
 

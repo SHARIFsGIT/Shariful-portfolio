@@ -1,8 +1,8 @@
+import { useDebounce } from '@/app/hooks/useDebounce'
 import { useState } from 'react'
 import { FiSearch } from 'react-icons/fi'
-import { sidebarData } from './sidebar-data'
 import { ImageGrid } from './image-grid'
-import { useDebounce } from '@/app/hooks/useDebounce'
+import { sidebarData } from './sidebar-data'
 
 export function Gallery() {
   const [tab, setTab] = useState<string>('unsplash')

@@ -16,10 +16,10 @@ import settings from '@/public/assets/icons/Settings.png'
 import terminalIcon from '@/public/assets/icons/Terminal.png'
 import trashEmpty from '@/public/assets/icons/TrashEmpty.png'
 import trashFull from '@/public/assets/icons/TrashFull.png'
+import typingMaterIcon from '@/public/assets/icons/typing-master.png'
 import { IconBrandGithub } from '@tabler/icons-react'
 import Image from 'next/image'
 import Link from 'next/link'
-import typingMaterIcon from '@/public/assets/icons/typing-master.png'
 
 export default function AppTray() {
   const folders = useSelector((state) => state.windowFrame)
@@ -194,8 +194,8 @@ export default function AppTray() {
         ))}
         <Link
           target="_blank"
-          href="https://github.com/sshuvoo/os-portfolio"
-          className="group relative flex size-[45px] items-center justify-center rounded-md bg-dark-background"
+          href="https://github.com/SHARIFsGIT"
+          className="group relative flex size-[50px] items-center justify-center rounded-md bg-dark-background"
         >
           <IconBrandGithub stroke={1} className="size-10 text-dark-text" />
           <span className="absolute -top-9 left-1/2 hidden -translate-x-1/2 rounded bg-[#3e3e3e] px-3 py-1 text-xs shadow-md group-hover:inline-block">

@@ -57,7 +57,7 @@ export function LockScreen({ next }: { next: () => void }) {
 
         {/* Mid part */}
         <div className="font-bold text-center">
-          <h1 className="text-5xl opacity-70 from-[#EDE574] to-[#93F9B9] mb-4 bg-clip-text text-transparent bg-gradient-to-r">
+          <h1 className="text-5xl opacity-70 from-[white]/80 via-slate-300 to-white/80 mb-4 bg-clip-text text-transparent bg-gradient-to-br">
             Shariful Islam
           </h1>
           <AnimatedBio className="from-[#FFAFBD] via-[#FFC371] to-[#C9FFBF] text-xl bg-clip-text text-transparent bg-gradient-to-r" />

@@ -24,9 +24,9 @@ export function Settings() {
           <div className="size-10">
             <Image alt="" src={author} className="size-full rounded-full" />
           </div>
-          <div className="flex flex-col justify-center leading-snug">
-            <h3>sharifaiub15@gmail.com</h3>
-            <p className="text-xs">Apple Account</p>
+          <div className="flex flex-col font-medium justify-center leading-snug">
+            <h5>sharifaiub15@gmail.com</h5>
+            <p className="text-xs font-normal">Apple Account</p>
           </div>
         </div>
         <div className="mt-2 space-y-1">

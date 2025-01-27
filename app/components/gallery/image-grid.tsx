@@ -1,9 +1,9 @@
 import { getPhotos } from '@/app/actions/get-photos'
 import { searchPhotos } from '@/app/actions/search-photos'
 import { IPhoto } from '@/app/types/unsplash.type'
+import { IconPhoto } from '@tabler/icons-react'
 import { useEffect, useRef, useState } from 'react'
 import { ImageCard } from './image-card'
-import { IconPhoto } from '@tabler/icons-react'
 
 export function ImageGrid({ query }: { query: string }) {
   const [photos, setPhotos] = useState<IPhoto[]>([])

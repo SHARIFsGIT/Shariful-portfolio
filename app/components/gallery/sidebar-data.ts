@@ -37,7 +37,7 @@ export const sidebarData: SidebarData[] = [
   },
   {
     id: 'favourites',
-    label: 'favourites',
+    label: 'Favourites',
     Icon: FaRegHeart,
   },
   {

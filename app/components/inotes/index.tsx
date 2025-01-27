@@ -19,6 +19,11 @@ export function INotes() {
   const dispatch = useDispatch()
   const [mode, setMode] = useState<'readonly' | 'edit'>('readonly')
 
+  // Sort notes by updatedAt in descending order (newest first)
+  const sortedNotes = [...inotes].sort(
+    (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+  )
+
   useEffect(() => {
     if (textareaRef.current instanceof HTMLTextAreaElement) {
       textareaRef.current.focus()
@@ -36,22 +41,38 @@ export function INotes() {
   }, [dispatch])
 
   const onDelete = (id: string) => {
+    // Find the next most recent note
+    const currentIndex = sortedNotes.findIndex((note) => note.id === id)
+    const nextNote =
+      sortedNotes[currentIndex + 1] || sortedNotes[currentIndex - 1]
+
     dispatch(deleteNote(id))
     const updatedNotes = inotes.filter((note) => note.id !== id)
     localStorage.setItem('iNotes', JSON.stringify(updatedNotes))
     setMode('readonly')
+
+    // Set focus to the next note if available
+    if (nextNote) {
+      setTab(nextNote.id)
+    } else {
+      setTab('')
+    }
   }
 
   const onNewNote = () => {
     const id = crypto.randomUUID()
-    dispatch(
-      addNewNote({
-        id,
-        content: 'Hurray! This is my new note',
-        updatedAt: new Date().toISOString(),
-      })
-    )
+    const newNote = {
+      id,
+      content: '-- Write your note here -- \n',
+      updatedAt: new Date().toISOString(),
+    }
+    dispatch(addNewNote(newNote))
+
+    // Update localStorage with the new note at the beginning
+    const updatedNotes = [newNote, ...inotes]
+    localStorage.setItem('iNotes', JSON.stringify(updatedNotes))
     setTab(id)
+    setMode('edit')
   }
 
   const onEdit = () => {
@@ -65,11 +86,12 @@ export function INotes() {
   }
 
   const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    const now = new Date().toISOString()
     dispatch(
       updateNote({
         id: tab,
         content: e.target.value,
-        updatedAt: new Date().toISOString(),
+        updatedAt: now,
       })
     )
     const updatedNotes = inotes.map((note) => {
@@ -77,7 +99,7 @@ export function INotes() {
         return {
           id: tab,
           content: e.target.value,
-          updatedAt: new Date().toISOString(),
+          updatedAt: now,
         }
       } else return note
     })
@@ -86,26 +108,32 @@ export function INotes() {
 
   return (
     <div className="grid h-full grid-cols-[250px,1fr]">
-      <div className="max-h-full overflow-y-auto bg-light-foreground p-4 dark:bg-dark-foreground">
+      <div className="max-h-full overflow-y-auto bg-gradient-to-b from-black/20 via-white/15 to-white/40 p-4">
         <div className="mb-3">
           <button
             onClick={onNewNote}
-            className="flex w-full items-center gap-2 rounded-md bg-white px-4 py-1 text-sm font-medium dark:bg-white/10"
+            className="flex w-full items-center gap-2 rounded-md bg-white/90 px-4 py-1 text-sm font-medium dark:bg-white/10 justify-center"
           >
             <IconPlus className="size-4" stroke={2} />
-            <span>Write a new note</span>
+            <span>Add a new note</span>
           </button>
         </div>
-        <h3 className="text-sm font-medium text-[#9a9a9a]">On your iCloud</h3>
+        <h3 className="text-center text-sm font-medium text-gray-500 dark:text-white/80">
+          On your iCloud
+        </h3>
         <div className="mt-2 space-y-2">
-          {inotes.map((note) => (
+          {sortedNotes.map((note, index) => (
             <button
               key={note.id}
               onClick={() => {
                 setTab(note.id)
                 setMode('readonly')
               }}
-              className={`grid w-full grid-cols-[auto,1fr] gap-2 rounded-md px-2 py-1 ${tab === note.id ? 'bg-white dark:bg-dark-hover-bg' : 'hover:bg-white dark:hover:bg-dark-hover-bg'}`}
+              className={`grid w-full grid-cols-[auto,1fr] gap-2 rounded-md px-2 py-1 ${
+                tab === note.id
+                  ? 'bg-white/90 dark:bg-white/20'
+                  : 'hover:bg-white/70 dark:hover:bg-white/10'
+              }`}
             >
               <div className="size-6">
                 <IconNotes
@@ -114,14 +142,10 @@ export function INotes() {
                 />
               </div>
               <div className="flex flex-col text-start">
-                <h2 className="line-clamp-1 text-sm font-medium">
-                  {note.content.trim().length > 2
-                    ? note.content.trim().length <= 40
-                      ? note.content.trim()
-                      : note.content.trim().slice(0, 37) + '...'
-                    : 'My New Note'}
+                <h2 className="line-clamp-1 text-sm font-medium text-gray-800 dark:text-white/90">
+                  {`Note ${sortedNotes.length - index}`}
                 </h2>
-                <h2 className="text-[10px]">
+                <h2 className="text-[10px] text-gray-600 dark:text-white/70">
                   {new Date(note.updatedAt).toLocaleDateString('en-US', {
                     day: '2-digit',
                     month: 'short',
@@ -138,12 +162,17 @@ export function INotes() {
           <>
             <div className="flex items-center justify-end gap-3">
               <button
-                onClick={onDelete.bind(null, activeNote.id)}
+                onClick={() => onDelete(activeNote.id)}
                 type="button"
+                className="text-gray-600 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400"
               >
                 <FaRegTrashCan />
               </button>
-              <button onClick={onEdit} type="button">
+              <button
+                onClick={onEdit}
+                type="button"
+                className="text-gray-600 hover:text-blue-500 dark:text-gray-400 dark:hover:text-blue-400"
+              >
                 <FiEdit />
               </button>
             </div>
@@ -164,7 +193,7 @@ export function INotes() {
               className="flex items-center gap-2 rounded-md bg-light-foreground px-4 py-2 text-sm font-medium dark:bg-white/10"
             >
               <IconPlus className="size-4" stroke={2} />
-              <span>Write a new note</span>
+              <span>Add new note</span>
             </button>
           </div>
         )}
