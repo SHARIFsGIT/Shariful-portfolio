@@ -1,15 +1,13 @@
-'use server'
+const clientId = process.env.NEXT_PUBLIC_UNSPLASH_ACCESS_KEY
 
-export const getPhotos = async () => {
-  const res = await fetch(
-    `${process.env.UNSPLASH_API_URL}/photos/?per_page=40&client_id=${process.env.UNSPLASH_ACCESS_KEY}`,
-    {
-      headers: {
-        'Accept-Version': 'v1',
-      },
-    }
-  )
-  const json = await res.json()
-  if (!res.ok) throw json
-  return json
+export async function getPhotos() {
+  try {
+    const response = await fetch(
+      `https://api.unsplash.com/photos?per_page=40&client_id=${clientId}`
+    )
+    return response.json()
+  } catch (error) {
+    console.error('Error fetching photos:', error)
+    throw error
+  }
 }

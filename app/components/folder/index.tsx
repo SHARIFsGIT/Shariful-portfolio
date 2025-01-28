@@ -205,7 +205,7 @@ export function Folder({
             heading={id === 'resume' ? 'Are you sure?' : undefined}
             message={
               id === 'resume'
-                ? `Please don't delete my resume \n I've invested significant effort and time on it`
+                ? `Please do not delete my resume \n I have invested significant time and effort`
                 : `${name} will be moved to Trash \n You can restore it later`
             }
             icon={<RandomFolder type={type} id={id} />}

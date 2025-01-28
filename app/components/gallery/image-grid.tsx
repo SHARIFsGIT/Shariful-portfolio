@@ -81,7 +81,7 @@ export function ImageGrid({ query }: { query: string }) {
           .map((_, i) => (
             <div
               key={i}
-              className="mb-4 flex h-44 animate-pulse items-center justify-center bg-[#d8d8d8] dark:bg-[#4e4e4e] rounded-md"
+              className="mb-4 flex h-44 animate-pulse items-center justify-center rounded-md bg-[#d8d8d8] dark:bg-[#4e4e4e]"
             >
               <IconPhoto
                 stroke={1}

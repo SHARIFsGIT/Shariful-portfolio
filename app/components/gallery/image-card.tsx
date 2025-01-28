@@ -1,11 +1,14 @@
 import { downloadPhoto } from '@/app/actions/download-photo'
 import { IPhoto } from '@/app/types/unsplash.type'
+
 import gsap from 'gsap'
+import { Download, Heart, Share2 } from 'lucide-react'
 import Image from 'next/image'
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 
 export function ImageCard({ photo }: { photo: IPhoto }) {
   const layerRef = useRef<HTMLDivElement>(null)
+  const [isLiked, setIsLiked] = useState(false)
 
   // Animation for mouse enter
   const handleMouseEnter = () => {
@@ -48,6 +51,23 @@ export function ImageCard({ photo }: { photo: IPhoto }) {
     }
   }
 
+  const handleShare = async () => {
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: photo.alt_description || 'Shared Photo',
+          text: `Check out this photo`,
+          url: photo.urls.regular,
+        })
+      } else {
+        await navigator.clipboard.writeText(photo.urls.regular)
+        // You might want to add a toast notification here
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   return (
     <div
       onMouseEnter={handleMouseEnter}
@@ -55,24 +75,47 @@ export function ImageCard({ photo }: { photo: IPhoto }) {
       className="relative h-fit w-fit overflow-hidden"
     >
       <Image
-        alt={photo.alt_description}
+        alt={
+          photo.alt_description ? photo.alt_description : 'No photo available'
+        }
         src={photo.urls.regular}
         width={400}
         height={400}
-        className="mb-4"
+        className="mb-4 rounded-xl"
       />
       <div
         ref={layerRef}
-        className="absolute left-0 top-0 flex h-[calc(100%-16px)] w-full items-center justify-center bg-[#000000a9] opacity-0"
+        className="absolute left-0 top-0 flex h-[calc(100%-16px)] w-full items-center justify-center bg-[#000000b2] opacity-0 rounded-xl"
       >
-        <button
-          onClick={onDownload}
-          type="button"
-          className="rounded-md bg-primary px-3 py-1 text-sm font-medium text-white"
-        >
-          Download
-        </button>
+        <div className="flex flex-col gap-4">
+          <div className="flex justify-center gap-4">
+            <button
+              onClick={() => setIsLiked(!isLiked)}
+              className="rounded-full bg-white p-2 transition-colors hover:bg-gray-200 opacity-70 hover:opacity-100"
+            >
+              <Heart
+                className={`h-5 w-5 ${isLiked ? 'fill-red-500 text-red-500' : 'text-gray-700'}`}
+              />
+            </button>
+            <button
+              onClick={handleShare}
+              className="rounded-full bg-white p-2 transition-colors hover:bg-gray-200 opacity-70 hover:opacity-100"
+            >
+              <Share2 className="h-5 w-5 text-gray-700" />
+            </button>
+          </div>
+          <button
+            onClick={onDownload}
+            type="button"
+            className="flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary/90 opacity-70 hover:opacity-100"
+          >
+            <Download className="h-4 w-4" />
+            Download
+          </button>
+        </div>
       </div>
     </div>
   )
 }
+
+export default ImageCard

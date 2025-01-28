@@ -32,7 +32,7 @@ export const folders: Folder[] = [
   },
   {
     id: 'chrome',
-    name: 'Chrome',
+    name: 'Safari',
     status: 'close',
     placement: 'taskbar',
     type: 'browser',
