@@ -26,10 +26,6 @@ interface PDFViewerProps {
   className?: string
 }
 
-interface ZoomButtonProps {
-  onClick: () => void
-}
-
 export function PDFViewer({
   id,
   defaultScale = 1,
@@ -48,7 +44,7 @@ export function PDFViewer({
   const searchPluginInstance = searchPlugin()
 
   const { Download } = getFilePluginInstance
-  const { ZoomIn, ZoomOut } = zoomPluginInstance
+  const { ZoomIn, ZoomOut, zoomTo } = zoomPluginInstance
   const { Print } = printPluginInstance
   const { CurrentPageInput, GoToNextPage, GoToPreviousPage, NumberOfPages } =
     pageNavigationPluginInstance
@@ -59,21 +55,27 @@ export function PDFViewer({
     setLoading(false)
   }, [])
 
+  // Handle zoom level change
+  const handleZoomChange = useCallback((newScale: number) => {
+    setCurrentScale(newScale)
+    zoomTo(newScale)
+  }, [zoomTo])
+
   // Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.ctrlKey || e.metaKey) {
         switch (e.key) {
           case '+':
-            setCurrentScale((prev) => Math.min(5, prev + 0.1))
+            handleZoomChange(Math.min(5, currentScale + 0.1))
             e.preventDefault()
             break
           case '-':
-            setCurrentScale((prev) => Math.max(0.1, prev - 0.1))
+            handleZoomChange(Math.max(0.1, currentScale - 0.1))
             e.preventDefault()
             break
           case '0':
-            setCurrentScale(1)
+            handleZoomChange(1)
             e.preventDefault()
             break
           case 'f':
@@ -86,7 +88,7 @@ export function PDFViewer({
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [])
+  }, [currentScale, handleZoomChange])
 
   if (error) {
     return (
@@ -141,12 +143,12 @@ export function PDFViewer({
         {/* Zoom and Other Controls */}
         <div className="flex items-center gap-2">
           <ZoomOut>
-            {({ onClick }: ZoomButtonProps) => (
+            {({ onClick }) => (
               <button
                 className="rounded p-1 hover:bg-gray-100 dark:hover:bg-gray-700"
                 onClick={() => {
-                  onClick()
-                  setCurrentScale((prev) => Math.max(0.1, prev - 0.1))
+                  onClick();
+                  setCurrentScale(prev => Math.max(0.1, prev - 0.1));
                 }}
                 title="Zoom Out (Ctrl+-)"
               >
@@ -158,7 +160,7 @@ export function PDFViewer({
           <select
             className="rounded border px-2 py-1 text-sm"
             value={currentScale}
-            onChange={(e) => setCurrentScale(Number(e.target.value))}
+            onChange={(e) => handleZoomChange(Number(e.target.value))}
           >
             <option value={0.5}>50%</option>
             <option value={0.75}>75%</option>
@@ -169,12 +171,12 @@ export function PDFViewer({
           </select>
 
           <ZoomIn>
-            {({ onClick }: ZoomButtonProps) => (
+            {({ onClick }) => (
               <button
                 className="rounded p-1 hover:bg-gray-100 dark:hover:bg-gray-700"
                 onClick={() => {
-                  onClick()
-                  setCurrentScale((prev) => Math.min(5, prev + 0.1))
+                  onClick();
+                  setCurrentScale(prev => Math.min(5, prev + 0.1));
                 }}
                 title="Zoom In (Ctrl++)"
               >

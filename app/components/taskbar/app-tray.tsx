@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from '@/app/store'
 import { IconBrandGithub } from '@tabler/icons-react'
 import Image, { StaticImageData } from 'next/image'
 import Link from 'next/link'
-import { memo, useCallback, useMemo } from 'react'
+import { memo, useCallback, useEffect, useMemo, useState } from 'react'
 
 interface DockItemProps {
   icon: StaticImageData
@@ -28,24 +28,7 @@ interface FolderType {
   onMinimizeRestore?: () => void
 }
 
-const ICON_MAP: Record<string, StaticImageData> = {
-  settings: (await import('@/public/assets/icons/Settings.png')).default,
-  contact: (await import('@/public/assets/icons/Contacts.png')).default,
-  gallery: (await import('@/public/assets/icons/Photos.png')).default,
-  trash_empty: (await import('@/public/assets/icons/TrashEmpty.png')).default,
-  trash_full: (await import('@/public/assets/icons/TrashFull.png')).default,
-  notes: (await import('@/public/assets/icons/Notes.png')).default,
-  terminal: (await import('@/public/assets/icons/Terminal.png')).default,
-  safari: (await import('@/public/assets/icons/Safari.png')).default,
-  calculator: (await import('@/public/assets/icons/calculator.png')).default,
-  folder: (await import('@/public/assets/icons/Folder.png')).default,
-  finder: (await import('@/public/assets/icons/Finder.png')).default,
-  messages: (await import('@/public/assets/icons/Messages.png')).default,
-  typing_master: (await import('@/public/assets/icons/typing-master.png'))
-    .default,
-  acrobat: (await import('@/public/assets/icons/Acrobat.png')).default,
-}
-
+// DockItem component remains unchanged
 const DockItem = memo<DockItemProps>(
   ({
     icon,
@@ -122,6 +105,36 @@ export default function AppTray() {
   const folders = useSelector((state) => state.windowFrame) as FolderType[]
   const trashItems = useSelector((state) => state.trash.items).length
   const { zIndex } = useSelector((state) => state.settings)
+  const [iconMap, setIconMap] = useState<Record<string, StaticImageData>>({})
+
+  // Load icons asynchronously when component mounts
+  useEffect(() => {
+    const loadIcons = async () => {
+      const loadedIcons: Record<string, StaticImageData> = {
+        settings: (await import('@/public/assets/icons/Settings.png')).default,
+        contact: (await import('@/public/assets/icons/Contacts.png')).default,
+        gallery: (await import('@/public/assets/icons/Photos.png')).default,
+        trash_empty: (await import('@/public/assets/icons/TrashEmpty.png'))
+          .default,
+        trash_full: (await import('@/public/assets/icons/TrashFull.png'))
+          .default,
+        notes: (await import('@/public/assets/icons/Notes.png')).default,
+        terminal: (await import('@/public/assets/icons/Terminal.png')).default,
+        safari: (await import('@/public/assets/icons/Safari.png')).default,
+        calculator: (await import('@/public/assets/icons/calculator.png'))
+          .default,
+        folder: (await import('@/public/assets/icons/Folder.png')).default,
+        finder: (await import('@/public/assets/icons/Finder.png')).default,
+        messages: (await import('@/public/assets/icons/Messages.png')).default,
+        typing_master: (await import('@/public/assets/icons/typing-master.png'))
+          .default,
+        acrobat: (await import('@/public/assets/icons/Acrobat.png')).default,
+      }
+      setIconMap(loadedIcons)
+    }
+
+    loadIcons()
+  }, [])
 
   const minimizeFolders = useMemo(
     () =>
@@ -151,67 +164,84 @@ export default function AppTray() {
 
   const getIconForFolder = useCallback(
     (folder: FolderType) => {
+      if (!iconMap || Object.keys(iconMap).length === 0) {
+        return undefined // Return undefined or a placeholder while icons are loading
+      }
+
       if (folder.type === 'folder') {
         if (folder.id === 'trash') {
-          return trashItems > 0 ? ICON_MAP.trash_full : ICON_MAP.trash_empty
+          return trashItems > 0 ? iconMap.trash_full : iconMap.trash_empty
         }
-        return ICON_MAP[folder.id as keyof typeof ICON_MAP] || ICON_MAP.folder
+        return iconMap[folder.id as keyof typeof iconMap] || iconMap.folder
       }
-      if (folder.type === 'browser') return ICON_MAP.safari
-      if (folder.type === 'calculator') return ICON_MAP.calculator
-      if (folder.type === 'pdf') return ICON_MAP.acrobat
-      return ICON_MAP.folder
+      if (folder.type === 'browser') return iconMap.safari
+      if (folder.type === 'calculator') return iconMap.calculator
+      if (folder.type === 'pdf') return iconMap.acrobat
+      return iconMap.folder
     },
-    [trashItems]
+    [trashItems, iconMap]
   )
+
+  // Don't render anything until icons are loaded
+  if (Object.keys(iconMap).length === 0) {
+    return null
+  }
 
   return (
     <div className="pointer-events-auto fixed bottom-2 left-1/2 -translate-x-1/2 transform">
       <nav className="rounded-2xl bg-white/10 p-1 px-2 shadow-lg backdrop-blur-md">
         <div className="flex items-end gap-1 pb-[5px]">
           <DockItem
-            icon={ICON_MAP.finder}
+            icon={iconMap.finder}
             name="Finder"
             onClick={() => {}}
             ariaLabel="Open Finder"
           />
 
           <DockItem
-            icon={ICON_MAP.messages}
+            icon={iconMap.messages}
             name="Messages"
             onClick={() => {}}
             ariaLabel="Open Messages"
           />
 
-          {taskbarApps.map((folder) => (
-            <DockItem
-              key={folder.id}
-              icon={getIconForFolder(folder)}
-              name={folder.name}
-              onClick={() => handleAppClick(folder)}
-              isOpen={folder.status === 'open'}
-              isMinimized={folder.status === 'minimize'}
-              ariaLabel={`${folder.status === 'open' ? 'Minimize' : 'Open'} ${folder.name}`}
-            />
-          ))}
+          {taskbarApps.map((folder) => {
+            const icon = getIconForFolder(folder)
+            if (!icon) return null
+            return (
+              <DockItem
+                key={folder.id}
+                icon={icon}
+                name={folder.name}
+                onClick={() => handleAppClick(folder)}
+                isOpen={folder.status === 'open'}
+                isMinimized={folder.status === 'minimize'}
+                ariaLabel={`${folder.status === 'open' ? 'Minimize' : 'Open'} ${folder.name}`}
+              />
+            )
+          })}
 
-          {minimizeFolders.map((folder) => (
-            <DockItem
-              key={folder.id}
-              icon={getIconForFolder(folder)}
-              name={folder.name}
-              onClick={() => {
-                if (folder.status !== 'open') {
-                  dispatch(openFolder(folder.id))
-                  folder.onMinimizeRestore?.()
-                }
-              }}
-              isOpen={folder.status === 'open'}
-              isMinimized={folder.status === 'minimize'}
-              className={folder.id === 'typing-master' ? 'p-[6px]' : ''}
-              ariaLabel={`Restore ${folder.name}`}
-            />
-          ))}
+          {minimizeFolders.map((folder) => {
+            const icon = getIconForFolder(folder)
+            if (!icon) return null
+            return (
+              <DockItem
+                key={folder.id}
+                icon={icon}
+                name={folder.name}
+                onClick={() => {
+                  if (folder.status !== 'open') {
+                    dispatch(openFolder(folder.id))
+                    folder.onMinimizeRestore?.()
+                  }
+                }}
+                isOpen={folder.status === 'open'}
+                isMinimized={folder.status === 'minimize'}
+                className={folder.id === 'typing-master' ? 'p-[6px]' : ''}
+                ariaLabel={`Restore ${folder.name}`}
+              />
+            )
+          })}
 
           <Link
             target="_blank"

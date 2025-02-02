@@ -1,47 +1,98 @@
 import {
   addNewNote,
   deleteNote,
-  INote,
   loadNotes,
   updateNote,
 } from '@/app/features/notes'
 import { useDispatch, useSelector } from '@/app/store'
-import { IconNotes, IconPlus } from '@tabler/icons-react'
+import { IconNotes, IconPin, IconPlus, IconSearch } from '@tabler/icons-react'
 import { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { FaRegTrashCan } from 'react-icons/fa6'
 import { FiEdit } from 'react-icons/fi'
 
+// Types & Interfaces
+interface IEnhancedNote {
+  id: string
+  title: string
+  content: string
+  updatedAt: string
+  isPinned: boolean
+  tags: string[]
+  folder: string
+  color: string
+  isFavorite: boolean
+}
+
 export function INotes() {
-  const inotes = useSelector((state) => state.iNotes.notes)
+  const inotes = useSelector((state) => state.iNotes.notes) as IEnhancedNote[]
   const [tab, setTab] = useState<string>('')
+  const [searchQuery, setSearchQuery] = useState('')
+  const [mode, setMode] = useState<'readonly' | 'edit'>('readonly')
   const activeNote = inotes.find((note) => note.id === tab)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const titleRef = useRef<HTMLInputElement>(null)
   const dispatch = useDispatch()
-  const [mode, setMode] = useState<'readonly' | 'edit'>('readonly')
 
-  // Sort notes by updatedAt in descending order (newest first)
-  const sortedNotes = [...inotes].sort(
-    (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
-  )
+  // Filter and sort notes
+  const filteredNotes = inotes.filter((note) => {
+    const matchesSearch = (note.title + note.content)
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase())
+    return matchesSearch
+  })
 
+  const sortedNotes = [...filteredNotes].sort((a, b) => {
+    if (a.isPinned && !b.isPinned) return -1
+    if (!a.isPinned && b.isPinned) return 1
+    return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+  })
+
+  // Effects
   useEffect(() => {
-    if (textareaRef.current instanceof HTMLTextAreaElement) {
+    if (textareaRef.current && mode === 'edit') {
       textareaRef.current.focus()
       const length = textareaRef.current.value.length
       textareaRef.current.setSelectionRange(length, length)
     }
-  }, [tab])
+  }, [tab, mode])
 
   useEffect(() => {
     const localNotes = localStorage.getItem('iNotes')
-    const parseNotes: INote[] | null = JSON.parse(localNotes || 'null')
+    const parseNotes: IEnhancedNote[] | null = JSON.parse(localNotes || 'null')
     if (parseNotes) {
       dispatch(loadNotes(parseNotes))
     }
   }, [dispatch])
 
+  // Event Handlers
+  const onNewNote = () => {
+    const id = crypto.randomUUID()
+    const newNote: IEnhancedNote = {
+      id,
+      title: 'Untitled Note',
+      content: '',
+      updatedAt: new Date().toISOString(),
+      isPinned: false,
+      tags: [],
+      folder: 'default',
+      color: '#ffffff',
+      isFavorite: false,
+    }
+    dispatch(addNewNote(newNote))
+    const updatedNotes = [newNote, ...inotes]
+    localStorage.setItem('iNotes', JSON.stringify(updatedNotes))
+    setTab(id)
+    // Force edit mode for new notes
+    setTimeout(() => {
+      setMode('edit')
+      titleRef.current?.focus()
+      titleRef.current?.select()
+    }, 0)
+  }
+
   const onDelete = (id: string) => {
-    // Find the next most recent note
+    if (!window.confirm('Are you sure you want to delete this note?')) return
+
     const currentIndex = sortedNotes.findIndex((note) => note.id === id)
     const nextNote =
       sortedNotes[currentIndex + 1] || sortedNotes[currentIndex - 1]
@@ -51,7 +102,6 @@ export function INotes() {
     localStorage.setItem('iNotes', JSON.stringify(updatedNotes))
     setMode('readonly')
 
-    // Set focus to the next note if available
     if (nextNote) {
       setTab(nextNote.id)
     } else {
@@ -59,142 +109,162 @@ export function INotes() {
     }
   }
 
-  const onNewNote = () => {
-    const id = crypto.randomUUID()
-    const newNote = {
-      id,
-      content: '-- Write your note here -- \n',
+  const updateNoteProperty = <K extends keyof IEnhancedNote>(
+    id: string,
+    property: K,
+    value: IEnhancedNote[K]
+  ) => {
+    const note = inotes.find((n) => n.id === id)
+    if (!note) return
+
+    const updatedNote = {
+      ...note,
+      [property]: value,
       updatedAt: new Date().toISOString(),
     }
-    dispatch(addNewNote(newNote))
 
-    // Update localStorage with the new note at the beginning
-    const updatedNotes = [newNote, ...inotes]
+    dispatch(updateNote(updatedNote))
+    const updatedNotes = inotes.map((n) => (n.id === id ? updatedNote : n))
     localStorage.setItem('iNotes', JSON.stringify(updatedNotes))
-    setTab(id)
-    setMode('edit')
   }
 
-  const onEdit = () => {
-    if (textareaRef.current instanceof HTMLTextAreaElement) {
-      textareaRef.current.focus()
-      const length = textareaRef.current.value.length
-      textareaRef.current.setSelectionRange(length, length)
-    }
-    if (mode === 'edit') return
-    setMode('edit')
+  const handleContentChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    if (!activeNote) return
+    updateNoteProperty(activeNote.id, 'content', e.target.value)
   }
 
-  const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    const now = new Date().toISOString()
-    dispatch(
-      updateNote({
-        id: tab,
-        content: e.target.value,
-        updatedAt: now,
-      })
+  const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (!activeNote) return
+    const newTitle = e.target.value
+    updateNoteProperty(
+      activeNote.id,
+      'title',
+      newTitle === '' ? 'Untitled Note' : newTitle
     )
-    const updatedNotes = inotes.map((note) => {
-      if (note.id === tab) {
-        return {
-          id: tab,
-          content: e.target.value,
-          updatedAt: now,
-        }
-      } else return note
-    })
-    localStorage.setItem('iNotes', JSON.stringify(updatedNotes))
   }
 
+  // Render
   return (
-    <div className="grid h-full grid-cols-[250px,1fr]">
-      <div className="max-h-full overflow-y-auto bg-gradient-to-b from-black/20 via-white/15 to-white/40 p-4">
-        <div className="mb-3">
+    <div className="grid h-full grid-cols-[240px,1fr] bg-gray-50">
+      {/* Sidebar - macOS style */}
+      <div className="flex h-full flex-col border-r border-gray-200 bg-[#F5F5F5]">
+        {/* Search */}
+        <div className="p-2">
+          <div className="relative">
+            <IconSearch
+              className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400"
+              size={14}
+            />
+            <input
+              type="text"
+              placeholder="Search"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="h-8 w-full rounded-md border border-gray-200 bg-white pl-8 pr-4 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+            />
+          </div>
+        </div>
+
+        {/* Notes List */}
+        <div className="flex-1 overflow-y-auto">
+          <div className="p-2">
+            {sortedNotes.map((note) => (
+              <button
+                key={note.id}
+                onClick={() => {
+                  setTab(note.id)
+                  setMode('readonly')
+                }}
+                className={`mb-1 w-full rounded-md p-2 text-left transition-colors ${
+                  tab === note.id
+                    ? 'bg-blue-500 text-white'
+                    : 'hover:bg-gray-200'
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  {note.isPinned && <IconPin size={14} />}
+                  <div className="flex-1 overflow-hidden">
+                    <h3 className="truncate font-medium">
+                      {note.title || 'Untitled Note'}
+                    </h3>
+                    <p className="truncate text-xs opacity-80">
+                      {note.content || 'No content'}
+                    </p>
+                  </div>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Quick Actions */}
+        <div className="border-t border-gray-200 p-2">
           <button
             onClick={onNewNote}
-            className="flex w-full items-center gap-2 rounded-md bg-white/90 px-4 py-1 text-sm font-medium dark:bg-white/10 justify-center"
+            className="flex w-full items-center gap-2 rounded-md p-2 text-sm text-gray-600 hover:bg-gray-200"
           >
-            <IconPlus className="size-4" stroke={2} />
-            <span>Add a new note</span>
+            <IconPlus size={16} />
+            New Note
           </button>
         </div>
-        <h3 className="text-center text-sm font-medium text-gray-500 dark:text-white/80">
-          On your iCloud
-        </h3>
-        <div className="mt-2 space-y-2">
-          {sortedNotes.map((note, index) => (
-            <button
-              key={note.id}
-              onClick={() => {
-                setTab(note.id)
-                setMode('readonly')
-              }}
-              className={`grid w-full grid-cols-[auto,1fr] gap-2 rounded-md px-2 py-1 ${
-                tab === note.id
-                  ? 'bg-white/90 dark:bg-white/20'
-                  : 'hover:bg-white/70 dark:hover:bg-white/10'
-              }`}
-            >
-              <div className="size-6">
-                <IconNotes
-                  stroke={2}
-                  className="size-full translate-y-[2px] text-emerald-500"
-                />
-              </div>
-              <div className="flex flex-col text-start">
-                <h2 className="line-clamp-1 text-sm font-medium text-gray-800 dark:text-white/90">
-                  {`Note ${sortedNotes.length - index}`}
-                </h2>
-                <h2 className="text-[10px] text-gray-600 dark:text-white/70">
-                  {new Date(note.updatedAt).toLocaleDateString('en-US', {
-                    day: '2-digit',
-                    month: 'short',
-                    year: '2-digit',
-                  })}
-                </h2>
-              </div>
-            </button>
-          ))}
-        </div>
       </div>
-      <div className="max-h-full overflow-y-auto p-4">
+
+      {/* Note Editor */}
+      <div className="flex h-full flex-col bg-white">
         {activeNote ? (
           <>
-            <div className="flex items-center justify-end gap-3">
-              <button
-                onClick={() => onDelete(activeNote.id)}
-                type="button"
-                className="text-gray-600 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400"
-              >
-                <FaRegTrashCan />
-              </button>
-              <button
-                onClick={onEdit}
-                type="button"
-                className="text-gray-600 hover:text-blue-500 dark:text-gray-400 dark:hover:text-blue-400"
-              >
-                <FiEdit />
-              </button>
+            {/* Note Header */}
+            <div className="flex items-center justify-between border-b border-gray-200 px-4 py-2">
+              <input
+                ref={titleRef}
+                type="text"
+                value={activeNote.title}
+                onChange={handleTitleChange}
+                placeholder="Untitled Note"
+                className="border-none bg-transparent text-lg font-semibold focus:outline-none"
+                readOnly={mode === 'readonly'}
+              />
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() =>
+                    setMode(mode === 'readonly' ? 'edit' : 'readonly')
+                  }
+                  className="rounded-md p-1 hover:bg-gray-100"
+                >
+                  <FiEdit size={16} className="text-gray-500" />
+                </button>
+                <button
+                  onClick={() => onDelete(activeNote.id)}
+                  className="rounded-md p-1 hover:bg-gray-100"
+                >
+                  <FaRegTrashCan size={16} className="text-gray-500" />
+                </button>
+              </div>
             </div>
-            <textarea
-              title="Double Click To Edit"
-              onDoubleClick={onEdit}
-              readOnly={mode === 'readonly'}
-              ref={textareaRef}
-              className="h-[calc(100%-22px)] w-full resize-none bg-inherit focus:outline-none"
-              value={activeNote.content}
-              onChange={handleChange}
-            />
+
+            {/* Note Content */}
+            <div
+              className="flex-1 overflow-y-auto"
+              onClick={() => mode === 'readonly' && setMode('edit')}
+            >
+              <textarea
+                ref={textareaRef}
+                value={activeNote.content}
+                onChange={handleContentChange}
+                readOnly={mode === 'readonly'}
+                placeholder="Start writing..."
+                className="h-full w-full cursor-text resize-none bg-transparent p-4 text-gray-700 focus:outline-none"
+              />
+            </div>
           </>
         ) : (
-          <div className="flex size-full items-center justify-center">
-            <button
-              onClick={onNewNote}
-              className="flex items-center gap-2 rounded-md bg-light-foreground px-4 py-2 text-sm font-medium dark:bg-white/10"
-            >
-              <IconPlus className="size-4" stroke={2} />
-              <span>Add new note</span>
-            </button>
+          <div className="flex h-full items-center justify-center">
+            <div className="text-center">
+              <IconNotes size={48} className="mx-auto mb-4 text-gray-300" />
+              <h3 className="text-xl font-medium text-gray-400">
+                No Note Selected
+              </h3>
+            </div>
           </div>
         )}
       </div>
