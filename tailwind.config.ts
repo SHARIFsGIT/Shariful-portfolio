@@ -32,15 +32,21 @@ const config: Config = {
       },
       animation: {
         'wallpaper-fade': 'fadeInOut 5s linear infinite',
+        'bounce-once': 'bounce-once 0.5s ease-in-out 1',
       },
       keyframes: {
         fadeInOut: {
           '0%, 100%': { transform: 'scale(1.2)' },
           '50%': { transform: 'scale(1)' },
         },
+        'bounce-once': {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-10px)' },
+        },
       },
     },
   },
   plugins: [],
 }
+
 export default config

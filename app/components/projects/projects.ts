@@ -1,8 +1,8 @@
+import rythmify from '@/app/components/projects/assets/thumb_rythmify.jpg'
 import opensub from '@/app/components/projects/assets/thumb-opensub.jpg'
 import shadhinshop from '@/app/components/projects/assets/thumb-shadhin-shop.jpg'
-import ai_thumb from '@/app/components/projects/assets/thumb_ai.jpg'
-import rythmify from '@/app/components/projects/assets/thumb_rythmify.jpg'
 import squidGame from '@/app/components/projects/assets/thumb_squid-game.jpg'
+import ai_thumb from '@/app/components/projects/assets/thumb_ai.jpg'
 
 import { StaticImageData } from 'next/image'
 

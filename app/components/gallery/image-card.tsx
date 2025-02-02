@@ -85,13 +85,13 @@ export function ImageCard({ photo }: { photo: IPhoto }) {
       />
       <div
         ref={layerRef}
-        className="absolute left-0 top-0 flex h-[calc(100%-16px)] w-full items-center justify-center bg-[#000000b2] opacity-0 rounded-xl"
+        className="absolute left-0 top-0 flex h-[calc(100%-16px)] w-full items-center justify-center rounded-xl bg-[#000000b2] opacity-0"
       >
         <div className="flex flex-col gap-4">
           <div className="flex justify-center gap-4">
             <button
               onClick={() => setIsLiked(!isLiked)}
-              className="rounded-full bg-white p-2 transition-colors hover:bg-gray-200 opacity-70 hover:opacity-100"
+              className="rounded-full bg-white p-2 opacity-70 transition-colors hover:bg-gray-200 hover:opacity-100"
             >
               <Heart
                 className={`h-5 w-5 ${isLiked ? 'fill-red-500 text-red-500' : 'text-gray-700'}`}
@@ -99,7 +99,7 @@ export function ImageCard({ photo }: { photo: IPhoto }) {
             </button>
             <button
               onClick={handleShare}
-              className="rounded-full bg-white p-2 transition-colors hover:bg-gray-200 opacity-70 hover:opacity-100"
+              className="rounded-full bg-white p-2 opacity-70 transition-colors hover:bg-gray-200 hover:opacity-100"
             >
               <Share2 className="h-5 w-5 text-gray-700" />
             </button>
@@ -107,7 +107,7 @@ export function ImageCard({ photo }: { photo: IPhoto }) {
           <button
             onClick={onDownload}
             type="button"
-            className="flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary/90 opacity-70 hover:opacity-100"
+            className="flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-white opacity-70 transition-colors hover:bg-primary/90 hover:opacity-100"
           >
             <Download className="h-4 w-4" />
             Download

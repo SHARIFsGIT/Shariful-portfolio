@@ -1,5 +1,4 @@
 import { openUrlTab } from '@/app/features/chrome'
-import { setZIndex } from '@/app/features/settings'
 import { openFolder } from '@/app/features/window-slice'
 import { useDispatch, useSelector } from '@/app/store'
 import { useGSAP } from '@gsap/react'
@@ -9,6 +8,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useRef } from 'react'
 import { Projects } from './projects'
+import { setZIndex } from '@/app/features/settings'
 
 export function ProjectCard({ project }: { project: Projects }) {
   const timeline = useRef(gsap.timeline())

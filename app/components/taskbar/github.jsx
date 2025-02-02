@@ -59,7 +59,8 @@ const GitHubCalendar = () => {
         let maxStreak = 0
 
         const sortedDates = Array.from(contributionMap.entries()).sort()
-        sortedDates.forEach(([_, count]) => {
+        sortedDates.forEach(([, count]) => {
+          // Removed unused '_' parameter
           total += count
           if (count > 0) {
             currentStreak++
@@ -81,7 +82,8 @@ const GitHubCalendar = () => {
             count,
           }))
         )
-      } catch (err) {
+      } catch (error) {
+        // Changed 'err' to 'error' to match the error state
         setError('Failed to load GitHub data')
       } finally {
         setLoading(false)

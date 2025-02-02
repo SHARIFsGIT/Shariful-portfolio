@@ -8,7 +8,12 @@ export function useIntersection(
   elementRef: RefObject<Element>,
   options: IntersectionOptions = {}
 ): boolean {
-  const { threshold = 0, root = null, rootMargin = '0px', freezeOnceVisible = false } = options
+  const {
+    threshold = 0,
+    root = null,
+    rootMargin = '0px',
+    freezeOnceVisible = false,
+  } = options
   const [isVisible, setIsVisible] = useState(false)
 
   useEffect(() => {

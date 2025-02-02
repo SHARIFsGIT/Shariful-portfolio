@@ -3,206 +3,230 @@
 import { setZIndex } from '@/app/features/settings'
 import { minimizeFolder, openFolder } from '@/app/features/window-slice'
 import { useDispatch, useSelector } from '@/app/store'
-import acrobat from '@/public/assets/icons/Acrobat.png'
-import calculator from '@/public/assets/icons/calculator.png'
-import contactIcon from '@/public/assets/icons/Contacts.png'
-import finder from '@/public/assets/icons/Finder.png'
-import folderIcon from '@/public/assets/icons/Folder.png'
-import messageIcon from '@/public/assets/icons/Messages.png'
-import notes from '@/public/assets/icons/Notes.png'
-import photoIcon from '@/public/assets/icons/Photos.png'
-import safari from '@/public/assets/icons/Safari.png'
-import settings from '@/public/assets/icons/Settings.png'
-import terminalIcon from '@/public/assets/icons/Terminal.png'
-import trashEmpty from '@/public/assets/icons/TrashEmpty.png'
-import trashFull from '@/public/assets/icons/TrashFull.png'
-import typingMaterIcon from '@/public/assets/icons/typing-master.png'
 import { IconBrandGithub } from '@tabler/icons-react'
-import Image from 'next/image'
+import Image, { StaticImageData } from 'next/image'
 import Link from 'next/link'
+import { memo, useCallback, useMemo } from 'react'
+
+interface DockItemProps {
+  icon: StaticImageData
+  name: string
+  onClick: () => void
+  isOpen?: boolean
+  isMinimized?: boolean
+  className?: string
+  isAnimated?: boolean
+  ariaLabel?: string
+}
+
+interface FolderType {
+  id: string
+  name: string
+  type: string
+  status: string
+  placement: string
+  onMinimizeRestore?: () => void
+}
+
+const ICON_MAP: Record<string, StaticImageData> = {
+  settings: (await import('@/public/assets/icons/Settings.png')).default,
+  contact: (await import('@/public/assets/icons/Contacts.png')).default,
+  gallery: (await import('@/public/assets/icons/Photos.png')).default,
+  trash_empty: (await import('@/public/assets/icons/TrashEmpty.png')).default,
+  trash_full: (await import('@/public/assets/icons/TrashFull.png')).default,
+  notes: (await import('@/public/assets/icons/Notes.png')).default,
+  terminal: (await import('@/public/assets/icons/Terminal.png')).default,
+  safari: (await import('@/public/assets/icons/Safari.png')).default,
+  calculator: (await import('@/public/assets/icons/calculator.png')).default,
+  folder: (await import('@/public/assets/icons/Folder.png')).default,
+  finder: (await import('@/public/assets/icons/Finder.png')).default,
+  messages: (await import('@/public/assets/icons/Messages.png')).default,
+  typing_master: (await import('@/public/assets/icons/typing-master.png'))
+    .default,
+  acrobat: (await import('@/public/assets/icons/Acrobat.png')).default,
+}
+
+const DockItem = memo<DockItemProps>(
+  ({
+    icon,
+    name,
+    onClick,
+    isOpen = false,
+    isMinimized = false,
+    className = '',
+    isAnimated = true,
+    ariaLabel,
+  }) => {
+    const tooltipId = useMemo(
+      () => `tooltip-${name.toLowerCase().replace(/\s+/g, '-')}`,
+      [name]
+    )
+
+    const baseButtonClass =
+      'group relative flex items-center justify-center transition-all duration-150 hover:scale-125'
+    const buttonClassName = className
+      ? `${baseButtonClass} ${className}`
+      : baseButtonClass
+
+    const baseImageContainerClass =
+      'relative size-14 transition-transform duration-300'
+    const imageContainerClassName =
+      isOpen && !isMinimized && isAnimated
+        ? `${baseImageContainerClass} animate-bounce-once`
+        : baseImageContainerClass
+
+    const baseImageClass = 'object-cover object-center'
+    const imageClassName = className
+      ? `${baseImageClass} ${className}`
+      : baseImageClass
+
+    return (
+      <button
+        className={buttonClassName}
+        onClick={onClick}
+        aria-label={ariaLabel || name}
+        aria-describedby={tooltipId}
+      >
+        <div className={imageContainerClassName}>
+          <Image
+            alt={name}
+            src={icon}
+            fill
+            sizes="56px"
+            className={imageClassName}
+            priority={isOpen}
+          />
+        </div>
+
+        <div
+          id={tooltipId}
+          role="tooltip"
+          className="absolute -top-12 left-1/2 -translate-x-1/2 transform rounded-lg bg-black/75 px-3 py-1.5 text-sm text-white opacity-0 shadow-lg backdrop-blur-sm transition-opacity duration-200 group-hover:opacity-100"
+        >
+          {name}
+          <div className="absolute -bottom-1 left-1/2 h-2 w-2 -translate-x-1/2 rotate-45 transform bg-black/75" />
+        </div>
+
+        {(isOpen || isMinimized) && (
+          <span className="absolute -bottom-1 left-1/2 size-1 -translate-x-1/2 rounded-full bg-white" />
+        )}
+      </button>
+    )
+  }
+)
+
+DockItem.displayName = 'DockItem'
 
 export default function AppTray() {
-  const folders = useSelector((state) => state.windowFrame)
-  const minimizeFolders = folders.filter(
-    (folder) => folder.status !== 'close' && folder.placement === 'desktop'
-  )
   const dispatch = useDispatch()
-  const taskbarApps = folders.filter((f) => f.placement === 'taskbar')
+  const folders = useSelector((state) => state.windowFrame) as FolderType[]
   const trashItems = useSelector((state) => state.trash.items).length
   const { zIndex } = useSelector((state) => state.settings)
 
+  const minimizeFolders = useMemo(
+    () =>
+      folders.filter(
+        (folder) => folder.status !== 'close' && folder.placement === 'desktop'
+      ),
+    [folders]
+  )
+
+  const taskbarApps = useMemo(
+    () => folders.filter((f) => f.placement === 'taskbar'),
+    [folders]
+  )
+
+  const handleAppClick = useCallback(
+    (folder: FolderType) => {
+      if (folder.status === 'open') {
+        dispatch(minimizeFolder(folder.id))
+      } else {
+        dispatch(setZIndex(zIndex + 1))
+        dispatch(openFolder(folder.id))
+        folder.onMinimizeRestore?.()
+      }
+    },
+    [dispatch, zIndex]
+  )
+
+  const getIconForFolder = useCallback(
+    (folder: FolderType) => {
+      if (folder.type === 'folder') {
+        if (folder.id === 'trash') {
+          return trashItems > 0 ? ICON_MAP.trash_full : ICON_MAP.trash_empty
+        }
+        return ICON_MAP[folder.id as keyof typeof ICON_MAP] || ICON_MAP.folder
+      }
+      if (folder.type === 'browser') return ICON_MAP.safari
+      if (folder.type === 'calculator') return ICON_MAP.calculator
+      if (folder.type === 'pdf') return ICON_MAP.acrobat
+      return ICON_MAP.folder
+    },
+    [trashItems]
+  )
+
   return (
-    <div className="pointer-events-auto rounded-xl bg-white/20 p-1 px-2 backdrop-blur">
-      <div className="flex items-center gap-2 pb-[5px]">
-        <button className="relative size-14">
-          <Image
-            alt=""
-            src={finder}
-            fill
-            sizes="56px"
-            className="object-cover object-center"
+    <div className="pointer-events-auto fixed bottom-2 left-1/2 -translate-x-1/2 transform">
+      <nav className="rounded-2xl bg-white/10 p-1 px-2 shadow-lg backdrop-blur-md">
+        <div className="flex items-end gap-1 pb-[5px]">
+          <DockItem
+            icon={ICON_MAP.finder}
+            name="Finder"
+            onClick={() => {}}
+            ariaLabel="Open Finder"
           />
-        </button>
-        <button className="relative size-14">
-          <Image
-            alt=""
-            src={messageIcon}
-            fill
-            sizes="56px"
-            className="object-cover object-center"
+
+          <DockItem
+            icon={ICON_MAP.messages}
+            name="Messages"
+            onClick={() => {}}
+            ariaLabel="Open Messages"
           />
-        </button>
-        {taskbarApps.map((folder) => (
-          <button
-            className="group relative size-14"
-            onClick={() => {
-              if (folder.status === 'open') dispatch(minimizeFolder(folder.id))
-              else {
-                dispatch(setZIndex(zIndex + 1))
-                dispatch(openFolder(folder.id))
-                if (folder.onMinimizeRestore) {
-                  folder.onMinimizeRestore()
+
+          {taskbarApps.map((folder) => (
+            <DockItem
+              key={folder.id}
+              icon={getIconForFolder(folder)}
+              name={folder.name}
+              onClick={() => handleAppClick(folder)}
+              isOpen={folder.status === 'open'}
+              isMinimized={folder.status === 'minimize'}
+              ariaLabel={`${folder.status === 'open' ? 'Minimize' : 'Open'} ${folder.name}`}
+            />
+          ))}
+
+          {minimizeFolders.map((folder) => (
+            <DockItem
+              key={folder.id}
+              icon={getIconForFolder(folder)}
+              name={folder.name}
+              onClick={() => {
+                if (folder.status !== 'open') {
+                  dispatch(openFolder(folder.id))
+                  folder.onMinimizeRestore?.()
                 }
-              }
-            }}
-            key={folder.id}
+              }}
+              isOpen={folder.status === 'open'}
+              isMinimized={folder.status === 'minimize'}
+              className={folder.id === 'typing-master' ? 'p-[6px]' : ''}
+              ariaLabel={`Restore ${folder.name}`}
+            />
+          ))}
+
+          <Link
+            target="_blank"
+            href="https://github.com/SHARIFsGIT"
+            className="group relative flex size-14 items-center justify-center rounded-xl bg-dark-background/20 backdrop-blur-sm transition-transform hover:scale-110"
+            aria-label="Visit GitHub Profile"
           >
-            {folder.type === 'folder' && folder.id === 'settings' && (
-              <Image
-                alt=""
-                src={settings}
-                fill
-                sizes="56px"
-                className="object-cover object-center"
-              />
-            )}
-            {folder.type === 'folder' && folder.id === 'contact' && (
-              <Image
-                alt=""
-                src={contactIcon}
-                fill
-                sizes="56px"
-                className="object-cover object-center"
-              />
-            )}
-            {folder.type === 'folder' && folder.id === 'gallery' && (
-              <Image
-                alt=""
-                src={photoIcon}
-                fill
-                sizes="56px"
-                className="object-cover object-center"
-              />
-            )}
-            {folder.type === 'folder' && folder.id === 'trash' && (
-              <Image
-                alt=""
-                src={trashItems > 0 ? trashFull : trashEmpty}
-                fill
-                sizes="56px"
-                className="object-cover object-center"
-              />
-            )}
-            {folder.type === 'folder' && folder.id === 'inotes' && (
-              <Image
-                alt=""
-                src={notes}
-                fill
-                sizes="56px"
-                className="object-cover object-center"
-              />
-            )}
-            {folder.type === 'folder' && folder.id === 'terminal' && (
-              <Image
-                alt=""
-                src={terminalIcon}
-                fill
-                sizes="56px"
-                className="object-cover object-center"
-              />
-            )}
-            {folder.type === 'browser' && (
-              <Image
-                alt=""
-                src={safari}
-                fill
-                sizes="56px"
-                className="object-cover object-center"
-              />
-            )}
-            {folder.type === 'calculator' && (
-              <Image
-                alt="calculator"
-                src={calculator}
-                fill
-                sizes="56px"
-                className="object-cover object-center"
-              />
-            )}
-            <span className="absolute -top-8 left-1/2 hidden -translate-x-1/2 rounded bg-[#3e3e3e] px-3 py-1 text-xs shadow-md group-hover:inline-block">
-              {folder.name}
-            </span>
-            {(folder.status === 'open' || folder.status === 'minimize') && (
-              <span className="absolute -bottom-1 left-1/2 size-1 -translate-x-1/2 rounded-full bg-black dark:bg-white"></span>
-            )}
-          </button>
-        ))}
-        {minimizeFolders.map((folder) => (
-          <button
-            className="group relative size-14"
-            onClick={() => {
-              if (folder.status === 'open') return
-              else {
-                dispatch(openFolder(folder.id))
-                if (folder.onMinimizeRestore) {
-                  folder.onMinimizeRestore()
-                }
-              }
-            }}
-            key={folder.id}
-          >
-            {folder.type === 'folder' && folder.id === 'typing-master' ? (
-              <Image
-                alt=""
-                src={typingMaterIcon}
-                fill
-                sizes="56px"
-                className="object-cover object-center p-[6px]"
-              />
-            ) : folder.type === 'pdf' ? (
-              <Image
-                alt="pdf"
-                src={acrobat}
-                fill
-                sizes="56px"
-                className="object-cover object-center p-[6px]"
-              />
-            ) : (
-              <Image
-                alt=""
-                src={folderIcon}
-                fill
-                sizes="56px"
-                className="object-cover object-center"
-              />
-            )}
-            <span className="absolute -top-8 left-1/2 hidden -translate-x-1/2 rounded bg-[#3e3e3e] px-3 py-1 text-xs shadow-md group-hover:inline-block">
-              {folder.name}
-            </span>
-            <span className="absolute -bottom-1 left-1/2 size-1 -translate-x-1/2 rounded-full bg-black dark:bg-white"></span>
-          </button>
-        ))}
-        <Link
-          target="_blank"
-          href="https://github.com/SHARIFsGIT"
-          className="group relative flex size-[50px] items-center justify-center rounded-md bg-dark-background"
-        >
-          <IconBrandGithub stroke={1} className="size-10 text-dark-text" />
-          <span className="absolute -top-9 left-1/2 hidden -translate-x-1/2 rounded bg-[#3e3e3e] px-3 py-1 text-xs shadow-md group-hover:inline-block">
-            Github
-          </span>
-        </Link>
-      </div>
+            <IconBrandGithub stroke={1} className="size-10 text-dark-text" />
+            <div className="absolute -top-12 left-1/2 hidden -translate-x-1/2 transform rounded-lg bg-black/75 px-3 py-1.5 text-sm text-white shadow-lg backdrop-blur-sm group-hover:block">
+              Github
+              <div className="absolute -bottom-1 left-1/2 h-2 w-2 -translate-x-1/2 rotate-45 transform bg-black/75" />
+            </div>
+          </Link>
+        </div>
+      </nav>
     </div>
   )
 }

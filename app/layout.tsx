@@ -1,10 +1,10 @@
 import type { Metadata } from 'next'
-import './globals.css'
+import { ThemeProvider } from 'next-themes'
 import { Taskbar } from './components/taskbar'
-import { ReduxProvider } from './providers/redux-provider'
 import { Topbar } from './components/topbar'
 import { WalpaperProvider } from './components/walpaper-wraper'
-import { ThemeProvider } from 'next-themes'
+import './globals.css'
+import { ReduxProvider } from './providers/redux-provider'
 
 export const metadata: Metadata = {
   title: 'macOS 15 Sequoia',

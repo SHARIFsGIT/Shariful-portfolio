@@ -1,7 +1,7 @@
 import { setWallpaper } from '@/app/features/settings'
 import { useDispatch, useSelector } from '@/app/store'
 import { useTheme } from 'next-themes'
-import Image from 'next/image'
+import Image, { StaticImageData } from 'next/image'
 
 // Import all wallpapers
 import hd from '@/public/assets/background/helios-dark.jpg'
@@ -32,7 +32,20 @@ import sl from '@/public/assets/background/spectrum-light.jpg'
 import yd from '@/public/assets/background/yellow-dark.jpg'
 import yl from '@/public/assets/background/yellow-light.jpg'
 
-const WALLPAPER_COLLECTIONS = {
+interface Wallpaper {
+  dark: StaticImageData
+  light: StaticImageData
+}
+
+interface WallpaperData extends Wallpaper {
+  name: string
+}
+
+type WallpaperCollections = {
+  [key: string]: WallpaperData[]
+}
+
+const WALLPAPER_COLLECTIONS: WallpaperCollections = {
   'Sequoia-Monterey-Ventura': [
     { dark: hd, light: hl, name: 'Helios' },
     { dark: md, light: ml, name: 'Monterey' },
@@ -52,7 +65,17 @@ const WALLPAPER_COLLECTIONS = {
   ],
 }
 
-const WallpaperPreview = ({ src, onClick, isActive }) => (
+interface WallpaperPreviewProps {
+  src: StaticImageData
+  onClick: () => void
+  isActive: boolean
+}
+
+const WallpaperPreview: React.FC<WallpaperPreviewProps> = ({
+  src,
+  onClick,
+  isActive,
+}) => (
   <button
     onClick={onClick}
     className={`relative h-28 overflow-hidden rounded-lg transition-all hover:ring-2 hover:ring-blue-500 ${isActive ? 'ring-2 ring-blue-500' : 'hover:scale-105'}`}
@@ -67,7 +90,12 @@ const WallpaperPreview = ({ src, onClick, isActive }) => (
   </button>
 )
 
-const ThemeSelector = ({ theme, setTheme }) => (
+interface ThemeSelectorProps {
+  theme: string
+  setTheme: (theme: string) => void
+}
+
+const ThemeSelector: React.FC<ThemeSelectorProps> = ({ theme, setTheme }) => (
   <div className="flex items-center gap-3">
     <h3 className="font-medium">Theme Mode</h3>
     <select
@@ -84,7 +112,10 @@ const ThemeSelector = ({ theme, setTheme }) => (
 
 export function Wallpaper() {
   const dispatch = useDispatch()
-  const wallpaper = useSelector((state) => state.settings.wallpaper)
+  const wallpaper = useSelector(
+    (state: { settings: { wallpaper: Wallpaper | null } }) =>
+      state.settings.wallpaper
+  )
   const { theme, resolvedTheme, setTheme } = useTheme()
 
   const currentWallpaperSrc = wallpaper
@@ -107,7 +138,7 @@ export function Wallpaper() {
             />
           )}
         </div>
-        <ThemeSelector theme={theme} setTheme={setTheme} />
+        <ThemeSelector theme={theme || 'system'} setTheme={setTheme} />
       </div>
 
       {Object.entries(WALLPAPER_COLLECTIONS).map(

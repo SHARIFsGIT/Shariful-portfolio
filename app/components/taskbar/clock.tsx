@@ -1,7 +1,7 @@
 'use client'
 
-import { clock_utils } from '@/app/utils'
-import { useEffect, useState } from 'react'
+import { clock_utils } from '@/app/utils';
+import { useEffect, useState } from 'react';
 
 export function TaskbarClock() {
   const [clock, setClock] = useState<{ time: string; date: string }>({
