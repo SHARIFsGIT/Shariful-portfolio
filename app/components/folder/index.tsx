@@ -5,7 +5,7 @@ import { ReactNode } from 'react'
 
 export function Alert({
   heading = 'Are you sure?',
-  message = "This item will be deleted immediately. \n You can't undo this action",
+  message = "This item will be deleted immediately.\nYou can't undo this action",
   icon,
   onConfirm,
   onClose,
