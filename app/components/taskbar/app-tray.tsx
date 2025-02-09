@@ -4,12 +4,28 @@ import { setZIndex } from '@/app/features/settings'
 import { minimizeFolder, openFolder } from '@/app/features/window-slice'
 import { useDispatch, useSelector } from '@/app/store'
 import Image, { StaticImageData } from 'next/image'
-import { memo, useCallback, useEffect, useMemo, useState } from 'react'
+import {
+  memo,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 import GitHubPopup from './github'
 
-// Move interfaces outside of component
+type IconType =
+  | {
+      type: 'static'
+      data: StaticImageData
+    }
+  | {
+      type: 'element'
+      data: JSX.Element
+    }
+
 interface DockItemProps {
-  icon: StaticImageData
+  icon: IconType
   name: string
   onClick: () => void
   isOpen?: boolean
@@ -17,6 +33,7 @@ interface DockItemProps {
   className?: string
   isAnimated?: boolean
   ariaLabel?: string
+  children?: ReactNode
 }
 
 interface FolderType {
@@ -40,6 +57,7 @@ const DockItem = memo<DockItemProps>(
     className = '',
     isAnimated = true,
     ariaLabel,
+    children,
   }) => {
     const baseButtonClass =
       'group relative flex items-center justify-center transition-all duration-150 hover:scale-125'
@@ -54,45 +72,56 @@ const DockItem = memo<DockItemProps>(
         ? `${baseImageContainerClass} animate-bounce-once`
         : baseImageContainerClass
 
-    const baseImageClass = 'object-cover object-center'
-    const imageClassName = className
-      ? `${baseImageClass} ${className}`
-      : baseImageClass
+    const renderIcon = () => {
+      if (icon.type === 'element') {
+        return (
+          <div className="flex h-full w-full items-center justify-center">
+            {icon.data}
+          </div>
+        )
+      }
+      return (
+        <Image
+          alt={name}
+          src={icon.data}
+          fill
+          sizes="56px"
+          className="object-cover object-center"
+          priority={isOpen}
+        />
+      )
+    }
 
     return (
-      <button
-        className={buttonClassName}
-        onClick={onClick}
-        aria-label={ariaLabel || name}
-      >
-        <div className={imageContainerClassName}>
-          <Image
-            alt={name}
-            src={icon}
-            fill
-            sizes="56px"
-            className={imageClassName}
-            priority={isOpen}
-          />
-        </div>
-
-        <div
-          role="tooltip"
-          className="absolute -top-12 left-1/2 -translate-x-1/2 transform rounded-lg bg-black/75 px-3 py-1.5 text-sm text-white opacity-0 shadow-lg backdrop-blur-sm transition-opacity duration-200 group-hover:opacity-100"
+      <>
+        <button
+          className={buttonClassName}
+          onClick={onClick}
+          aria-label={ariaLabel || name}
         >
-          {name}
-          <div className="absolute -bottom-1 left-1/2 h-2 w-2 -translate-x-1/2 rotate-45 transform bg-black/75" />
-        </div>
+          <div className={imageContainerClassName}>{renderIcon()}</div>
 
-        {(isOpen || isMinimized) && (
-          <span className="absolute -bottom-1 left-1/2 size-1 -translate-x-1/2 rounded-full bg-white" />
-        )}
-      </button>
+          <div
+            role="tooltip"
+            className="absolute -top-12 left-1/2 -translate-x-1/2 transform rounded-lg bg-black/75 px-3 py-1.5 text-sm text-white opacity-0 shadow-lg backdrop-blur-sm transition-opacity duration-200 group-hover:opacity-100"
+          >
+            {name}
+            <div className="absolute -bottom-1 left-1/2 h-2 w-2 -translate-x-1/2 rotate-45 transform bg-black/75" />
+          </div>
+
+          {(isOpen || isMinimized) && (
+            <span className="absolute -bottom-1 left-1/2 size-1 -translate-x-1/2 rounded-full bg-white" />
+          )}
+        </button>
+        {children}
+      </>
     )
   }
 )
 
 DockItem.displayName = 'DockItem'
+
+export { DockItem }
 
 export default function AppTray() {
   const dispatch = useDispatch()
@@ -100,8 +129,6 @@ export default function AppTray() {
   const trashItems = useSelector((state) => state.trash.items).length
   const { zIndex } = useSelector((state) => state.settings)
   const [iconMap, setIconMap] = useState<IconMapType>({})
-
-  // Move GitHub token state inside component and use environment variable
   const [githubToken] = useState(process.env.NEXT_PUBLIC_GITHUB_TOKEN || '')
 
   useEffect(() => {
@@ -190,14 +217,14 @@ export default function AppTray() {
       <nav className="rounded-2xl bg-white/10 p-1 px-2 shadow-lg backdrop-blur-md">
         <div className="flex items-end gap-1 pb-[5px]">
           <DockItem
-            icon={iconMap.finder}
+            icon={{ type: 'static', data: iconMap.finder }}
             name="Finder"
             onClick={() => {}}
             ariaLabel="Open Finder"
           />
 
           <DockItem
-            icon={iconMap.imessages}
+            icon={{ type: 'static', data: iconMap.imessages }}
             name="iMessage"
             onClick={() => {}}
             ariaLabel="Open iMessage"
@@ -209,7 +236,7 @@ export default function AppTray() {
             return (
               <DockItem
                 key={folder.id}
-                icon={icon}
+                icon={{ type: 'static', data: icon }}
                 name={folder.name}
                 onClick={() => handleAppClick(folder)}
                 isOpen={folder.status === 'open'}
@@ -225,7 +252,7 @@ export default function AppTray() {
             return (
               <DockItem
                 key={folder.id}
-                icon={icon}
+                icon={{ type: 'static', data: icon }}
                 name={folder.name}
                 onClick={() => {
                   if (folder.status !== 'open') {

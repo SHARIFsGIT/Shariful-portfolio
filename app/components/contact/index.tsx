@@ -70,14 +70,14 @@ const ProfileHeader = memo(({ onImageClick }: { onImageClick: () => void }) => (
         className="absolute right-4 top-4 rounded-full bg-white/50 p-2 transition-all hover:bg-white dark:text-black"
         aria-label="Change cover photo"
       >
-        <Camera className="h-5 w-5 " />
+        <Camera className="h-5 w-5" />
       </button>
       <h1 className="absolute bottom-4 left-40 bg-gradient-to-r from-green-200 to-white bg-clip-text text-3xl font-medium text-transparent">
         Shariful Islam
       </h1>
     </header>
     {/* Profile photo in a separate container with higher z-index */}
-    <div className="absolute left-6 top-14 z-[9999]">
+    <div className="absolute left-6 top-14">
       <Image
         className="transform rounded-full border-2 border-black transition-all duration-500 ease-in-out hover:scale-110 hover:border-4 hover:shadow-xl"
         alt="Shariful Islam"

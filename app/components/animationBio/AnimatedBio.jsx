@@ -5,10 +5,10 @@ const AnimatedBio = memo(
   ({
     className = '',
     texts = [
-      'ROS Engineer',
       'Software Developer',
       'Competitive Programmer',
       'MERN Stack Web Developer',
+      'Robotics Software Engineer',
     ],
     fadeDelay = 500,
     switchDelay = 3000,
