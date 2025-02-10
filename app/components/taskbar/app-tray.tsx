@@ -47,7 +47,7 @@ interface FolderType {
 
 type IconMapType = Record<string, StaticImageData>
 
-const DockItem = memo<DockItemProps>(
+export const DockItem = memo<DockItemProps>(
   ({
     icon,
     name,
@@ -120,8 +120,6 @@ const DockItem = memo<DockItemProps>(
 )
 
 DockItem.displayName = 'DockItem'
-
-export { DockItem }
 
 export default function AppTray() {
   const dispatch = useDispatch()
