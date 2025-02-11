@@ -1,113 +1,304 @@
-export const typingTexts = [
-  // Easy texts (30-50 characters)
+// Type definitions
+export interface TypingText {
+  id: number
+  text: string
+  difficulty: 'easy' | 'medium' | 'hard'
+  category:
+    | 'humor'
+    | 'tech'
+    | 'quotes'
+    | 'programming'
+    | 'science'
+    | 'literature'
+  wordCount: number
+}
+
+// Utility functions
+export const getDifficultyColor = (difficulty: TypingText['difficulty']) => {
+  switch (difficulty) {
+    case 'easy':
+      return 'text-green-500'
+    case 'medium':
+      return 'text-yellow-500'
+    case 'hard':
+      return 'text-red-500'
+    default:
+      return 'text-gray-500'
+  }
+}
+
+export const getCategoryIcon = (category: TypingText['category']) => {
+  switch (category) {
+    case 'humor':
+      return '😄'
+    case 'tech':
+      return '💻'
+    case 'quotes':
+      return '💭'
+    case 'programming':
+      return '👨‍💻'
+    case 'science':
+      return '🔬'
+    case 'literature':
+      return '📚'
+    default:
+      return '📝'
+  }
+}
+
+export const typingTexts: TypingText[] = [
+  // Humor Category - Easy
   {
     id: 1,
-    text: 'The quick brown fox jumps over the lazy dog.',
+    text: "Why did the programmer quit his job? Because he didn't get arrays.",
     difficulty: 'easy',
-    category: 'pangram',
+    category: 'humor',
+    wordCount: 12,
   },
   {
     id: 2,
-    text: 'Pack my box with five dozen liquor jugs.',
+    text: "I told my computer I needed a break, and now it won't stop sending me vacation ads.",
     difficulty: 'easy',
-    category: 'pangram',
+    category: 'humor',
+    wordCount: 16,
   },
-
-  // Medium texts (50-100 characters)
   {
     id: 3,
-    text: 'JavaScript is a high-level, interpreted programming language that conforms to ECMAScript.',
-    difficulty: 'medium',
-    category: 'technical',
-  },
-  {
-    id: 4,
-    text: 'React is a free and open-source front-end JavaScript library for building user interfaces.',
-    difficulty: 'medium',
-    category: 'technical',
+    text: 'Why do programmers prefer dark mode? Because light attracts bugs!',
+    difficulty: 'easy',
+    category: 'humor',
+    wordCount: 11,
   },
 
-  // Hard texts (100+ characters)
+  // Tech Category - Medium
+  {
+    id: 4,
+    text: 'Artificial Intelligence and Machine Learning are revolutionizing the way we interact with technology and process data.',
+    difficulty: 'medium',
+    category: 'tech',
+    wordCount: 15,
+  },
   {
     id: 5,
-    text: 'In computer science, a data structure is a data organization, management, and storage format that enables efficient access and modification. More precisely, a data structure is a collection of data values.',
-    difficulty: 'hard',
-    category: 'technical',
+    text: 'Cloud computing enables businesses to scale their infrastructure dynamically while reducing operational costs.',
+    difficulty: 'medium',
+    category: 'tech',
+    wordCount: 13,
   },
   {
     id: 6,
-    text: 'The Internet of Things (IoT) describes physical objects with sensors, processing ability, software, and other technologies that enable them to connect and exchange data with other devices over the Internet.',
-    difficulty: 'hard',
-    category: 'technical',
+    text: 'The Internet of Things (IoT) connects everyday devices to the internet, creating a network of smart objects.',
+    difficulty: 'medium',
+    category: 'tech',
+    wordCount: 16,
   },
 
-  // Code snippets
+  // Programming Category - Hard
   {
     id: 7,
-    text: 'function fibonacci(n) { return n <= 1 ? n : fibonacci(n - 1) + fibonacci(n - 2); }',
-    difficulty: 'medium',
-    category: 'code',
+    text: 'async function fetchData() { try { const response = await fetch(url); return await response.json(); } catch (error) { console.error(error); } }',
+    difficulty: 'hard',
+    category: 'programming',
+    wordCount: 20,
   },
   {
     id: 8,
-    text: 'const quickSort = arr => arr.length <= 1 ? arr : [...quickSort(arr.slice(1).filter(x => x <= arr[0])), arr[0], ...quickSort(arr.slice(1).filter(x => x > arr[0]))]',
+    text: 'const memoize = fn => { const cache = new Map(); return (...args) => { const key = JSON.stringify(args); return cache.get(key) ?? cache.set(key, fn(...args)).get(key); }; };',
     difficulty: 'hard',
-    category: 'code',
+    category: 'programming',
+    wordCount: 30,
   },
-
-  // Famous quotes
   {
     id: 9,
-    text: 'Be the change you wish to see in the world. - Mahatma Gandhi',
-    difficulty: 'medium',
-    category: 'quote',
-  },
-  {
-    id: 10,
-    text: 'Success is not final, failure is not fatal: it is the courage to continue that counts. - Winston Churchill',
+    text: 'class Observable { constructor() { this.observers = []; } subscribe(fn) { this.observers.push(fn); } notify(data) { this.observers.forEach(fn => fn(data)); } }',
     difficulty: 'hard',
-    category: 'quote',
+    category: 'programming',
+    wordCount: 25,
   },
 
-  // Science facts
+  // Quotes Category - Medium
+  {
+    id: 10,
+    text: 'The best way to predict the future is to invent it. - Alan Kay',
+    difficulty: 'medium',
+    category: 'quotes',
+    wordCount: 13,
+  },
   {
     id: 11,
-    text: 'DNA contains the genetic instructions used in the growth, development, functioning, and reproduction of all known living organisms.',
+    text: 'Innovation distinguishes between a leader and a follower. - Steve Jobs',
     difficulty: 'medium',
-    category: 'science',
+    category: 'quotes',
+    wordCount: 11,
   },
   {
     id: 12,
-    text: 'Quantum computing uses quantum phenomena such as superposition and entanglement to perform computation.',
-    difficulty: 'hard',
-    category: 'science',
+    text: 'The only way to do great work is to love what you do. - Steve Jobs',
+    difficulty: 'medium',
+    category: 'quotes',
+    wordCount: 14,
   },
 
-  // Business texts
+  // Science Category - Hard
   {
     id: 13,
-    text: 'Please find attached the quarterly sales report for Q4 2024. The results show significant growth in our core markets.',
-    difficulty: 'medium',
-    category: 'business',
+    text: 'Quantum entanglement occurs when particles interact in ways such that the quantum state of each particle cannot be described independently.',
+    difficulty: 'hard',
+    category: 'science',
+    wordCount: 19,
   },
   {
     id: 14,
-    text: 'I am writing to express my interest in the Senior Software Developer position at your company. I have extensive experience in full-stack development.',
-    difficulty: 'medium',
-    category: 'business',
+    text: 'The theory of general relativity suggests that massive objects distort the fabric of spacetime, causing what we experience as gravity.',
+    difficulty: 'hard',
+    category: 'science',
+    wordCount: 20,
   },
-
-  // Keyboard practice
   {
     id: 15,
-    text: 'asdf jkl; asdf jkl; asdf jkl; asdf jkl;',
-    difficulty: 'easy',
-    category: 'practice',
+    text: 'CRISPR-Cas9 is a powerful gene-editing tool that allows scientists to make precise modifications to DNA sequences.',
+    difficulty: 'hard',
+    category: 'science',
+    wordCount: 16,
   },
+
+  // Literature Category - Medium
   {
     id: 16,
-    text: '1234 5678 90 1234 5678 90 1234 5678 90',
+    text: 'It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness.',
+    difficulty: 'medium',
+    category: 'literature',
+    wordCount: 23,
+  },
+  {
+    id: 17,
+    text: 'All that we see or seem is but a dream within a dream. - Edgar Allan Poe',
+    difficulty: 'medium',
+    category: 'literature',
+    wordCount: 15,
+  },
+  {
+    id: 18,
+    text: 'To be, or not to be, that is the question. - William Shakespeare',
+    difficulty: 'medium',
+    category: 'literature',
+    wordCount: 11,
+  },
+
+  // Tech Category - Easy
+  {
+    id: 19,
+    text: 'Remember to always back up your important files regularly.',
     difficulty: 'easy',
-    category: 'practice',
+    category: 'tech',
+    wordCount: 10,
+  },
+  {
+    id: 20,
+    text: 'Using strong passwords is essential for online security.',
+    difficulty: 'easy',
+    category: 'tech',
+    wordCount: 9,
+  },
+
+  // Programming Category - Medium
+  {
+    id: 21,
+    text: 'function debounce(func, wait) { let timeout; return function executedFunction(...args) { const later = () => { func(...args); }; clearTimeout(timeout); timeout = setTimeout(later, wait); }; }',
+    difficulty: 'medium',
+    category: 'programming',
+    wordCount: 28,
+  },
+  {
+    id: 22,
+    text: 'const deepClone = obj => JSON.parse(JSON.stringify(obj));',
+    difficulty: 'medium',
+    category: 'programming',
+    wordCount: 8,
+  },
+
+  // Humor Category - Easy
+  {
+    id: 23,
+    text: 'I would tell you a UDP joke, but you might not get it.',
+    difficulty: 'easy',
+    category: 'humor',
+    wordCount: 12,
+  },
+  {
+    id: 24,
+    text: 'Why do programmers always mix up Halloween and Christmas? Because Oct 31 equals Dec 25!',
+    difficulty: 'easy',
+    category: 'humor',
+    wordCount: 15,
+  },
+
+  // Science Category - Medium
+  {
+    id: 25,
+    text: 'The human brain processes images 60,000 times faster than text, making visual learning highly efficient.',
+    difficulty: 'medium',
+    category: 'science',
+    wordCount: 14,
+  },
+  {
+    id: 26,
+    text: 'Photosynthesis converts light energy into chemical energy that plants use to produce glucose from carbon dioxide and water.',
+    difficulty: 'medium',
+    category: 'science',
+    wordCount: 18,
+  },
+
+  // Literature Category - Hard
+  {
+    id: 27,
+    text: 'In a hole in the ground there lived a hobbit. Not a nasty, dirty, wet hole, filled with the ends of worms and an oozy smell, nor yet a dry, bare, sandy hole with nothing in it to sit down on or to eat: it was a hobbit-hole, and that means comfort.',
+    difficulty: 'hard',
+    category: 'literature',
+    wordCount: 52,
+  },
+  {
+    id: 28,
+    text: 'Call me Ishmael. Some years ago—never mind how long precisely—having little or no money in my purse, and nothing particular to interest me on shore, I thought I would sail about a little and see the watery part of the world.',
+    difficulty: 'hard',
+    category: 'literature',
+    wordCount: 42,
   },
 ]
+
+// Helper functions for text selection
+export const getTextsByDifficulty = (difficulty: TypingText['difficulty']) =>
+  typingTexts.filter((text) => text.difficulty === difficulty)
+
+export const getTextsByCategory = (category: TypingText['category']) =>
+  typingTexts.filter((text) => text.category === category)
+
+export const getRandomText = (
+  difficulty?: TypingText['difficulty'],
+  category?: TypingText['category']
+) => {
+  let filtered = typingTexts
+  if (difficulty) {
+    filtered = filtered.filter((text) => text.difficulty === difficulty)
+  }
+  if (category) {
+    filtered = filtered.filter((text) => text.category === category)
+  }
+  return filtered[Math.floor(Math.random() * filtered.length)]
+}
+
+// Statistics helpers
+export const calculateTextDifficulty = (
+  text: string
+): TypingText['difficulty'] => {
+  const wordCount = text.split(' ').length
+  const averageWordLength = text.length / wordCount
+  const specialCharCount = (text.match(/[^a-zA-Z0-9\s]/g) || []).length
+
+  if (wordCount > 30 || averageWordLength > 7 || specialCharCount > 10) {
+    return 'hard'
+  } else if (wordCount > 15 || averageWordLength > 5 || specialCharCount > 5) {
+    return 'medium'
+  }
+  return 'easy'
+}

@@ -173,7 +173,12 @@ export default function Home() {
                   />
                 ))}
             </div>
-            {ctxPosition && <ContextMenu position={ctxPosition} />}
+            {ctxPosition && (
+              <ContextMenu
+                position={ctxPosition}
+                onClose={() => setCtxPosition(null)}
+              />
+            )}
             {frames.map((frame) => {
               if (frame.type === 'browser') {
                 return (

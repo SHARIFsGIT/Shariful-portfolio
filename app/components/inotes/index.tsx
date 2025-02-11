@@ -183,7 +183,7 @@ export function INotes() {
               >
                 <div className="flex items-center gap-2">
                   {note.isPinned && <IconPin size={14} />}
-                  <div className="flex-1 overflow-hidden">
+                  <div className="flex-1 overflow-hidden dark:text-gray-900">
                     <h3 className="truncate font-medium">
                       {note.title || 'Untitled Note'}
                     </h3>
@@ -214,7 +214,7 @@ export function INotes() {
         {activeNote ? (
           <>
             {/* Note Header */}
-            <div className="flex items-center justify-between border-b border-gray-200 px-4 py-2">
+            <div className="flex items-center justify-between border-b border-gray-200 px-4 py-2 dark:text-gray-900">
               <input
                 ref={titleRef}
                 type="text"
