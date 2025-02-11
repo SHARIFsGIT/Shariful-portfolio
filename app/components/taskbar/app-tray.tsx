@@ -189,6 +189,7 @@ export default function AppTray() {
         return undefined
       }
 
+      if (folder.id === 'typing-master') return iconMap.typing_master
       if (folder.type === 'folder') {
         if (folder.id === 'trash') {
           return trashItems > 0 ? iconMap.trash_full : iconMap.trash_empty
@@ -260,7 +261,7 @@ export default function AppTray() {
                 }}
                 isOpen={folder.status === 'open'}
                 isMinimized={folder.status === 'minimize'}
-                className={folder.id === 'typing-master' ? 'p-[6px]' : ''}
+                className={folder.id === 'typing-master' ? 'p-1.5' : ''}
                 ariaLabel={`Restore ${folder.name}`}
               />
             )
