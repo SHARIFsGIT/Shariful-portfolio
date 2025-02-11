@@ -3,65 +3,116 @@
 import {
   addNewtab,
   focusTab,
+  moveTab,
   removeTab,
   resetChrome,
+  toggleMuteTab,
+  togglePinTab,
   updateTab,
 } from '@/app/features/chrome'
+import { setActiveApp, setZIndex } from '@/app/features/settings'
 import { closeFolder, minimizeFolder } from '@/app/features/window-slice'
+import { useClickOutside } from '@/app/hooks/use-click-outside'
 import { Size, useResize } from '@/app/hooks/use-resize'
 import { useDispatch, useSelector } from '@/app/store'
+import googleIcon from '@/public/assets/icons/google_logo.svg'
 import { useGSAP } from '@gsap/react'
 import {
   IconArrowLeft,
   IconArrowRight,
+  IconBookmark,
   IconBracketsAngle,
-  IconChevronRight,
   IconDotsVertical,
   IconHome,
+  IconLock,
   IconMinus,
+  IconPin,
   IconPlus,
   IconReload,
+  IconSearch,
+  IconShare,
+  IconVolume,
+  IconVolumeOff,
   IconX,
 } from '@tabler/icons-react'
 import gsap from 'gsap'
 import { Draggable } from 'gsap/Draggable'
+import { useTheme } from 'next-themes'
+import Image from 'next/image'
 import { FormEvent, useEffect, useRef, useState } from 'react'
 import { Status } from '../folder/folders'
-import Image from 'next/image'
-import googleIcon from '@/public/assets/icons/google_logo.svg'
-import { useTheme } from 'next-themes'
-import { setActiveApp, setZIndex } from '@/app/features/settings'
-import { useClickOutside } from '@/app/hooks/use-click-outside'
 
 const size: Size = { minW: 750, minH: 300 }
+
+interface Bookmark {
+  id: string
+  title: string
+  url: string
+  favicon?: string
+}
+
+interface BrowserFrameProps {
+  frameName: string
+  frame_id: string
+  status: Status
+}
 
 export function BrowserFrame({
   frameName,
   frame_id,
   status,
-}: {
-  frameName: string
-  frame_id: string
-  status: Status
-}) {
-  const timeline = useRef<gsap.core.Timeline>(gsap.timeline())
+}: BrowserFrameProps) {
+  const dispatch = useDispatch()
+  const { focusedTab, tabs } = useSelector((state) => state.chrome)
+  const { theme } = useTheme()
+  const { zIndex } = useSelector((state) => state.settings)
+
+  // Refs
   const frame = useRef<HTMLDivElement>(null)
   const frameHeader = useRef<HTMLDivElement>(null)
-  const dispatch = useDispatch()
+  const menuRef = useRef<HTMLDivElement>(null)
+
+  // Animation timelines
+  const timeline = useRef<gsap.core.Timeline>(gsap.timeline())
   const minimizeTL = useRef<gsap.core.Timeline>(gsap.timeline())
   const fullscreenTL = useRef<gsap.core.Timeline>(gsap.timeline())
-  const [isFullscreen, setIsFullscreen] = useState(false)
   const dragRef = useRef<globalThis.Draggable[]>()
-  const { zIndex } = useSelector((state) => state.settings)
-  const [isFocused, setIsFocused] = useState(true)
-  const { theme } = useTheme()
 
+  // State
+  const [url, setUrl] = useState('')
+  const [isFocused, setIsFocused] = useState(true)
+  const [isFullscreen, setIsFullscreen] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [showTabContextMenu, setShowTabContextMenu] = useState<{
+    x: number
+    y: number
+    tabId: string
+  } | null>(null)
+  const [showBookmarksBar] = useState(true)
+  const [bookmarks, setBookmarks] = useState<Bookmark[]>([
+    {
+      id: '1',
+      title: 'Google',
+      url: 'https://google.com',
+      favicon: '/favicon.ico',
+    },
+    {
+      id: '2',
+      title: 'GitHub',
+      url: 'https://github.com/SHARIFsGIT',
+      favicon: '/github-favicon.ico',
+    },
+  ])
+
+  const activeTab = tabs.find((tab) => tab.id === focusedTab)
+
+  // GSAP setup
   const { contextSafe } = useGSAP(() => {
     const position_x = Math.floor(
-      Math.random() * (innerWidth - innerWidth / 2 - 50)
+      Math.random() * (window.innerWidth - window.innerWidth / 2 - 50)
     )
     const position_y = Math.floor(
-      Math.random() * (innerHeight - innerHeight / 2 - 80)
+      Math.random() * (window.innerHeight - window.innerHeight / 2 - 80)
     )
 
     timeline.current.fromTo(
@@ -80,14 +131,15 @@ export function BrowserFrame({
         ease: 'back.inOut(1.7)',
       }
     )
+
     dragRef.current = Draggable.create(frame.current, {
-      // bounds: 'body',
       trigger: frameHeader.current,
       zIndexBoost: false,
       allowEventDefault: true,
     })
   })
 
+  // Drag handlers
   const onDragEnable = () => {
     if (dragRef.current) {
       dragRef.current[0].enable()
@@ -97,9 +149,7 @@ export function BrowserFrame({
   const syncPosition = () => {
     if (dragRef.current && frame.current) {
       const rect = frame.current.getBoundingClientRect()
-      const left = rect.left
-      const top = rect.top
-      gsap.set(frame.current, { left, top, x: 0, y: 0 })
+      gsap.set(frame.current, { left: rect.left, top: rect.top, x: 0, y: 0 })
     }
   }
 
@@ -110,6 +160,27 @@ export function BrowserFrame({
     }
   }
 
+  // Tab drag and drop handlers
+  const handleTabDragStart = (e: React.DragEvent, tabId: string) => {
+    e.dataTransfer.setData('tabId', tabId)
+  }
+
+  const handleTabDragOver = (e: React.DragEvent) => {
+    e.preventDefault()
+  }
+
+  const handleTabDrop = (e: React.DragEvent, targetTabId: string) => {
+    e.preventDefault()
+    const draggedTabId = e.dataTransfer.getData('tabId')
+    const draggedTab = tabs.find((tab) => tab.id === draggedTabId)
+    const targetTab = tabs.find((tab) => tab.id === targetTabId)
+
+    if (draggedTab && targetTab) {
+      dispatch(moveTab({ id: draggedTabId, newIndex: targetTab.index }))
+    }
+  }
+
+  // Window control handlers
   const handleZIndex = () => {
     if (frame.current) {
       dispatch(setZIndex(zIndex + 1))
@@ -164,7 +235,7 @@ export function BrowserFrame({
       } else {
         fullscreenTL.current.to(frame.current, {
           width: '100vw',
-          height: `${innerHeight - 28}px`,
+          height: `${window.innerHeight - 28}px`,
           x: 0,
           y: 0,
           left: '0px',
@@ -180,74 +251,72 @@ export function BrowserFrame({
     }
   })
 
-  const onLeftScreen = contextSafe(() => {
-    setIsFullscreen(false)
-    if (frame.current instanceof HTMLDivElement) {
-      fullscreenTL.current.clear()
-      gsap.to(frame.current, {
-        width: '50vw',
-        height: `${innerHeight - 28}px`,
-        x: 0,
-        y: 0,
-        left: '0px',
-        top: '28px',
-        duration: 0.5,
-        ease: 'expo.inOut',
-      })
-    }
-  })
+  // URL handling
+  const handleUrlSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    if (url) {
+      setIsLoading(true)
+      const formattedUrl =
+        url.startsWith('http://') || url.startsWith('https://')
+          ? url
+          : url.includes('.')
+            ? `https://${url}`
+            : `https://www.google.com/search?q=${encodeURIComponent(url)}`
 
-  const onRightScreen = contextSafe(() => {
-    setIsFullscreen(false)
-    if (frame.current instanceof HTMLDivElement) {
-      fullscreenTL.current.clear()
-      gsap.to(frame.current, {
-        width: '50vw',
-        height: `${innerHeight - 28}px`,
-        x: 0,
-        y: 0,
-        left: '50%',
-        top: '28px',
-        duration: 0.5,
-        ease: 'expo.inOut',
-      })
-    }
-  })
+      dispatch(
+        updateTab({
+          id: focusedTab,
+          url: formattedUrl,
+          iframe_url: formattedUrl,
+          isLoading: true,
+        })
+      )
 
-  const onTopScreen = contextSafe(() => {
-    setIsFullscreen(false)
-    if (frame.current instanceof HTMLDivElement) {
-      fullscreenTL.current.clear()
-      gsap.to(frame.current, {
-        width: '100vw',
-        height: `${(innerHeight - 28) / 2}px`,
-        x: 0,
-        y: 0,
-        left: '0px',
-        top: '28px',
-        duration: 0.5,
-        ease: 'expo.inOut',
-      })
+      // Simulate page load
+      setTimeout(() => {
+        setIsLoading(false)
+        dispatch(
+          updateTab({
+            id: focusedTab,
+            isLoading: false,
+            title: url.includes('.')
+              ? url.split('/')[0]
+              : `${url} - Google Search`,
+          })
+        )
+      }, 1500)
     }
-  })
+  }
 
-  const onBottomScreen = contextSafe(() => {
-    setIsFullscreen(false)
-    if (frame.current instanceof HTMLDivElement) {
-      fullscreenTL.current.clear()
-      gsap.to(frame.current, {
-        width: '100vw',
-        height: `${(innerHeight - 28) / 2}px`,
-        x: 0,
-        y: 0,
-        left: '0px',
-        top: `${(innerHeight - 28) / 2 + 28}px`,
-        duration: 0.5,
-        ease: 'expo.inOut',
-      })
-    }
-  })
+  // Context menu
+  const handleTabContextMenu = (e: React.MouseEvent, tabId: string) => {
+    e.preventDefault()
+    setShowTabContextMenu({
+      x: e.clientX,
+      y: e.clientY,
+      tabId,
+    })
+  }
 
+  useClickOutside(() => {
+    setShowTabContextMenu(null)
+  }, menuRef)
+
+  // Navigation handlers
+  const handleReload = () => {
+    setIsLoading(true)
+    setTimeout(() => setIsLoading(false), 1000)
+  }
+
+  const handleGoBack = () => {
+    // Implementation for browser history
+  }
+
+  const handleGoForward = () => {
+    // Implementation for browser history
+  }
+
+  // Resize handlers
   const t = useResize({ frame, place: 't', size, onDragEnable, onDragDisable })
   const tr = useResize({
     frame,
@@ -275,26 +344,7 @@ export function BrowserFrame({
   const b = useResize({ frame, place: 'b', size })
   const br = useResize({ frame, place: 'br', size })
 
-  const [url, setUrl] = useState('')
-
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    if (url) {
-      const formattedUrl =
-        url.startsWith('http://') || url.startsWith('https://')
-          ? url
-          : `https://${url}`
-      dispatch(updateTab({ iframe_url: formattedUrl }))
-    }
-  }
-
-  const { focusedTab, tabs } = useSelector((state) => state.chrome)
-  const activeTab = tabs.find((tab) => tab.id === focusedTab)
-
-  useClickOutside(() => {
-    setIsFocused(false)
-  }, frame)
-
+  // Effects
   useEffect(() => {
     if (frame.current) {
       frame.current.style.zIndex = `${zIndex}`
@@ -302,8 +352,7 @@ export function BrowserFrame({
     if (activeTab) {
       setUrl(activeTab.url)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [activeTab, zIndex])
 
   return (
     <div
@@ -319,6 +368,7 @@ export function BrowserFrame({
       className={`absolute h-1/2 min-h-[300px] w-2/4 min-w-[750px] overflow-hidden rounded-md bg-white/20 shadow-xl backdrop-blur-xl ${isFocused ? 'brightness-100' : 'brightness-90'} ${status === 'minimize' ? 'hidden' : ''}`}
     >
       <div className="relative h-full">
+        {/* Resize handlers */}
         <div
           ref={t}
           className="absolute top-0 z-10 h-1 w-full cursor-ns-resize bg-transparent"
@@ -352,11 +402,13 @@ export function BrowserFrame({
           className="absolute bottom-0 right-0 z-20 size-2 cursor-nwse-resize bg-transparent"
         />
 
+        {/* Header */}
         <div
           ref={frameHeader}
           onDoubleClick={onFullScreen}
           className="grid !cursor-custom-auto grid-cols-[auto,1fr] bg-light-background py-2 pb-1 dark:bg-dark-background"
         >
+          {/* Window controls */}
           <div className="group flex items-center px-2">
             <button
               onClick={() => {
@@ -381,76 +433,63 @@ export function BrowserFrame({
             </button>
             <button
               onClick={onFullScreen}
-              className="!cursor-custom-auto p-1 group/fullscreen relative"
+              className="group/fullscreen relative !cursor-custom-auto p-1"
               type="button"
             >
               <div className="size-3 rounded-full bg-[#27CA40]">
                 <IconBracketsAngle className="size-full -rotate-45 text-black opacity-0 group-hover:opacity-100" />
               </div>
-              <div
-                onClick={(e) => {
-                  e.stopPropagation()
-                }}
-                className="invisible absolute -left-5 top-7 z-[1000] transition-all delay-200 group-hover/fullscreen:visible"
-              >
-                <div className="relative w-56 rounded-md border-2 border-[#e1e1e1] bg-[#f3f3f3] p-2 shadow-xl dark:border-[#3e3e3e] dark:bg-[#181818]">
-                  <span className="absolute -top-[9px] left-5 block size-4 rotate-45 rounded-tl border-l-2 border-t-2 border-[#e1e1e1] bg-[#f3f3f3] dark:border-[#3e3e3e] dark:bg-[#181818]" />
-                  <h2 className="text-start text-sm font-medium text-[#afafaf]">
-                    Move & Resize
-                  </h2>
-                  <div className="grid grid-cols-4 items-center gap-5 p-4">
-                    <div
-                      onClick={onLeftScreen}
-                      className="flex h-5 justify-start rounded border-2 border-dark-background p-[1px] dark:border-light-background/80"
-                    >
-                      <div className="h-full w-1/2 rounded-sm bg-dark-background dark:bg-light-background/80"></div>
-                    </div>
-                    <div
-                      onClick={onRightScreen}
-                      className="flex h-5 justify-end rounded border-2 border-dark-background p-[1px] dark:border-light-background/80"
-                    >
-                      <div className="h-full w-1/2 rounded-sm bg-dark-background dark:bg-light-background/80"></div>
-                    </div>
-                    <div
-                      onClick={onTopScreen}
-                      className="flex h-5 items-start rounded border-2 border-dark-background p-[1px] dark:border-light-background/80"
-                    >
-                      <div className="h-1/2 w-full rounded-sm bg-dark-background dark:bg-light-background/80"></div>
-                    </div>
-                    <div
-                      onClick={onBottomScreen}
-                      className="flex h-5 items-end rounded border-2 border-dark-background p-[1px] dark:border-light-background/80"
-                    >
-                      <div className="h-1/2 w-full rounded-sm bg-dark-background dark:bg-light-background/80"></div>
-                    </div>
-                  </div>
-                  <div className="mb-1 h-[1px] bg-[#bbb] dark:bg-[#5b5b5b]" />
-                  <div>
-                    <div
-                      onClick={onFullScreen}
-                      className="flex w-full items-center justify-between rounded-md bg-primary px-2 py-[2px] text-sm text-white"
-                    >
-                      <span>
-                        {isFullscreen ? 'Exit Full Screen' : 'Full Screen'}
-                      </span>
-                      <IconChevronRight stroke={2} className="size-5" />
-                    </div>
-                  </div>
-                </div>
-              </div>
             </button>
           </div>
+
+          {/* Tabs */}
           <div className="flex gap-1 text-sm">
             {tabs.map((tab) => (
-              <button
-                onClick={() => {
-                  dispatch(focusTab(tab.id))
-                  setUrl(tab.url)
-                }}
+              <div
                 key={tab.id}
-                className="relative flex w-full max-w-40 items-center justify-between rounded-t-md bg-light-foreground px-3 py-[6px] dark:bg-[#35363A]"
+                draggable
+                onDragStart={(e) => handleTabDragStart(e, tab.id)}
+                onDragOver={handleTabDragOver}
+                onDrop={(e) => handleTabDrop(e, tab.id)}
+                onContextMenu={(e) => handleTabContextMenu(e, tab.id)}
+                className={`relative flex w-full max-w-40 items-center gap-2 rounded-t-md px-3 py-[6px] ${
+                  focusedTab === tab.id
+                    ? 'bg-light-foreground dark:bg-[#35363A]'
+                    : 'bg-light-background/50 dark:bg-[#292A2D]'
+                }`}
               >
-                <span className="line-clamp-1">{tab.title}</span>
+                {tab.favicon && (
+                  <Image
+                    src={tab.favicon}
+                    alt=""
+                    width={16}
+                    height={16}
+                    className="size-4"
+                    unoptimized // Add this for favicons since they're already optimized
+                  />
+                )}
+                {tab.isAudible && (
+                  <button
+                    onClick={() => dispatch(toggleMuteTab(tab.id))}
+                    className="flex-shrink-0"
+                  >
+                    {tab.isMuted ? (
+                      <IconVolumeOff className="size-4" />
+                    ) : (
+                      <IconVolume className="size-4" />
+                    )}
+                  </button>
+                )}
+                {tab.isPinned && <IconPin className="size-4 -rotate-45" />}
+                <span
+                  className="line-clamp-1 flex-grow cursor-pointer"
+                  onClick={() => {
+                    dispatch(focusTab(tab.id))
+                    setUrl(tab.url)
+                  }}
+                >
+                  {tab.title}
+                </span>
                 <IconX
                   onClick={() => {
                     dispatch(removeTab(tab.id))
@@ -459,51 +498,138 @@ export function BrowserFrame({
                     }
                   }}
                   stroke={2}
-                  className="size-4"
+                  className="size-4 opacity-0 transition-opacity hover:opacity-100"
                 />
                 {focusedTab === tab.id && (
-                  <span className="absolute -bottom-1 left-0 h-1 w-full bg-light-foreground dark:bg-[#35363A]"></span>
+                  <span className="absolute -bottom-1 left-0 h-1 w-full bg-light-foreground dark:bg-[#35363A]" />
                 )}
-              </button>
+              </div>
             ))}
             <button
               onClick={() => {
-                dispatch(addNewtab())
+                dispatch(addNewtab({ index: tabs.length }))
                 setUrl('')
               }}
-              className="px-2"
+              className="rounded-t-md px-2 hover:bg-light-foreground/50 dark:hover:bg-[#35363A]/50"
               type="button"
             >
               <IconPlus stroke={2} className="size-5" />
             </button>
           </div>
         </div>
+
+        {/* Browser content */}
         <div className="h-full max-h-[calc(100%-40px)] overflow-y-auto bg-light-background dark:bg-dark-background">
+          {/* Navigation bar */}
           <div className="flex items-center gap-3 bg-light-foreground px-2 py-1 dark:bg-[#35363A]">
-            <IconArrowLeft stroke={2} className="text-gray-500" />
-            <IconArrowRight stroke={2} className="text-gray-500" />
-            <IconReload stroke={2} />
-            <IconHome stroke={2} />
-            <form onSubmit={handleSubmit} className="w-full">
+            <button
+              onClick={handleGoBack}
+              className="rounded p-1 hover:bg-gray-200 dark:hover:bg-gray-700"
+            >
+              <IconArrowLeft stroke={2} className="text-gray-500" />
+            </button>
+            <button
+              onClick={handleGoForward}
+              className="rounded p-1 hover:bg-gray-200 dark:hover:bg-gray-700"
+            >
+              <IconArrowRight stroke={2} className="text-gray-500" />
+            </button>
+            <button
+              onClick={handleReload}
+              className="rounded p-1 hover:bg-gray-200 dark:hover:bg-gray-700"
+            >
+              {isLoading ? (
+                <div className="size-5 animate-spin rounded-full border-2 border-gray-300 border-t-gray-600" />
+              ) : (
+                <IconReload stroke={2} />
+              )}
+            </button>
+            <button
+              onClick={() => setUrl('')}
+              className="rounded p-1 hover:bg-gray-200 dark:hover:bg-gray-700"
+            >
+              <IconHome stroke={2} />
+            </button>
+
+            {/* URL/Search bar */}
+            <form onSubmit={handleUrlSubmit} className="relative w-full">
+              <div className="absolute left-3 top-1/2 -translate-y-1/2">
+                {activeTab?.url.startsWith('https://') ? (
+                  <IconLock className="size-4 text-green-600" />
+                ) : (
+                  <IconSearch className="size-4 text-gray-400" />
+                )}
+              </div>
               <input
                 value={url}
                 onChange={(e) => {
                   setUrl(e.target.value)
-                  dispatch(updateTab({ url: e.target.value }))
+                  dispatch(
+                    updateTab({
+                      id: focusedTab,
+                      url: e.target.value,
+                    })
+                  )
                 }}
                 type="text"
-                placeholder="Search"
-                className="w-full rounded-2xl border-2 border-light-border bg-light-background px-3 py-1 text-sm focus:border-[#858585] focus:outline-none dark:border-[#191919] dark:bg-[#1d1d1d]"
+                placeholder="Search Google or enter a URL"
+                className="w-full rounded-2xl border-2 border-light-border bg-light-background py-1 pl-10 pr-3 text-sm focus:border-[#858585] focus:outline-none dark:border-[#191919] dark:bg-[#1d1d1d]"
               />
-              <input type="submit" hidden />
             </form>
-            <IconDotsVertical stroke={2} />
+
+            {/* Settings button */}
+            <button
+              onClick={() => setShowTabContextMenu(null)}
+              className="rounded p-1 hover:bg-gray-200 dark:hover:bg-gray-700"
+            >
+              <IconDotsVertical stroke={2} />
+            </button>
           </div>
+
+          {/* Bookmarks bar */}
+          {showBookmarksBar && (
+            <div className="flex items-center gap-4 bg-light-foreground/50 px-4 py-1 text-sm dark:bg-[#35363A]/50">
+              {bookmarks.map((bookmark) => (
+                <button
+                  key={bookmark.id}
+                  onClick={() => {
+                    dispatch(
+                      updateTab({
+                        id: focusedTab,
+                        url: bookmark.url,
+                        iframe_url: bookmark.url,
+                      })
+                    )
+                    setUrl(bookmark.url)
+                  }}
+                  className="flex items-center gap-2 rounded px-2 py-1 hover:bg-gray-200 dark:hover:bg-gray-700"
+                >
+                  {bookmark.favicon && (
+                    <Image
+                      src={bookmark.favicon}
+                      alt=""
+                      width={16}
+                      height={16}
+                      className="size-4"
+                      unoptimized // Add this for favicons since they're already optimized
+                    />
+                  )}
+                  <span>{bookmark.title}</span>
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* Main content area */}
           {activeTab && activeTab.iframe_url ? (
-            <iframe
-              className="h-[calc(100%-40px)] w-full"
-              src={activeTab.iframe_url}
-            />
+            <div className="relative h-[calc(100%-40px)]">
+              {isLoading && (
+                <div className="absolute left-0 top-0 h-1 w-full bg-gray-200 dark:bg-gray-700">
+                  <div className="animate-loading-bar h-full bg-blue-500" />
+                </div>
+              )}
+              <iframe className="h-full w-full" src={activeTab.iframe_url} />
+            </div>
           ) : (
             <div className="flex h-[calc(100%-40px)] w-full flex-col items-center justify-center gap-6">
               {theme === 'dark' ? (
@@ -516,17 +642,98 @@ export function BrowserFrame({
                   className="h-[92px] w-[272px] bg-white forced-color-adjust-none"
                 />
               ) : (
-                <Image alt="" src={googleIcon} className="" />
+                <Image alt="" src={googleIcon} priority />
               )}
-              <input
-                type="text"
-                placeholder="Search Google"
-                className="h-12 w-full max-w-xl rounded-full border-2 border-light-border bg-light-background px-3 text-sm focus:border-[#858585] focus:outline-none dark:border-[#858585] dark:bg-[#1d1d1d]"
-              />
+              <form onSubmit={handleUrlSubmit} className="w-full max-w-xl">
+                <input
+                  value={url}
+                  onChange={(e) => setUrl(e.target.value)}
+                  type="text"
+                  placeholder="Search Google or enter a URL"
+                  className="h-12 w-full rounded-full border-2 border-light-border bg-light-background px-6 text-sm focus:border-[#858585] focus:outline-none dark:border-[#858585] dark:bg-[#1d1d1d]"
+                />
+              </form>
             </div>
           )}
         </div>
       </div>
+
+      {/* Tab context menu */}
+      {showTabContextMenu && (
+        <div
+          ref={menuRef}
+          className="fixed z-50 w-64 rounded-lg border border-gray-200 bg-white py-2 shadow-xl dark:border-gray-700 dark:bg-gray-800"
+          style={{
+            left: showTabContextMenu.x,
+            top: showTabContextMenu.y,
+          }}
+        >
+          <button
+            onClick={() => {
+              dispatch(togglePinTab(showTabContextMenu.tabId))
+              setShowTabContextMenu(null)
+            }}
+            className="flex w-full items-center gap-2 px-4 py-1.5 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            <IconPin className="size-4" />
+            {tabs.find((t) => t.id === showTabContextMenu.tabId)?.isPinned
+              ? 'Unpin tab'
+              : 'Pin tab'}
+          </button>
+          <button
+            onClick={() => {
+              const tab = tabs.find((t) => t.id === showTabContextMenu.tabId)
+              if (tab) {
+                navigator.clipboard.writeText(tab.url)
+              }
+              setShowTabContextMenu(null)
+            }}
+            className="flex w-full items-center gap-2 px-4 py-1.5 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            <IconShare className="size-4" />
+            Copy URL
+          </button>
+          <button
+            onClick={() => {
+              const tab = tabs.find((t) => t.id === showTabContextMenu.tabId)
+              if (tab) {
+                setBookmarks([
+                  ...bookmarks,
+                  {
+                    id: crypto.randomUUID(),
+                    title: tab.title,
+                    url: tab.url,
+                    favicon: tab.favicon,
+                  },
+                ])
+              }
+              setShowTabContextMenu(null)
+            }}
+            className="flex w-full items-center gap-2 px-4 py-1.5 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            <IconBookmark className="size-4" />
+            Bookmark tab
+          </button>
+        </div>
+      )}
+
+      {/* Loading animation styles */}
+      <style jsx>{`
+        @keyframes loading-bar {
+          0% {
+            width: 0;
+          }
+          50% {
+            width: 70%;
+          }
+          100% {
+            width: 100%;
+          }
+        }
+        .animate-loading-bar {
+          animation: loading-bar 1.5s ease-in-out;
+        }
+      `}</style>
     </div>
   )
 }
