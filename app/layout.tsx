@@ -7,8 +7,8 @@ import './globals.css'
 import { ReduxProvider } from './providers/redux-provider'
 
 export const metadata: Metadata = {
-  title: 'macOS 15 Sequoia',
-  description: 'macOS 15 Sequoia by React, Next.js',
+  title: 'Portfolio | Shariful Islam',
+  description: 'An inspired project of macOS',
 }
 
 export default function RootLayout({
