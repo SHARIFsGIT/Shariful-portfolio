@@ -171,14 +171,14 @@ export default function SkillCard({
       onHoverEnd={() => setIsHovered(false)}
       className={`group relative overflow-hidden rounded-xl bg-white p-6 ${
         isSelected
-          ? 'shadow-lg dark:bg-gray-800'
-          : 'hover:shadow-md dark:bg-gray-800/90'
+          ? 'shadow-md dark:bg-gray-800'
+          : 'hover:shadow-sm dark:bg-gray-800/90'
       } cursor-pointer transition-all duration-300`}
     >
       {/* Highlight glow effect */}
       <motion.div
-        className="pointer-events-none absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/20 to-purple-500/20 opacity-0 blur-xl transition-opacity"
-        animate={{ opacity: isHovered ? 0.5 : 0 }}
+        className="pointer-events-none absolute inset-0 rounded-xl bg-gradient-to-r from-orange-500/20 to-white-500/20 opacity-0 blur-xl transition-opacity"
+        animate={{ opacity: isHovered ? 0.3 : 0 }}
       />
 
       {/* Main content */}
@@ -186,8 +186,8 @@ export default function SkillCard({
         {/* Icon section with hover effect */}
         <motion.div
           className="flex items-center justify-center"
-          whileHover={{ scale: 1.05, rotate: 5 }}
-          transition={{ duration: 0.2 }}
+          whileHover={{ scale: 1.05, rotate: 360 }}
+          transition={{ duration: 3 }}
         >
           {children}
         </motion.div>

@@ -199,7 +199,7 @@ export function Skill() {
               onClick={() => handleTabChange(category.id)}
               className={`group flex w-full items-center gap-3 rounded-lg px-4 py-3 transition-all duration-200 ${
                 activeTab === category.id
-                  ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400'
+                  ? 'bg-green-100 dark:bg-blue-100 text-primary-600 dark:text-black'
                   : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'
               } `}
             >
