@@ -1,5 +1,6 @@
-import { motion } from 'framer-motion'
-import React from 'react'
+import { IconChevronDown, IconStar } from '@tabler/icons-react'
+import { motion, useAnimation } from 'framer-motion'
+import React, { useEffect, useState } from 'react'
 
 interface SkillCardProps {
   children: React.ReactNode
@@ -10,6 +11,12 @@ interface SkillCardProps {
   description: string
   isSelected?: boolean
   onClick?: () => void
+  lastUsed?: string
+  level?: 'Beginner' | 'Intermediate' | 'Advanced' | 'Expert'
+  highlights?: string[]
+  rating?: number
+  usageFrequency?: 'Daily' | 'Weekly' | 'Monthly' | 'Occasional'
+  certifications?: string[]
 }
 
 const progressBarVariants = {
@@ -18,7 +25,7 @@ const progressBarVariants = {
     width: `${proficiency}%`,
     transition: {
       duration: 1.2,
-      ease: [0.87, 0, 0.13, 1], // Custom easing
+      ease: [0.87, 0, 0.13, 1],
       delay: 0.3,
     },
   }),
@@ -36,6 +43,7 @@ const cardVariants = {
   },
   hover: {
     scale: 1.02,
+    y: -4,
     transition: {
       duration: 0.2,
       ease: 'easeInOut',
@@ -44,6 +52,73 @@ const cardVariants = {
   tap: {
     scale: 0.98,
   },
+}
+
+const LevelBadge = ({ level }: { level: string }) => {
+  const getBadgeColor = () => {
+    switch (level) {
+      case 'Beginner':
+        return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
+      case 'Intermediate':
+        return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+      case 'Advanced':
+        return 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
+      case 'Expert':
+        return 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200'
+      default:
+        return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
+    }
+  }
+
+  return (
+    <span
+      className={`rounded-full px-3 py-1 text-xs font-medium ${getBadgeColor()}`}
+    >
+      {level}
+    </span>
+  )
+}
+
+const FrequencyIndicator = ({ frequency }: { frequency: string }) => {
+  const getColor = () => {
+    switch (frequency) {
+      case 'Daily':
+        return 'bg-green-500'
+      case 'Weekly':
+        return 'bg-blue-500'
+      case 'Monthly':
+        return 'bg-yellow-500'
+      default:
+        return 'bg-gray-500'
+    }
+  }
+
+  return (
+    <div className="flex items-center gap-2">
+      <span className={`h-2 w-2 rounded-full ${getColor()}`} />
+      <span className="text-sm text-gray-600 dark:text-gray-400">
+        {frequency}
+      </span>
+    </div>
+  )
+}
+
+const StarRating = ({ rating }: { rating: number }) => {
+  return (
+    <div className="flex items-center gap-1">
+      {[1, 2, 3, 4, 5].map((star) => (
+        <IconStar
+          key={star}
+          className={`size-4 ${
+            star <= rating
+              ? 'text-yellow-400'
+              : 'text-gray-300 dark:text-gray-600'
+          }`}
+          fill={star <= rating ? 'currentColor' : 'none'}
+        />
+      ))}
+    </div>
+  )
 }
 
 export default function SkillCard({
@@ -55,8 +130,25 @@ export default function SkillCard({
   description,
   isSelected = false,
   onClick,
+  lastUsed,
+  level = 'Intermediate',
+  highlights = [],
+  rating = 0,
+  usageFrequency = 'Daily',
+  certifications = [],
 }: SkillCardProps) {
-  // Calculate the color based on proficiency
+  const controls = useAnimation()
+  const [isHovered, setIsHovered] = useState(false)
+  const [showDetails, setShowDetails] = useState(false)
+
+  useEffect(() => {
+    if (isSelected) {
+      controls.start('visible')
+    } else {
+      controls.start('hidden')
+    }
+  }, [isSelected, controls])
+
   const getProgressColor = (value: number) => {
     if (value >= 90) return 'from-emerald-500 to-emerald-400'
     if (value >= 75) return 'from-green-500 to-green-400'
@@ -71,21 +163,30 @@ export default function SkillCard({
       animate="animate"
       whileHover="hover"
       whileTap="tap"
-      onClick={onClick}
-      className={`skillCard relative overflow-hidden rounded-xl p-6 ${isSelected ? 'bg-white shadow-lg dark:bg-gray-800' : 'hover:bg-white/80 dark:hover:bg-gray-800/80'} cursor-pointer transition-colors duration-200`}
+      onClick={() => {
+        onClick?.()
+        setShowDetails(!showDetails)
+      }}
+      onHoverStart={() => setIsHovered(true)}
+      onHoverEnd={() => setIsHovered(false)}
+      className={`group relative overflow-hidden rounded-xl bg-white p-6 ${
+        isSelected
+          ? 'shadow-lg dark:bg-gray-800'
+          : 'hover:shadow-md dark:bg-gray-800/90'
+      } cursor-pointer transition-all duration-300`}
     >
-      {/* Background gradient effect */}
+      {/* Highlight glow effect */}
       <motion.div
-        className="from-primary-100 to-primary-50 dark:from-primary-900/10 dark:to-primary-800/5 absolute inset-0 bg-gradient-to-r opacity-0"
-        animate={{ opacity: isSelected ? 0.5 : 0 }}
-        transition={{ duration: 0.3 }}
+        className="pointer-events-none absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/20 to-purple-500/20 opacity-0 blur-xl transition-opacity"
+        animate={{ opacity: isHovered ? 0.5 : 0 }}
       />
 
+      {/* Main content */}
       <div className="relative grid grid-cols-[auto,1fr] gap-6">
-        {/* Icon section */}
+        {/* Icon section with hover effect */}
         <motion.div
           className="flex items-center justify-center"
-          whileHover={{ scale: 1.05 }}
+          whileHover={{ scale: 1.05, rotate: 5 }}
           transition={{ duration: 0.2 }}
         >
           {children}
@@ -93,26 +194,44 @@ export default function SkillCard({
 
         {/* Content section */}
         <div className="flex flex-col gap-4">
-          {/* Header */}
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
-              {title}
-            </h2>
-            <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
-              {experience}
-            </span>
+          {/* Header with badges */}
+          <div className="flex items-start justify-between">
+            <div className="space-y-2">
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+                {title}
+              </h2>
+              <div className="flex items-center gap-3">
+                <LevelBadge level={level} />
+                <FrequencyIndicator frequency={usageFrequency} />
+              </div>
+            </div>
+            <div className="text-right">
+              <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                {experience}
+              </span>
+              {lastUsed && (
+                <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">
+                  Last used: {lastUsed}
+                </p>
+              )}
+            </div>
           </div>
 
-          {/* Description */}
-          <p className="text-sm text-gray-600 dark:text-gray-300">
-            {description}
-          </p>
+          {/* Description and rating */}
+          <div className="flex items-start justify-between">
+            <p className="text-sm text-gray-600 dark:text-gray-300">
+              {description}
+            </p>
+            <StarRating rating={rating} />
+          </div>
 
           {/* Progress section */}
           <div className="space-y-2">
             <div className="relative h-2.5 w-full overflow-hidden rounded-full bg-gray-100 dark:bg-gray-700">
               <motion.div
-                className={`absolute h-full rounded-full bg-gradient-to-r ${getProgressColor(proficiency)} ${className}`}
+                className={`absolute h-full rounded-full bg-gradient-to-r ${getProgressColor(
+                  proficiency
+                )} ${className}`}
                 variants={progressBarVariants}
                 initial="initial"
                 animate="animate"
@@ -134,10 +253,62 @@ export default function SkillCard({
               </motion.span>
             </div>
           </div>
+
+          {/* Expandable details section */}
+          <motion.div
+            initial={false}
+            animate={{ height: showDetails ? 'auto' : 0 }}
+            className="overflow-hidden"
+          >
+            {highlights.length > 0 && (
+              <div className="mt-4 space-y-2">
+                <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                  Key Highlights
+                </h3>
+                <ul className="grid grid-cols-2 gap-2">
+                  {highlights.map((highlight, index) => (
+                    <li
+                      key={index}
+                      className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400"
+                    >
+                      <span className="h-1 w-1 rounded-full bg-blue-500" />
+                      {highlight}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {certifications.length > 0 && (
+              <div className="mt-4 space-y-2">
+                <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                  Certifications
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {certifications.map((cert, index) => (
+                    <span
+                      key={index}
+                      className="rounded-full bg-purple-100 px-3 py-1 text-xs text-purple-800 dark:bg-purple-900 dark:text-purple-200"
+                    >
+                      {cert}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </motion.div>
         </div>
       </div>
 
-      {/* Side indicator for selected state */}
+      {/* Expand/collapse indicator */}
+      <motion.div
+        className="absolute bottom-2 right-2"
+        animate={{ rotate: showDetails ? 180 : 0 }}
+      >
+        <IconChevronDown className="size-5 text-gray-400 transition-colors group-hover:text-gray-600 dark:text-gray-500 dark:group-hover:text-gray-300" />
+      </motion.div>
+
+      {/* Selection indicator */}
       <motion.div
         className="bg-primary-500 absolute bottom-0 left-0 top-0 w-1"
         initial={{ scaleY: 0 }}
