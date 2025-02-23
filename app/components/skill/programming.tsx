@@ -1,6 +1,13 @@
+import {
+  IconBinaryTree,
+  IconBraces,
+  IconBrandCpp,
+  IconBrandJavascript,
+  IconBrandPython,
+  IconLetterC,
+} from '@tabler/icons-react'
 import { motion, useInView } from 'framer-motion'
-import { Code } from 'lucide-react'
-import { useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import SkillCard from './skill-card'
 
 interface Language {
@@ -9,21 +16,20 @@ interface Language {
   proficiency: number
   experience: string
   description: string
-  category: 'Systems' | 'Object-Oriented' | 'Scripting'
+  category:
+    | 'Problem Solving'
+    | 'Object-Oriented'
+    | 'Web Developement'
+    | 'Software Development'
   icon: React.FC<{ className?: string; stroke?: number }>
   keyFeatures: string[]
   tools: string[]
-  projects?: number
-  certifications?: string[]
-  bestPractices?: string[]
-  performance?: {
-    compilation?: string
-    execution?: string
-    memoryUsage?: string
-  }
-  architecturePatterns?: string[]
-  relatedTech?: string[]
-  resources?: string[]
+  projects: number
+  certifications: string[]
+  architecturePatterns: string[]
+  securityFeatures: string[]
+  level: 'Beginner' | 'Intermediate' | 'Advanced' | 'Expert'
+  usageFrequency: 'Daily' | 'Weekly' | 'Monthly' | 'Occasional'
 }
 
 const languageSkills: Language[] = [
@@ -32,55 +38,38 @@ const languageSkills: Language[] = [
     title: 'C',
     proficiency: 90,
     experience: '4+ years',
-    description: 'High-performance systems programming language',
-    category: 'Systems',
+    description:
+      'Experienced in problem-solving with C on various online judge platforms',
+    category: 'Problem Solving',
     keyFeatures: [
-      'Memory management',
-      'Pointer operations',
-      'System calls',
-      'Low-level optimization',
-      'Data structures',
-      'Bit manipulation',
-      'Process control',
+      'Recursion',
+      'Dynamic Array',
       'I/O operations',
+      'Bit manipulation',
+      'String Operations',
+      'Pointer operations',
+      'Loop implementations',
+      'Conditional operations',
+      'Function implementations',
     ],
-    tools: [
-      'GCC',
-      'Make',
-      'GDB',
-      'Valgrind',
-      'CMake',
-      'Linux APIs',
-      'strace',
-      'perf',
-    ],
-    projects: 25,
-    bestPractices: [
-      'Memory safety',
-      'Error handling',
-      'Code optimization',
-      'Resource management',
-    ],
-    performance: {
-      compilation: 'Fast',
-      execution: 'Native speed',
-      memoryUsage: 'Manual control',
-    },
+    tools: ['GCC', 'Codeblocks', 'Visual Studio'],
+    projects: 400,
+    certifications: ['AIUB', 'Phitron', 'CPS academy'],
     architecturePatterns: [
-      'Modular design',
-      'Data abstraction',
-      'Event handling',
-      'State machines',
+      'Error handling',
+      'Memory management',
+      'Code optimization',
     ],
-    relatedTech: [
-      'Assembly',
-      'Linux kernel',
-      'Embedded systems',
-      'Device drivers',
+    securityFeatures: [
+      'Buffer overflow protection',
+      'Memory sanitization',
+      'Input validation',
     ],
-    icon: ({ className }) => (
+    level: 'Advanced',
+    usageFrequency: 'Daily',
+    icon: (props) => (
       <div className="size-[60px] rounded-lg bg-gradient-to-br from-[#5C6BC0] to-[#3949AB] p-2 shadow-lg transition-shadow hover:shadow-xl">
-        <Code className={`size-full text-white ${className}`} />
+        <IconLetterC className="size-full text-white" {...props} />
       </div>
     ),
   },
@@ -88,222 +77,172 @@ const languageSkills: Language[] = [
     id: 'cpp',
     title: 'C++',
     proficiency: 85,
-    experience: '3+ years',
-    description: 'Object-oriented systems and application development',
+    experience: '4+ years',
+    description: 'Mostly used for solving online contest problem',
     category: 'Object-Oriented',
     keyFeatures: [
-      'OOP principles',
       'Templates',
       'STL library',
-      'Smart pointers',
-      'RAII pattern',
+      'OOP concepts',
       'Exception handling',
       'Multiple inheritance',
       'Operator overloading',
+      'Dynamic memory allocation',
+    ],
+    tools: ['Clang++', 'Visual Studio', 'Codeblocks'],
+    projects: 1000,
+    certifications: ['AIUB', 'Phitron', 'CPS academy', 'The construct'],
+    architecturePatterns: [
+      'OOP organization',
+      'Memory management',
+      'Code optimization',
+    ],
+    securityFeatures: ['Memory overflow protection'],
+    level: 'Advanced',
+    usageFrequency: 'Daily',
+    icon: (props) => (
+      <div className="size-[60px] rounded-lg bg-gradient-to-br from-[#00599C] to-[#004482] p-2 shadow-lg transition-shadow hover:shadow-xl">
+        <IconBrandCpp className="size-full text-white" {...props} />
+      </div>
+    ),
+  },
+  {
+    id: 'data-structures',
+    title: 'Data Structures',
+    proficiency: 70,
+    experience: '3+ years',
+    description:
+      'Implemented and optimized for solving data structure problems',
+    category: 'Problem Solving',
+    keyFeatures: [
+      'Heaps',
+      'Union find',
+      'Hash tables',
+      'Linked lists',
+      'Stack & Queue',
+      'Trees & Graphs',
+      'Arrays & Strings',
+    ],
+    tools: ['C++', 'LeetCode', 'HackerRank', 'CodeForces', 'Visual Studio'],
+    projects: 400,
+    certifications: ['Phitron', 'CPS academy'],
+    architecturePatterns: [
+      'Memory management',
+      'Time & Space complexity analysis',
+    ],
+    securityFeatures: ['Data integrity'],
+    level: 'Intermediate',
+    usageFrequency: 'Daily',
+    icon: (props) => (
+      <div className="size-[60px] rounded-lg bg-[#2D3748] p-2 shadow-lg transition-shadow hover:shadow-xl">
+        <IconBinaryTree className="size-full text-white" {...props} />
+      </div>
+    ),
+  },
+  {
+    id: 'algorithms',
+    title: 'Algorithms',
+    proficiency: 65,
+    experience: '3+ years',
+    description:
+      'Design and analysis of efficient algorithms and solving problems',
+    category: 'Problem Solving',
+    keyFeatures: [
+      'Backtracking',
+      'Divide & Conquer',
+      'Pattern matching',
+      'Graph algorithms',
+      'Greedy algorithms',
+      'Sorting algorithms',
+      'Dynamic programming',
+      'Searching algorithms',
     ],
     tools: [
-      'Clang++',
-      'Visual Studio',
-      'Boost',
-      'Qt',
-      'Catch2',
-      'CMake',
-      'Conan',
-      'vcpkg',
+      'AtCoder',
+      'GeeksforGeeks',
+      'UVa Online Judge',
+      'Algorithm Visualizer',
     ],
-    projects: 20,
-    bestPractices: [
-      'SOLID principles',
-      'Exception safety',
-      'Resource management',
-      'Modern C++ features',
-    ],
-    performance: {
-      compilation: 'Template heavy',
-      execution: 'Zero-cost abstractions',
-      memoryUsage: 'RAII-based',
-    },
+    projects: 300,
+    certifications: ['Phitron', 'CPS academy'],
     architecturePatterns: [
-      'Factory pattern',
-      'Observer pattern',
-      'PIMPL idiom',
-      'Command pattern',
+      'Complexity analysis',
+      'Optimization techniques',
+      'Algorithm design patterns',
     ],
-    relatedTech: ['STL', 'Boost', 'Qt', 'OpenGL'],
-    icon: ({ className }) => (
-      <div className="size-[60px] rounded-lg bg-gradient-to-br from-[#00599C] to-[#004482] p-2 shadow-lg transition-shadow hover:shadow-xl">
-        <Code className={`size-full text-white ${className}`} />
+    securityFeatures: ['Input validation', 'Boundary checking'],
+    level: 'Intermediate',
+    usageFrequency: 'Daily',
+    icon: (props) => (
+      <div className="size-[60px] rounded-lg bg-[#4A5568] p-2 shadow-lg transition-shadow hover:shadow-xl">
+        <IconBraces className="size-full text-white" {...props} />
       </div>
     ),
   },
   {
     id: 'python',
     title: 'Python',
-    proficiency: 92,
+    proficiency: 80,
     experience: '5+ years',
-    description: 'Versatile language for automation and scientific computing',
-    category: 'Scripting',
+    description:
+      'Used Python for software development and scientific computing',
+    category: 'Software Development',
     keyFeatures: [
-      'Data analysis',
-      'Machine learning',
-      'Web frameworks',
-      'Scientific computing',
+      'OpenCV',
       'Automation',
-      'Scripting',
-      'Package management',
-      'Testing frameworks',
+      'Data analysis',
+      'Web frameworks',
+      'Web development',
+      'Machine learning',
     ],
     tools: [
       'NumPy',
       'Pandas',
-      'TensorFlow',
       'Django',
-      'Flask',
       'PyTest',
-      'Poetry',
       'Jupyter',
+      'OpenCV',
+      'PyCharm',
+      'FastAPI',
+      'PyAutoGUI',
+      'Matplotlib',
+      'Visual Studio',
     ],
-    projects: 35,
-    bestPractices: [
-      'PEP 8 style guide',
-      'Virtual environments',
-      'Documentation',
-      'Type hints',
-    ],
-    performance: {
-      compilation: 'Interpreted',
-      execution: 'GIL-based',
-      memoryUsage: 'Garbage collected',
-    },
-    architecturePatterns: [
-      'MVC pattern',
-      'Factory pattern',
-      'Singleton pattern',
-      'Observer pattern',
-    ],
-    relatedTech: [
-      'Data Science',
-      'Web Development',
-      'Machine Learning',
-      'DevOps',
-    ],
-    icon: ({ className }) => (
-      <div className="size-[60px] rounded-lg bg-gradient-to-br from-[#FFD43B] to-[#306998] p-2 shadow-lg transition-shadow hover:shadow-xl">
-        <Code className={`size-full text-white ${className}`} />
-      </div>
-    ),
-  },
-  {
-    id: 'rust',
-    title: 'Rust',
-    proficiency: 75,
-    experience: '2+ years',
-    description: 'Systems programming with memory safety guarantees',
-    category: 'Systems',
-    keyFeatures: [
-      'Memory safety',
-      'Concurrency',
-      'Zero-cost abstractions',
-      'Pattern matching',
-      'Ownership model',
-      'No null or dangling pointers',
-      'Compile-time guarantees',
-      'Trait-based generics',
-    ],
-    tools: [
-      'Cargo',
-      'Rustup',
-      'Clippy',
-      'Rayon',
-      'Tokio',
-      'serde',
-      'diesel',
-      'rocket',
-    ],
-    projects: 15,
-    bestPractices: [
-      'Ownership rules',
-      'Lifetimes',
-      'Error handling',
-      'Functional programming',
-    ],
-    performance: {
-      compilation: 'Strict checks',
-      execution: 'Near C performance',
-      memoryUsage: 'Compile-time managed',
-    },
-    architecturePatterns: [
-      'Actor model',
-      'Functional composition',
-      'Trait objects',
-      'Macro system',
-    ],
-    relatedTech: [
-      'Systems Programming',
-      'WebAssembly',
-      'Embedded Systems',
-      'Network Services',
-    ],
-    icon: ({ className }) => (
-      <div className="size-[60px] rounded-lg bg-gradient-to-br from-[#DEA584] to-[#000000] p-2 shadow-lg transition-shadow hover:shadow-xl">
-        <Code className={`size-full text-white ${className}`} />
+    projects: 10,
+    certifications: ['Phitron', 'Udemy', 'Coursera', 'edX', 'The construct'],
+    architecturePatterns: ['OOP concepts', 'Module management'],
+    securityFeatures: ['Encryption', 'Authentication'],
+    level: 'Intermediate',
+    usageFrequency: 'Daily',
+    icon: (props) => (
+      <div className="size-[60px] rounded-lg bg-[#3776AB] p-2 shadow-lg transition-shadow hover:shadow-xl">
+        <IconBrandPython className="size-full text-white" {...props} />
       </div>
     ),
   },
   {
     id: 'javascript',
     title: 'JavaScript',
-    proficiency: 88,
-    experience: '4+ years',
-    description: 'Dynamic web development and full-stack applications',
-    category: 'Scripting',
+    proficiency: 75,
+    experience: '5+ years',
+    description: 'Used for dynamic web development and full-stack applications',
+    category: 'Web Developement',
     keyFeatures: [
-      'Frontend frameworks',
-      'Node.js backend',
-      'Asynchronous programming',
-      'DOM manipulation',
-      'Event-driven',
-      'Functional programming',
       'ES6+ features',
-      'TypeScript support',
+      'Event handling',
+      'DOM manipulation',
+      'Functional programming',
     ],
-    tools: [
-      'React',
-      'Node.js',
-      'Express',
-      'Webpack',
-      'Babel',
-      'TypeScript',
-      'Next.js',
-      'Vite',
-    ],
+    tools: ['Vite', 'React', 'Express', 'Node.js', 'Next.js', 'TypeScript'],
     projects: 30,
-    bestPractices: [
-      'Modular design',
-      'Async/await',
-      'Functional components',
-      'State management',
-    ],
-    performance: {
-      compilation: 'Interpreted/JIT',
-      execution: 'V8 engine optimized',
-      memoryUsage: 'Garbage collected',
-    },
-    architecturePatterns: [
-      'Component-based',
-      'Reactive programming',
-      'Flux/Redux',
-      'Microservices',
-    ],
-    relatedTech: [
-      'Web Development',
-      'Full-stack',
-      'Mobile Development',
-      'Cloud Services',
-    ],
-    icon: ({ className }) => (
-      <div className="size-[60px] rounded-lg bg-gradient-to-br from-[#F0DB4F] to-[#323330] p-2 shadow-lg transition-shadow hover:shadow-xl">
-        <Code className={`size-full text-white ${className}`} />
+    certifications: ['Programming hero'],
+    architecturePatterns: ['Flux/Redux', 'Component-based'],
+    securityFeatures: ['CORS policies', 'Content Security', 'Input validation'],
+    level: 'Intermediate',
+    usageFrequency: 'Monthly',
+    icon: (props) => (
+      <div className="size-[60px] rounded-lg bg-[#F7DF1E] p-2 shadow-lg transition-shadow hover:shadow-xl">
+        <IconBrandJavascript className="size-full text-black" {...props} />
       </div>
     ),
   },
@@ -360,7 +299,8 @@ export function Languages() {
           Programming Languages
         </h2>
         <p className="mb-6 text-lg text-gray-600 dark:text-gray-400">
-          Core programming languages for systems, applications, and automation
+          Core programming languages for systems, applications, robotics and
+          automation
         </p>
 
         <div className="mb-8 flex flex-wrap gap-3">
@@ -393,6 +333,8 @@ export function Languages() {
               proficiency={skill.proficiency}
               experience={skill.experience}
               description={skill.description}
+              level={skill.level}
+              usageFrequency={skill.usageFrequency}
               isSelected={selectedSkill === skill.id}
               onClick={() =>
                 setSelectedSkill(selectedSkill === skill.id ? null : skill.id)
@@ -435,101 +377,73 @@ export function Languages() {
                     </div>
                   </div>
 
-                  {skill.performance && (
-                    <div>
-                      <h4 className="mb-2 flex items-center gap-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
-                        <span className="h-2 w-2 rounded-full bg-green-500" />
-                        Performance Characteristics
-                      </h4>
-                      <div className="grid grid-cols-2 gap-2">
-                        {Object.entries(skill.performance).map(
-                          ([key, value]) => (
-                            <div key={key} className="flex items-center gap-2">
-                              <span className="h-1 w-1 rounded-full bg-gray-400" />
-                              <span className="font-medium">
-                                {key.charAt(0).toUpperCase() + key.slice(1)}:
-                              </span>{' '}
-                              {value}
-                            </div>
-                          )
-                        )}
-                      </div>
+                  <div>
+                    <h4 className="mb-2 flex items-center gap-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
+                      <span className="h-2 w-2 rounded-full bg-green-500" />
+                      Tools & Technologies
+                    </h4>
+                    <div className="grid grid-cols-2 gap-2">
+                      {skill.tools.map((tool, index) => (
+                        <div key={index} className="flex items-center gap-2">
+                          <span className="h-1 w-1 rounded-full bg-gray-400" />
+                          {tool}
+                        </div>
+                      ))}
                     </div>
-                  )}
-
-                  {skill.architecturePatterns && (
-                    <div>
-                      <h4 className="mb-2 flex items-center gap-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
-                        <span className="h-2 w-2 rounded-full bg-purple-500" />
-                        Architecture Patterns
-                      </h4>
-                      <div className="grid grid-cols-2 gap-2">
-                        {skill.architecturePatterns.map((pattern, index) => (
-                          <div key={index} className="flex items-center gap-2">
-                            <span className="h-1 w-1 rounded-full bg-gray-400" />
-                            {pattern}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
+                  </div>
                 </div>
 
                 <div className="space-y-4">
                   <div>
                     <h4 className="mb-2 flex items-center gap-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
-                      <span className="h-2 w-2 rounded-full bg-indigo-500" />
-                      Tools & Libraries
+                      <span className="h-2 w-2 rounded-full bg-purple-500" />
+                      Architecture Patterns
                     </h4>
                     <div className="flex flex-wrap gap-2">
-                      {skill.tools.map((tool, index) => (
+                      {skill.architecturePatterns.map((pattern, index) => (
                         <span
                           key={index}
-                          className="rounded-full bg-indigo-100 px-3 py-1 text-sm text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200"
+                          className="rounded-full bg-purple-100 px-3 py-1 text-sm text-purple-800 dark:bg-purple-900 dark:text-purple-200"
                         >
-                          {tool}
+                          {pattern}
                         </span>
                       ))}
                     </div>
                   </div>
 
-                  {skill.relatedTech && (
-                    <div>
-                      <h4 className="mb-2 flex items-center gap-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
-                        <span className="h-2 w-2 rounded-full bg-yellow-500" />
-                        Related Technologies
-                      </h4>
-                      <div className="flex flex-wrap gap-2">
-                        {skill.relatedTech.map((tech, index) => (
-                          <span
-                            key={index}
-                            className="rounded-full bg-yellow-100 px-3 py-1 text-sm text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
-                          >
-                            {tech}
-                          </span>
-                        ))}
-                      </div>
+                  <div>
+                    <h4 className="mb-2 flex items-center gap-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
+                      <span className="h-2 w-2 rounded-full bg-red-500" />
+                      Security Features
+                    </h4>
+                    <div className="flex flex-wrap gap-2">
+                      {skill.securityFeatures.map((feature, index) => (
+                        <span
+                          key={index}
+                          className="rounded-full bg-red-100 px-3 py-1 text-sm text-red-800 dark:bg-red-900 dark:text-red-200"
+                        >
+                          {feature}
+                        </span>
+                      ))}
                     </div>
-                  )}
+                  </div>
 
-                  {skill.bestPractices && (
-                    <div>
-                      <h4 className="mb-2 flex items-center gap-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
-                        <span className="h-2 w-2 rounded-full bg-red-500" />
-                        Best Practices
-                      </h4>
-                      <div className="flex flex-wrap gap-2">
-                        {skill.bestPractices.map((practice, index) => (
-                          <span
-                            key={index}
-                            className="rounded-full bg-red-100 px-3 py-1 text-sm text-red-800 dark:bg-red-900 dark:text-red-200"
-                          >
-                            {practice}
-                          </span>
-                        ))}
-                      </div>
+                  <div>
+                    <h4 className="mb-2 flex items-center gap-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
+                      <span className="h-2 w-2 rounded-full bg-yellow-500" />
+                      Certifications
+                    </h4>
+                    <div className="flex flex-wrap gap-2">
+                      {skill.certifications.map((cert, index) => (
+                        <span
+                          key={index}
+                          className="rounded-full bg-yellow-100 px-3 py-1 text-sm text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+                        >
+                          {cert}
+                        </span>
+                      ))}
                     </div>
-                  )}
+                  </div>
 
                   <div className="mt-4 flex items-center gap-4">
                     <div>
@@ -538,13 +452,11 @@ export function Languages() {
                       </span>{' '}
                       <span
                         className={`mt-1 inline-block rounded-full px-3 py-1 text-sm font-medium ${
-                          skill.category === 'Systems'
+                          skill.category === 'Problem Solving'
                             ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
                             : skill.category === 'Object-Oriented'
                               ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
-                              : skill.category === 'Scripting'
-                                ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-                                : 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
+                              : 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
                         }`}
                       >
                         {skill.category}
