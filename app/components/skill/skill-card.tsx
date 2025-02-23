@@ -1,5 +1,5 @@
-import { IconChevronDown, IconStar } from '@tabler/icons-react'
 import { motion, useAnimation } from 'framer-motion'
+import { ChevronDown, Star } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 
 interface SkillCardProps {
@@ -107,13 +107,14 @@ const StarRating = ({ rating }: { rating: number }) => {
   return (
     <div className="flex items-center gap-1">
       {[1, 2, 3, 4, 5].map((star) => (
-        <IconStar
+        <Star
           key={star}
-          className={`size-4 ${
+          size={16}
+          className={
             star <= rating
-              ? 'text-yellow-400'
+              ? 'fill-current text-yellow-400'
               : 'text-gray-300 dark:text-gray-600'
-          }`}
+          }
           fill={star <= rating ? 'currentColor' : 'none'}
         />
       ))}
@@ -177,7 +178,7 @@ export default function SkillCard({
     >
       {/* Highlight glow effect */}
       <motion.div
-        className="pointer-events-none absolute inset-0 rounded-xl bg-gradient-to-r from-orange-500/20 to-white-500/20 opacity-0 blur-xl transition-opacity"
+        className="to-white-500/20 pointer-events-none absolute inset-0 rounded-xl bg-gradient-to-r from-orange-500/20 opacity-0 blur-xl transition-opacity"
         animate={{ opacity: isHovered ? 0.3 : 0 }}
       />
 
@@ -305,7 +306,7 @@ export default function SkillCard({
         className="absolute bottom-2 right-2"
         animate={{ rotate: showDetails ? 180 : 0 }}
       >
-        <IconChevronDown className="size-5 text-gray-400 transition-colors group-hover:text-gray-600 dark:text-gray-500 dark:group-hover:text-gray-300" />
+        <ChevronDown className="size-5 text-gray-400 transition-colors group-hover:text-gray-600 dark:text-gray-500 dark:group-hover:text-gray-300" />
       </motion.div>
 
       {/* Selection indicator */}

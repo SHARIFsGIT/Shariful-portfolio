@@ -1,33 +1,43 @@
 import {
   IconArrowNarrowRight,
-  IconBrandDjango,
-  IconBrandVue,
+  IconBrandReact,
+  IconBrandWindows,
   IconCode,
-  IconDatabase,
+  IconRobot,
   IconSearch,
+  IconServer,
   IconTool,
-  IconX
+  IconX,
 } from '@tabler/icons-react'
 import { AnimatePresence, motion } from 'framer-motion'
 import React, { useMemo, useRef, useState } from 'react'
 
-// Backend components (to be imported from respective files)
-import { Backend } from './backend'
-import { Database } from './database'
-import { Frontend } from './frontend'
-import { Languages } from './languages'
-import { Tools } from './tools'
+// Import components
+import CircuitDesign from './circuit-design'
+import OperatingSystems from './operating-systems'
+import { Languages } from './programming'
+import Robotics from './robotics'
+import Backend from './software-development'
+import Tools from './tools'
+import Frontend from './web-development'
 
-// Define a more comprehensive skill type
+// Define skill type
 interface Skill {
   id: string
   name: string
-  category: string
+  category:
+    | 'os'
+    | 'programming'
+    | 'robotics'
+    | 'software'
+    | 'web'
+    | 'circuit'
+    | 'tools'
   description: string
   tags: string[]
 }
 
-// Create a type guard for icons
+// Icon component type
 type IconComponent = React.ComponentType<{
   className?: string
   stroke?: number
@@ -36,7 +46,7 @@ type IconComponent = React.ComponentType<{
   displayName?: string
 }
 
-// Comprehensive skill categories
+// Skill category interface
 interface SkillCategory {
   id: string
   label: string
@@ -45,55 +55,91 @@ interface SkillCategory {
   skills: Skill[]
 }
 
-// Mock skill data (replace with your actual skills)
+// Sample skills data
 const allSkills: Skill[] = [
-  // Languages
+  // OS Skills
+  {
+    id: 'windows',
+    name: 'Windows',
+    category: 'os',
+    description: 'Windows system administration',
+    tags: ['system', 'administration', 'windows'],
+  },
+  {
+    id: 'linux',
+    name: 'Linux',
+    category: 'os',
+    description: 'Linux system management',
+    tags: ['system', 'unix', 'bash'],
+  },
+  // Programming Languages
+  {
+    id: 'c',
+    name: 'C',
+    category: 'programming',
+    description: 'Systems programming language',
+    tags: ['systems', 'low-level', 'performance'],
+  },
+  {
+    id: 'cpp',
+    name: 'C++',
+    category: 'programming',
+    description: 'Object-oriented systems programming',
+    tags: ['oop', 'systems', 'performance'],
+  },
   {
     id: 'python',
     name: 'Python',
-    category: 'languages',
-    description: 'High-level, interpreted programming language',
-    tags: ['scripting', 'backend', 'data science'],
+    category: 'programming',
+    description: 'High-level programming language',
+    tags: ['scripting', 'automation', 'data-science'],
   },
-  {
-    id: 'typescript',
-    name: 'TypeScript',
-    category: 'languages',
-    description: 'Typed superset of JavaScript',
-    tags: ['frontend', 'strongly typed', 'javascript'],
-  },
-  // Add more skills...
+  // Add similar entries for other categories...
 ]
 
-// Skill categories configuration
+// Updated skill categories configuration
 const skillCategories: SkillCategory[] = [
   {
-    id: 'languages',
-    label: 'Languages',
+    id: 'os',
+    label: 'Operating Systems',
+    icon: IconBrandWindows,
+    component: OperatingSystems,
+    skills: allSkills.filter((skill) => skill.category === 'os'),
+  },
+  {
+    id: 'programming',
+    label: 'Programming',
     icon: IconCode,
     component: Languages,
-    skills: allSkills.filter((skill) => skill.category === 'languages'),
+    skills: allSkills.filter((skill) => skill.category === 'programming'),
   },
   {
-    id: 'frontend',
-    label: 'Frontend',
-    icon: IconBrandVue,
-    component: Frontend,
-    skills: allSkills.filter((skill) => skill.category === 'frontend'),
+    id: 'robotics',
+    label: 'Robotics',
+    icon: IconRobot,
+    component: Robotics,
+    skills: allSkills.filter((skill) => skill.category === 'robotics'),
   },
   {
-    id: 'backend',
-    label: 'Backend',
-    icon: IconBrandDjango,
+    id: 'software',
+    label: 'Software Development',
+    icon: IconServer,
     component: Backend,
-    skills: allSkills.filter((skill) => skill.category === 'backend'),
+    skills: allSkills.filter((skill) => skill.category === 'software'),
   },
   {
-    id: 'databases',
-    label: 'Databases',
-    icon: IconDatabase,
-    component: Database,
-    skills: allSkills.filter((skill) => skill.category === 'databases'),
+    id: 'web',
+    label: 'Web Development',
+    icon: IconBrandReact,
+    component: Frontend,
+    skills: allSkills.filter((skill) => skill.category === 'web'),
+  },
+  {
+    id: 'circuit',
+    label: 'Circuit Design',
+    icon: IconTool,
+    component: CircuitDesign,
+    skills: allSkills.filter((skill) => skill.category === 'circuit'),
   },
   {
     id: 'tools',
@@ -138,12 +184,12 @@ const contentVariants = {
 }
 
 export function Skill() {
-  const [activeTab, setActiveTab] = useState<string>('languages')
+  const [activeTab, setActiveTab] = useState<string>('os')
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const searchInputRef = useRef<HTMLInputElement>(null)
 
-  // Comprehensive search functionality
+  // Search functionality
   const searchResults = useMemo(() => {
     if (!searchQuery) return []
 
@@ -161,7 +207,8 @@ export function Skill() {
   }
 
   const ActiveComponent =
-    skillCategories.find((cat) => cat.id === activeTab)?.component || Languages
+    skillCategories.find((cat) => cat.id === activeTab)?.component ||
+    OperatingSystems
 
   const handleSearchClose = () => {
     setIsSearchOpen(false)
@@ -199,7 +246,7 @@ export function Skill() {
               onClick={() => handleTabChange(category.id)}
               className={`group flex w-full items-center gap-3 rounded-lg px-4 py-3 transition-all duration-200 ${
                 activeTab === category.id
-                  ? 'bg-green-100 dark:bg-blue-100 text-primary-600 dark:text-black'
+                  ? 'text-primary-600 bg-green-100 dark:bg-blue-100 dark:text-black'
                   : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'
               } `}
             >
@@ -231,7 +278,7 @@ export function Skill() {
         </AnimatePresence>
       </div>
 
-      {/* Advanced Search Modal */}
+      {/* Search Modal */}
       <AnimatePresence>
         {isSearchOpen && (
           <motion.div
@@ -324,3 +371,5 @@ export function Skill() {
     </div>
   )
 }
+
+export default Skill

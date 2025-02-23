@@ -1,15 +1,13 @@
 import {
-  IconBrandNextjs,
-  IconBrandReact
+  IconBrandBootstrap,
+  IconBrandCss3,
+  IconBrandHtml5,
+  IconBrandJavascript,
+  IconBrandReact,
+  IconBrandTailwind,
 } from '@tabler/icons-react'
 import { motion, useInView } from 'framer-motion'
 import { useRef, useState } from 'react'
-import {
-  SiChakraui,
-  SiJest,
-  SiTypescript,
-  SiWebpack
-} from 'react-icons/si'
 import SkillCard from './skill-card'
 
 interface FrontendSkill {
@@ -19,90 +17,144 @@ interface FrontendSkill {
   experience: string
   description: string
   category:
+    | 'Core'
     | 'Framework'
-    | 'Library'
-    | 'Testing'
-    | 'State Management'
     | 'Styling'
-    | 'Build Tools'
-    | 'UI Component'
+    | 'State Management'
+    | 'Backend Integration'
   icon: React.FC<{ className?: string; stroke?: number }>
   features: string[]
   tools: string[]
   projects?: number
   relatedTech?: string[]
   performance?: {
-    bundleSize?: string
+    loadTime?: string
     renderTime?: string
-    accessibility?: string
+    optimization?: string
   }
   bestPractices?: string[]
   architecturePatterns?: string[]
-  certifications?: string[]
-  resources?: string[]
-  designPatterns?: string[]
 }
 
 const frontendSkills: FrontendSkill[] = [
   {
+    id: 'html',
+    title: 'HTML',
+    proficiency: 90,
+    experience: '3+ years',
+    description: 'Semantic HTML markup and structure',
+    category: 'Core',
+    features: [
+      'Semantic elements',
+      'Accessibility',
+      'SEO optimization',
+      'Forms',
+      'Media elements',
+      'Meta tags',
+      'Responsive design',
+      'Web standards',
+    ],
+    tools: [
+      'HTML5 Validator',
+      'Meta tags generator',
+      'Schema markup',
+      'Accessibility tools',
+    ],
+    bestPractices: [
+      'Semantic structure',
+      'ARIA attributes',
+      'Cross-browser compatibility',
+      'Mobile-first design',
+    ],
+    architecturePatterns: [
+      'Component structure',
+      'Layout patterns',
+      'Form patterns',
+      'Progressive enhancement',
+    ],
+    icon: (props) => (
+      <div className="size-[60px] rounded-lg bg-gradient-to-br from-[#E44D26] to-[#F16529] p-2 shadow-lg transition-shadow hover:shadow-xl">
+        <IconBrandHtml5 className="size-full text-white" {...props} />
+      </div>
+    ),
+  },
+  {
+    id: 'css',
+    title: 'CSS',
+    proficiency: 88,
+    experience: '3+ years',
+    description: 'Modern CSS styling and layouts',
+    category: 'Core',
+    features: [
+      'Flexbox',
+      'Grid',
+      'Animations',
+      'Media queries',
+      'Custom properties',
+      'Transforms',
+      'Transitions',
+      'Responsive design',
+    ],
+    tools: ['Sass/SCSS', 'PostCSS', 'Autoprefixer', 'CSS Modules'],
+    bestPractices: [
+      'BEM methodology',
+      'Mobile-first',
+      'Performance optimization',
+      'Code organization',
+    ],
+    icon: (props) => (
+      <div className="size-[60px] rounded-lg bg-gradient-to-br from-[#264DE4] to-[#2965F1] p-2 shadow-lg transition-shadow hover:shadow-xl">
+        <IconBrandCss3 className="size-full text-white" {...props} />
+      </div>
+    ),
+  },
+  {
+    id: 'javascript',
+    title: 'JavaScript',
+    proficiency: 85,
+    experience: '3+ years',
+    description: 'Modern JavaScript development',
+    category: 'Core',
+    features: [
+      'ES6+ features',
+      'DOM manipulation',
+      'Async/Await',
+      'Modules',
+      'Event handling',
+      'APIs',
+      'Error handling',
+      'Performance',
+    ],
+    tools: ['ESLint', 'Prettier', 'Babel', 'Webpack', 'Chrome DevTools'],
+    icon: (props) => (
+      <div className="size-[60px] rounded-lg bg-gradient-to-br from-[#F7DF1E] to-[#F7DF1E] p-2 shadow-lg transition-shadow hover:shadow-xl">
+        <IconBrandJavascript className="size-full text-black" {...props} />
+      </div>
+    ),
+  },
+  {
     id: 'react',
-    title: 'React',
-    proficiency: 95,
-    experience: '4+ years',
-    description:
-      'Building modern, high-performance web applications with React ecosystem',
+    title: 'React.js',
+    proficiency: 82,
+    experience: '2+ years',
+    description: 'Modern React application development',
     category: 'Framework',
     features: [
-      'Component architecture',
-      'Hooks system',
-      'Virtual DOM',
-      'Server Components',
-      'Concurrent rendering',
-      'Suspense & streaming',
-      'Error boundaries',
+      'Components',
+      'Hooks',
       'Context API',
+      'State management',
+      'Routing',
+      'Forms',
+      'Performance',
+      'Testing',
     ],
     tools: [
       'Create React App',
-      'React DevTools',
       'React Router',
-      'React Query',
-      'TanStack Query',
-      'React Hook Form',
-      'Framer Motion',
-    ],
-    relatedTech: [
       'Redux',
-      'MobX',
-      'React Native',
-      'Next.js',
-      'Gatsby',
-      'Remix',
-    ],
-    projects: 40,
-    performance: {
-      bundleSize: '~42kb gzipped',
-      renderTime: '<16ms',
-      accessibility: 'WCAG 2.1',
-    },
-    bestPractices: [
-      'Component composition',
-      'Custom hooks',
-      'Memoization',
-      'Code splitting',
-    ],
-    architecturePatterns: [
-      'Atomic Design',
-      'Container/Presenter',
-      'Render props',
-      'HOC pattern',
-    ],
-    certifications: ['Meta React Developer', 'React Testing Expert'],
-    designPatterns: [
-      'Observer pattern',
-      'Factory pattern',
-      'Provider pattern',
-      'Command pattern',
+      'React Query',
+      'React Hook Form',
     ],
     icon: (props) => (
       <div className="size-[60px] rounded-lg bg-gradient-to-br from-[#61DAFB] to-[#00B7FF] p-2 shadow-lg transition-shadow hover:shadow-xl">
@@ -111,269 +163,50 @@ const frontendSkills: FrontendSkill[] = [
     ),
   },
   {
-    id: 'nextjs',
-    title: 'Next.js',
-    proficiency: 90,
-    experience: '3+ years',
-    description: 'Production-grade React framework with enterprise features',
-    category: 'Framework',
-    features: [
-      'Server-side rendering',
-      'Static site generation',
-      'Incremental builds',
-      'API routes',
-      'Image optimization',
-      'Font optimization',
-      'Edge functions',
-      'Middleware',
-    ],
-    tools: [
-      'Vercel',
-      'Next Auth',
-      'SWR',
-      'Next SEO',
-      'Next PWA',
-      'Next i18next',
-      'Next Themes',
-    ],
-    projects: 25,
-    performance: {
-      bundleSize: 'Route-based',
-      renderTime: '<50ms FCP',
-      accessibility: 'WCAG 2.1',
-    },
-    bestPractices: [
-      'Dynamic imports',
-      'Route optimization',
-      'Image best practices',
-      'SEO optimization',
-    ],
-    architecturePatterns: [
-      'Page-based routing',
-      'API architecture',
-      'Data fetching',
-      'Dynamic routing',
-    ],
-    certifications: ['Vercel Platform', 'Next.js Developer'],
-    resources: [
-      'Next.js docs',
-      'Learn Next.js',
-      'Next.js examples',
-      'Vercel templates',
-    ],
-    icon: (props) => (
-      <div className="size-[60px] rounded-lg bg-gradient-to-br from-gray-900 to-gray-700 p-2 shadow-lg transition-shadow hover:shadow-xl">
-        <IconBrandNextjs className="size-full text-white" {...props} />
-      </div>
-    ),
-  },
-  {
-    id: 'typescript',
-    title: 'TypeScript',
-    proficiency: 88,
-    experience: '3+ years',
-    description: 'Strongly-typed JavaScript for scalable applications',
-    category: 'Library',
-    features: [
-      'Type system',
-      'Interfaces',
-      'Generics',
-      'Decorators',
-      'Utility types',
-      'Type inference',
-      'Module system',
-      'Enums',
-    ],
-    tools: [
-      'TSC',
-      'TSLint',
-      'TS-Node',
-      'Type-Fest',
-      'TypeScript ESLint',
-      'ts-jest',
-      'tsconfig-paths',
-    ],
-    projects: 35,
-    performance: {
-      bundleSize: 'Zero runtime',
-      renderTime: 'Development only',
-      accessibility: 'Type safety',
-    },
-    bestPractices: [
-      'Type inference',
-      'Type guards',
-      'Discriminated unions',
-      'Strict mode',
-    ],
-    architecturePatterns: [
-      'Repository pattern',
-      'Factory pattern',
-      'Builder pattern',
-      'Dependency injection',
-    ],
-    certifications: ['TypeScript Professional', 'Advanced TypeScript'],
-    designPatterns: [
-      'Abstract factory',
-      'Strategy pattern',
-      'Decorator pattern',
-      'Module pattern',
-    ],
-    icon: () => (
-      <div className="size-[60px] rounded-lg bg-gradient-to-br from-[#007ACC] to-[#0058CC] p-2 shadow-lg transition-shadow hover:shadow-xl">
-        <SiTypescript className="size-full text-white" />
-      </div>
-    ),
-  },
-  {
-    id: 'performance',
-    title: 'Performance Tools',
+    id: 'tailwind',
+    title: 'Tailwind CSS',
     proficiency: 85,
-    experience: '3+ years',
-    description: 'Optimization and performance monitoring tools',
-    category: 'Build Tools',
+    experience: '2+ years',
+    description: 'Utility-first CSS framework',
+    category: 'Styling',
     features: [
-      'Bundle analysis',
-      'Code splitting',
-      'Tree shaking',
-      'Lazy loading',
-      'Resource hints',
-      'Caching strategies',
-      'Performance metrics',
-      'Web vitals',
-    ],
-    tools: [
-      'Webpack',
-      'Vite',
-      'Lighthouse',
-      'WebPageTest',
-      'Chrome DevTools',
-      'Bundle analyzer',
-      'Performance API',
-    ],
-    projects: 30,
-    performance: {
-      bundleSize: 'Optimization',
-      renderTime: 'Analysis',
-      accessibility: 'Monitoring',
-    },
-    bestPractices: [
-      'Bundle optimization',
-      'Asset optimization',
-      'Critical CSS',
-      'Cache strategies',
-    ],
-    architecturePatterns: [
-      'Module federation',
-      'PRPL pattern',
-      'App shell',
-      'Islands architecture',
-    ],
-    icon: () => (
-      <div className="size-[60px] rounded-lg bg-gradient-to-br from-[#8DD6F9] to-[#2B3A42] p-2 shadow-lg transition-shadow hover:shadow-xl">
-        <SiWebpack className="size-full text-white" />
-      </div>
-    ),
-  },
-  {
-    id: 'testing',
-    title: 'Testing Tools',
-    proficiency: 88,
-    experience: '3+ years',
-    description: 'Comprehensive testing solutions for frontend applications',
-    category: 'Testing',
-    features: [
-      'Unit testing',
-      'Integration tests',
-      'E2E testing',
-      'Component testing',
-      'Visual testing',
-      'Performance testing',
-      'Accessibility testing',
-      'Snapshot testing',
-    ],
-    tools: [
-      'Jest',
-      'React Testing Library',
-      'Cypress',
-      'Vitest',
-      'Playwright',
-      'Storybook',
-      'MSW',
-      'Testing Library',
-    ],
-    projects: 25,
-    performance: {
-      bundleSize: 'Dev dependency',
-      renderTime: 'Test execution',
-      accessibility: 'A11y testing',
-    },
-    bestPractices: [
-      'TDD/BDD',
-      'Testing pyramid',
-      'CI integration',
-      'Test coverage',
-    ],
-    architecturePatterns: [
-      'Page objects',
-      'Test fixtures',
-      'Mocking patterns',
-      'Test utilities',
-    ],
-    certifications: ['Testing Professional', 'Cypress Expert'],
-    icon: () => (
-      <div className="size-[60px] rounded-lg bg-gradient-to-br from-[#99425B] to-[#BA5374] p-2 shadow-lg transition-shadow hover:shadow-xl">
-        <SiJest className="size-full text-white" />
-      </div>
-    ),
-  },
-  {
-    id: 'ui-frameworks',
-    title: 'UI Frameworks',
-    proficiency: 90,
-    experience: '4+ years',
-    description: 'Modern UI component libraries and design systems',
-    category: 'UI Component',
-    features: [
-      'Component library',
-      'Theming system',
+      'Utility classes',
       'Responsive design',
-      'Accessibility',
-      'Animation',
+      'Custom configuration',
       'Dark mode',
-      'RTL support',
-      'CSS-in-JS',
+      'Plugins',
+      'JIT compiler',
+      'CSS purging',
+      'Theme system',
     ],
-    tools: [
-      'Material UI',
-      'Chakra UI',
-      'Tailwind CSS',
-      'Styled Components',
-      'Emotion',
-      'Radix UI',
-      'Headless UI',
-      'DaisyUI',
+    tools: ['PostCSS', 'Tailwind Config', 'Headless UI', 'DaisyUI'],
+    icon: (props) => (
+      <div className="size-[60px] rounded-lg bg-gradient-to-br from-[#38BDF8] to-[#0EA5E9] p-2 shadow-lg transition-shadow hover:shadow-xl">
+        <IconBrandTailwind className="size-full text-white" {...props} />
+      </div>
+    ),
+  },
+  {
+    id: 'bootstrap',
+    title: 'Bootstrap',
+    proficiency: 80,
+    experience: '2+ years',
+    description: 'Popular CSS framework',
+    category: 'Styling',
+    features: [
+      'Grid system',
+      'Components',
+      'Utilities',
+      'JavaScript plugins',
+      'Customization',
+      'Themes',
+      'Icons',
+      'Forms',
     ],
-    projects: 35,
-    performance: {
-      bundleSize: 'Tree-shakeable',
-      renderTime: 'Optimized',
-      accessibility: 'WAI-ARIA',
-    },
-    bestPractices: [
-      'Component composition',
-      'Theme tokens',
-      'Style system',
-      'A11y patterns',
-    ],
-    architecturePatterns: [
-      'Compound components',
-      'Style variants',
-      'Theme providers',
-      'Style abstractions',
-    ],
-    icon: () => (
-      <div className="size-[60px] rounded-lg bg-gradient-to-br from-[#319795] to-[#3182CE] p-2 shadow-lg transition-shadow hover:shadow-xl">
-        <SiChakraui className="size-full text-white" />
+    tools: ['Sass', 'Bootstrap Icons', 'Theme customizer', 'NPM packages'],
+    icon: (props) => (
+      <div className="size-[60px] rounded-lg bg-gradient-to-br from-[#7952B3] to-[#7952B3] p-2 shadow-lg transition-shadow hover:shadow-xl">
+        <IconBrandBootstrap className="size-full text-white" {...props} />
       </div>
     ),
   },
@@ -427,11 +260,11 @@ export function Frontend() {
     >
       <div className="mb-10">
         <h2 className="mb-3 text-3xl font-bold text-gray-800 dark:text-gray-200">
-          Frontend Development
+          Web Development
         </h2>
         <p className="mb-6 text-lg text-gray-600 dark:text-gray-400">
-          Modern frontend technologies and frameworks for building performant
-          user interfaces
+          Frontend technologies and frameworks for building modern web
+          applications
         </p>
 
         <div className="mb-8 flex flex-wrap gap-3">
@@ -445,7 +278,7 @@ export function Frontend() {
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300'
               }`}
             >
-              {category.charAt(0).toUpperCase() + category.slice(1)}
+              {category === 'all' ? 'All' : category}
             </button>
           ))}
         </div>
@@ -506,75 +339,19 @@ export function Frontend() {
                     </div>
                   </div>
 
-                  {skill.performance && (
-                    <div>
-                      <h4 className="mb-2 flex items-center gap-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
-                        <span className="h-2 w-2 rounded-full bg-green-500" />
-                        Performance Metrics
-                      </h4>
-                      <div className="grid grid-cols-2 gap-2">
-                        {Object.entries(skill.performance).map(
-                          ([key, value]) => (
-                            <div key={key} className="flex items-center gap-2">
-                              <span className="h-1 w-1 rounded-full bg-gray-400" />
-                              <span className="font-medium">{key}:</span>{' '}
-                              {value}
-                            </div>
-                          )
-                        )}
-                      </div>
-                    </div>
-                  )}
-
-                  {skill.architecturePatterns && (
+                  {skill.tools && (
                     <div>
                       <h4 className="mb-2 flex items-center gap-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
                         <span className="h-2 w-2 rounded-full bg-purple-500" />
-                        Architecture Patterns
-                      </h4>
-                      <div className="grid grid-cols-2 gap-2">
-                        {skill.architecturePatterns.map((pattern, index) => (
-                          <div key={index} className="flex items-center gap-2">
-                            <span className="h-1 w-1 rounded-full bg-gray-400" />
-                            {pattern}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                <div className="space-y-4">
-                  <div>
-                    <h4 className="mb-2 flex items-center gap-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
-                      <span className="h-2 w-2 rounded-full bg-indigo-500" />
-                      Tools & Libraries
-                    </h4>
-                    <div className="flex flex-wrap gap-2">
-                      {skill.tools.map((tool, index) => (
-                        <span
-                          key={index}
-                          className="rounded-full bg-indigo-100 px-3 py-1 text-sm text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200"
-                        >
-                          {tool}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  {skill.relatedTech && (
-                    <div>
-                      <h4 className="mb-2 flex items-center gap-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
-                        <span className="h-2 w-2 rounded-full bg-yellow-500" />
-                        Related Technologies
+                        Tools & Libraries
                       </h4>
                       <div className="flex flex-wrap gap-2">
-                        {skill.relatedTech.map((tech, index) => (
+                        {skill.tools.map((tool, index) => (
                           <span
                             key={index}
-                            className="rounded-full bg-yellow-100 px-3 py-1 text-sm text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+                            className="rounded-full bg-purple-100 px-3 py-1 text-sm text-purple-800 dark:bg-purple-900 dark:text-purple-200"
                           >
-                            {tech}
+                            {tool}
                           </span>
                         ))}
                       </div>
@@ -584,14 +361,14 @@ export function Frontend() {
                   {skill.bestPractices && (
                     <div>
                       <h4 className="mb-2 flex items-center gap-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
-                        <span className="h-2 w-2 rounded-full bg-red-500" />
+                        <span className="h-2 w-2 rounded-full bg-green-500" />
                         Best Practices
                       </h4>
                       <div className="flex flex-wrap gap-2">
                         {skill.bestPractices.map((practice, index) => (
                           <span
                             key={index}
-                            className="rounded-full bg-red-100 px-3 py-1 text-sm text-red-800 dark:bg-red-900 dark:text-red-200"
+                            className="rounded-full bg-green-100 px-3 py-1 text-sm text-green-800 dark:bg-green-900 dark:text-green-200"
                           >
                             {practice}
                           </span>
@@ -599,20 +376,22 @@ export function Frontend() {
                       </div>
                     </div>
                   )}
+                </div>
 
-                  {skill.certifications && (
+                <div className="space-y-4">
+                  {skill.architecturePatterns && (
                     <div>
                       <h4 className="mb-2 flex items-center gap-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
-                        <span className="h-2 w-2 rounded-full bg-emerald-500" />
-                        Certifications
+                        <span className="h-2 w-2 rounded-full bg-indigo-500" />
+                        Architecture Patterns
                       </h4>
                       <div className="flex flex-wrap gap-2">
-                        {skill.certifications.map((cert, index) => (
+                        {skill.architecturePatterns.map((pattern, index) => (
                           <span
                             key={index}
-                            className="rounded-full bg-emerald-100 px-3 py-1 text-sm text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200"
+                            className="rounded-full bg-indigo-100 px-3 py-1 text-sm text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200"
                           >
-                            {cert}
+                            {pattern}
                           </span>
                         ))}
                       </div>
@@ -626,28 +405,32 @@ export function Frontend() {
                       </span>{' '}
                       <span
                         className={`mt-1 inline-block rounded-full px-3 py-1 text-sm font-medium ${
-                          skill.category === 'Framework'
+                          skill.category === 'Core'
                             ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
-                            : skill.category === 'Library'
+                            : skill.category === 'Framework'
                               ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-                              : skill.category === 'Testing'
+                              : skill.category === 'Styling'
                                 ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
-                                : skill.category === 'UI Component'
+                                : skill.category === 'State Management'
                                   ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
-                                  : 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
+                                  : skill.category === 'Backend Integration'
+                                    ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+                                    : 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
                         }`}
                       >
                         {skill.category}
                       </span>
                     </div>
-                    <div>
-                      <span className="text-lg font-semibold text-gray-700 dark:text-gray-300">
-                        Projects:
-                      </span>{' '}
-                      <span className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-                        {skill.projects}
-                      </span>
-                    </div>
+                    {skill.projects && (
+                      <div>
+                        <span className="text-lg font-semibold text-gray-700 dark:text-gray-300">
+                          Projects:
+                        </span>{' '}
+                        <span className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                          {skill.projects}
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -658,3 +441,5 @@ export function Frontend() {
     </motion.div>
   )
 }
+
+export default Frontend

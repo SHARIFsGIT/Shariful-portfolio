@@ -1,13 +1,11 @@
 import {
-  IconBrandDocker,
-  IconBrandFigma,
   IconBrandGit,
   IconBrandGithub,
+  IconBrandTrello,
   IconBrandVscode,
 } from '@tabler/icons-react'
 import { motion, useInView } from 'framer-motion'
 import { useRef, useState } from 'react'
-import { SiPostman } from 'react-icons/si'
 import SkillCard from './skill-card'
 
 interface ToolSkill {
@@ -16,12 +14,7 @@ interface ToolSkill {
   proficiency: number
   experience: string
   description: string
-  category:
-    | 'Version Control'
-    | 'Design'
-    | 'Development'
-    | 'DevOps'
-    | 'Productivity'
+  category: 'Version Control' | 'Development' | 'Project Management'
   icon: React.FC<{ className?: string; stroke?: number }>
   features: string[]
   workflows?: string[]
@@ -35,9 +28,6 @@ interface ToolSkill {
   }
   resources?: string[]
   commandLine?: string[]
-  automations?: string[]
-  teamSize?: string
-  security?: string[]
   metrics?: {
     timesSaved?: string
     efficiency?: string
@@ -49,8 +39,8 @@ const toolSkills: ToolSkill[] = [
   {
     id: 'git',
     title: 'Git',
-    proficiency: 95,
-    experience: '5+ years',
+    proficiency: 90,
+    experience: '4+ years',
     description: 'Version control system for tracking code changes',
     category: 'Version Control',
     features: [
@@ -69,7 +59,7 @@ const toolSkills: ToolSkill[] = [
       'Forking workflow',
       'Trunk-based development',
     ],
-    projects: 50,
+    projects: 45,
     bestPractices: [
       'Atomic commits',
       'Meaningful commit messages',
@@ -77,12 +67,6 @@ const toolSkills: ToolSkill[] = [
       'Code review process',
     ],
     commandLine: ['git rebase', 'git cherry-pick', 'git bisect', 'git reflog'],
-    security: [
-      'GPG signing',
-      'Access controls',
-      'Secret management',
-      'Secure workflow',
-    ],
     metrics: {
       timesSaved: '30% dev time',
       efficiency: 'High',
@@ -103,7 +87,7 @@ const toolSkills: ToolSkill[] = [
   {
     id: 'github',
     title: 'GitHub',
-    proficiency: 90,
+    proficiency: 88,
     experience: '4+ years',
     description: 'Platform for hosting and collaborating on code',
     category: 'Version Control',
@@ -122,23 +106,15 @@ const toolSkills: ToolSkill[] = [
       'GitHub Pages',
       'GitHub Packages',
       'GitHub API',
-      'GitHub Apps',
-      'GitHub Marketplace',
       'GitHub CLI',
       'GitHub Desktop',
     ],
-    projects: 45,
+    projects: 40,
     bestPractices: [
       'PR templates',
       'Issue templates',
       'Branch protection',
       'Review guidelines',
-    ],
-    security: [
-      'Dependency scanning',
-      'Code scanning',
-      'Secret scanning',
-      'Security policies',
     ],
     metrics: {
       timesSaved: '40% workflow time',
@@ -176,9 +152,8 @@ const toolSkills: ToolSkill[] = [
       'Remote Extensions',
       'Docker',
       'Debugger for Chrome',
-      'REST Client',
     ],
-    projects: 60,
+    projects: 55,
     bestPractices: [
       'Workspace settings',
       'Extension management',
@@ -203,143 +178,55 @@ const toolSkills: ToolSkill[] = [
     ),
   },
   {
-    id: 'docker',
-    title: 'Docker',
-    proficiency: 75,
-    experience: '2+ years',
-    description: 'Container platform for building and shipping applications',
-    category: 'DevOps',
-    features: [
-      'Containerization',
-      'Docker Compose',
-      'Image management',
-      'Container orchestration',
-      'Volume management',
-      'Network configuration',
-      'Multi-stage builds',
-      'Health checks',
-    ],
-    workflows: [
-      'Development environments',
-      'CI/CD pipelines',
-      'Microservices deployment',
-      'Container registry',
-      'Resource management',
-      'Service scaling',
-      'Load balancing',
-      'Service discovery',
-    ],
-    projects: 20,
-    bestPractices: [
-      'Image optimization',
-      'Security scanning',
-      'Resource limits',
-      'Layer caching',
-    ],
-    security: [
-      'Image scanning',
-      'Resource isolation',
-      'Network policies',
-      'Secret management',
-    ],
-    metrics: {
-      timesSaved: '50% deploy time',
-      efficiency: 'High',
-      collaboration: 'Good',
-    },
-    icon: (props) => (
-      <div className="size-[60px] rounded-lg bg-gradient-to-br from-[#2496ED] to-[#2684FF] p-2 shadow-lg transition-shadow hover:shadow-xl">
-        <IconBrandDocker className="size-full text-white" {...props} />
-      </div>
-    ),
-  },
-  {
-    id: 'postman',
-    title: 'Postman',
-    proficiency: 88,
-    experience: '3+ years',
-    description: 'API development and testing platform',
-    category: 'Development',
-    features: [
-      'API testing',
-      'Request collections',
-      'Environment variables',
-      'Newman CLI',
-      'Mock servers',
-      'API documentation',
-      'Test scripts',
-      'Monitors',
-    ],
-    workflows: [
-      'API documentation',
-      'Team collaboration',
-      'Automated testing',
-      'API monitoring',
-      'Performance testing',
-      'API design',
-      'API governance',
-      'API security',
-    ],
-    projects: 35,
-    bestPractices: [
-      'Collection organization',
-      'Environment management',
-      'Test automation',
-      'Documentation',
-    ],
-    metrics: {
-      timesSaved: '40% API testing',
-      efficiency: 'Very high',
-      collaboration: 'Excellent',
-    },
-    icon: () => (
-      <div className="size-[60px] rounded-lg bg-gradient-to-br from-[#FF6C37] to-[#FF8C37] p-2 shadow-lg transition-shadow hover:shadow-xl">
-        <SiPostman className="size-full text-white" />
-      </div>
-    ),
-  },
-  {
-    id: 'figma',
-    title: 'Figma',
+    id: 'trello',
+    title: 'Trello',
     proficiency: 85,
-    experience: '2+ years',
-    description: 'Collaborative interface design tool',
-    category: 'Design',
+    experience: '3+ years',
+    description: 'Project and task management platform',
+    category: 'Project Management',
     features: [
-      'UI design',
-      'Prototyping',
-      'Design systems',
-      'Component libraries',
-      'Auto-layout',
-      'Constraints',
-      'Variables',
-      'Plugins',
+      'Kanban boards',
+      'Task management',
+      'Team collaboration',
+      'Custom workflows',
+      'Labels & tags',
+      'Due dates',
+      'Checklists',
+      'Attachments',
     ],
     workflows: [
-      'Design handoff',
-      'Team collaboration',
-      'Design reviews',
-      'Design systems',
-      'Component libraries',
-      'Design tokens',
-      'Design specs',
-      'Design versioning',
+      'Agile/Scrum',
+      'Project planning',
+      'Task tracking',
+      'Team coordination',
+      'Sprint planning',
+      'Backlog management',
+      'Release planning',
+      'Bug tracking',
     ],
-    projects: 25,
+    projects: 30,
     bestPractices: [
-      'Component organization',
-      'Style guides',
-      'Design tokens',
-      'Accessibility',
+      'Board organization',
+      'Label system',
+      'Task templates',
+      'Automation rules',
+    ],
+    integrations: [
+      'Slack',
+      'GitHub',
+      'Google Drive',
+      'Dropbox',
+      'Microsoft Teams',
+      'Jira',
     ],
     metrics: {
-      timesSaved: '30% design time',
+      timesSaved: '25% planning time',
       efficiency: 'High',
       collaboration: 'Excellent',
     },
     icon: (props) => (
-      <div className="size-[60px] rounded-lg bg-gradient-to-br from-[#F24E1E] to-[#FF7262] p-2 shadow-lg transition-shadow hover:shadow-xl">
-        <IconBrandFigma className="size-full text-white" {...props} />
+      <div className="size-[60px] rounded-lg bg-gradient-to-br from-[#0079BF] to-[#055A8C] p-2 shadow-lg transition-shadow hover:shadow-xl">
+        <IconBrandTrello className="size-full text-white" {...props} />
       </div>
     ),
   },
@@ -410,7 +297,9 @@ export function Tools() {
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300'
               }`}
             >
-              {category.charAt(0).toUpperCase() + category.slice(1)}
+              {category === 'all'
+                ? 'All Tools'
+                : category.charAt(0).toUpperCase() + category.slice(1)}
             </button>
           ))}
         </div>
@@ -487,23 +376,6 @@ export function Tools() {
                       </div>
                     </div>
                   )}
-
-                  {tool.security && (
-                    <div>
-                      <h4 className="mb-2 flex items-center gap-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
-                        <span className="h-2 w-2 rounded-full bg-red-500" />
-                        Security Features
-                      </h4>
-                      <div className="grid grid-cols-2 gap-2">
-                        {tool.security.map((item, index) => (
-                          <div key={index} className="flex items-center gap-2">
-                            <span className="h-1 w-1 rounded-full bg-gray-400" />
-                            {item}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
                 </div>
 
                 <div className="space-y-4">
@@ -574,13 +446,11 @@ export function Tools() {
                         className={`mt-1 inline-block rounded-full px-3 py-1 text-sm font-medium ${
                           tool.category === 'Version Control'
                             ? 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200'
-                            : tool.category === 'Design'
-                              ? 'bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-200'
-                              : tool.category === 'Development'
-                                ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
-                                : tool.category === 'DevOps'
-                                  ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
-                                  : 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
+                            : tool.category === 'Development'
+                              ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
+                              : tool.category === 'Project Management'
+                                ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+                                : 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
                         }`}
                       >
                         {tool.category}
@@ -604,3 +474,5 @@ export function Tools() {
     </motion.div>
   )
 }
+
+export default Tools

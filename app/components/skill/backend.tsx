@@ -1,14 +1,12 @@
 import {
-  IconBrandGolang,
-  IconBrandNodejs
+  IconBrandDjango,
+  IconBrandDocker,
+  IconBrandGitlab,
+  IconBrandPython,
+  IconCamera,
 } from '@tabler/icons-react'
 import { motion, useInView } from 'framer-motion'
 import { useRef, useState } from 'react'
-import {
-  SiApachekafka,
-  SiKubernetes,
-  SiNestjs
-} from 'react-icons/si'
 import SkillCard from './skill-card'
 
 interface BackendSkill {
@@ -17,7 +15,7 @@ interface BackendSkill {
   proficiency: number
   experience: string
   description: string
-  type: 'Runtime' | 'Framework' | 'DevOps' | 'Database' | 'Cloud' | 'Messaging'
+  type: 'Framework' | 'Machine Learning' | 'Computer Vision' | 'DevOps'
   icon: React.FC<{ className?: string; stroke?: number }>
   projects?: number
   features: string[]
@@ -28,7 +26,6 @@ interface BackendSkill {
     latency?: string
     scalability?: string
   }
-  certifications?: string[]
   bestPractices?: string[]
   architecturePatterns?: string[]
   securityFeatures?: string[]
@@ -36,264 +33,254 @@ interface BackendSkill {
 
 const backendSkills: BackendSkill[] = [
   {
-    id: 'nodejs',
-    title: 'Node.js',
-    proficiency: 90,
-    experience: '4+ years',
-    type: 'Runtime',
-    description:
-      'Building high-performance server-side applications with Node.js ecosystem',
-    features: [
-      'Event-driven architecture',
-      'RESTful APIs',
-      'Microservices',
-      'Performance optimization',
-      'Cluster module',
-      'Worker threads',
-      'Stream processing',
-      'Memory management',
-    ],
-    frameworks: ['Express.js', 'NestJS', 'Fastify', 'Koa', 'Hapi'],
-    libraries: [
-      'Prisma',
-      'Sequelize',
-      'Mongoose',
-      'Bull',
-      'Jest',
-      'Winston',
-      'PM2',
-    ],
-    projects: 25,
-    performance: {
-      throughput: '10k req/sec',
-      latency: '<100ms',
-      scalability: 'Horizontal',
-    },
-    certifications: [
-      'Node.js Application Developer',
-      'Node.js Services Developer',
-    ],
-    bestPractices: [
-      'Async/Await patterns',
-      'Error handling',
-      'Memory optimization',
-      'Security practices',
-    ],
-    architecturePatterns: [
-      'MVC',
-      'Repository pattern',
-      'Factory pattern',
-      'Dependency injection',
-    ],
-    securityFeatures: [
-      'Rate limiting',
-      'Input validation',
-      'JWT authentication',
-      'CORS policies',
-    ],
-    icon: (props) => (
-      <div className="size-[60px] rounded-lg bg-gradient-to-br from-[#539E43] to-[#76B063] p-2 shadow-lg transition-shadow hover:shadow-xl">
-        <IconBrandNodejs className="size-full text-white" {...props} />
-      </div>
-    ),
-  },
-  {
-    id: 'go',
-    title: 'Golang',
-    proficiency: 85,
-    experience: '3+ years',
-    type: 'Runtime',
-    description: 'Building high-performance concurrent applications with Go',
-    features: [
-      'Goroutines',
-      'Channels',
-      'Memory management',
-      'Cross-compilation',
-      'Built-in testing',
-      'Performance profiling',
-      'Standard library',
-    ],
-    frameworks: ['Gin', 'Echo', 'Fiber', 'Chi'],
-    libraries: ['GORM', 'sqlx', 'zap', 'testify'],
-    projects: 20,
-    performance: {
-      throughput: '50k req/sec',
-      latency: '<20ms',
-      scalability: 'Horizontal',
-    },
-    certifications: ['Go Developer Certificate'],
-    bestPractices: [
-      'Error handling',
-      'Interface design',
-      'Concurrency patterns',
-      'Memory management',
-    ],
-    architecturePatterns: [
-      'Clean architecture',
-      'DDD',
-      'CQRS',
-      'Event sourcing',
-    ],
-    securityFeatures: [
-      'Context handling',
-      'Secure defaults',
-      'Memory safety',
-      'Built-in crypto',
-    ],
-    icon: (props) => (
-      <div className="size-[60px] rounded-lg bg-gradient-to-br from-[#00ADD8] to-[#0087B3] p-2 shadow-lg transition-shadow hover:shadow-xl">
-        <IconBrandGolang className="size-full text-white" {...props} />
-      </div>
-    ),
-  },
-  {
-    id: 'nestjs',
-    title: 'NestJS',
+    id: 'django',
+    title: 'Django',
     proficiency: 88,
     experience: '3+ years',
     type: 'Framework',
-    description: 'Enterprise-ready Node.js framework with robust architecture',
+    description:
+      'High-level Python web framework emphasizing rapid development',
     features: [
-      'Dependency injection',
-      'Module architecture',
-      'TypeScript integration',
-      'OpenAPI (Swagger)',
-      'Microservices',
-      'WebSocket support',
-      'Task scheduling',
-      'GraphQL support',
+      'ORM system',
+      'Admin interface',
+      'Authentication',
+      'URL routing',
+      'Form handling',
+      'Template engine',
+      'Cache framework',
+      'Security features',
     ],
-    projects: 15,
-    frameworks: ['Express.js', 'Fastify'],
+    frameworks: [
+      'Django REST',
+      'Django Channels',
+      'Celery',
+      'DRF',
+      'Django CMS',
+    ],
     libraries: [
-      'TypeORM',
-      'Mongoose',
-      '@nestjs/graphql',
-      '@nestjs/bull',
-      '@nestjs/microservices',
+      'Django Debug Toolbar',
+      'Django Filters',
+      'Django CORS',
+      'Django OAuth',
+      'Django Extensions',
     ],
+    projects: 20,
     performance: {
-      throughput: '8k req/sec',
-      latency: '<80ms',
+      throughput: '5k req/sec',
+      latency: '<100ms',
       scalability: 'Horizontal',
     },
-    certifications: ['NestJS Fundamentals', 'Enterprise Node.js Architecture'],
     bestPractices: [
-      'SOLID principles',
-      'Clean architecture',
-      'Testing strategies',
-      'Exception filters',
+      'App structure',
+      'Model design',
+      'Security settings',
+      'Performance tuning',
     ],
     architecturePatterns: [
+      'MVT pattern',
+      'Service layer',
       'Repository pattern',
       'Factory pattern',
-      'Adapter pattern',
-      'Observer pattern',
     ],
     securityFeatures: [
-      'Guards',
-      'JWT strategy',
-      'Role-based access',
-      'Helmet integration',
+      'CSRF protection',
+      'XSS prevention',
+      'SQL injection',
+      'Authentication',
     ],
-    icon: () => (
-      <div className="size-[60px] rounded-lg bg-gradient-to-br from-[#E0234E] to-[#FF4B6B] p-2 shadow-lg transition-shadow hover:shadow-xl">
-        <SiNestjs className="size-full text-white" />
+    icon: (props) => (
+      <div className="size-[60px] rounded-lg bg-gradient-to-br from-[#092E20] to-[#0C4B33] p-2 shadow-lg transition-shadow hover:shadow-xl">
+        <IconBrandDjango className="size-full text-white" {...props} />
       </div>
     ),
   },
   {
-    id: 'kafka',
-    title: 'Apache Kafka',
+    id: 'pytorch',
+    title: 'PyTorch',
+    proficiency: 85,
+    experience: '2+ years',
+    type: 'Machine Learning',
+    description: 'Deep learning framework for research and production',
+    features: [
+      'Dynamic graphs',
+      'GPU acceleration',
+      'Neural networks',
+      'Autograd system',
+      'Distributed training',
+      'Model deployment',
+      'Custom layers',
+      'Data parallelism',
+    ],
+    frameworks: [
+      'TorchVision',
+      'TorchText',
+      'TorchAudio',
+      'FastAI',
+      'Lightning',
+    ],
+    libraries: ['NumPy', 'Pandas', 'scikit-learn', 'Matplotlib', 'TensorBoard'],
+    projects: 15,
+    performance: {
+      throughput: 'GPU optimized',
+      latency: 'Model dependent',
+      scalability: 'Distributed',
+    },
+    bestPractices: [
+      'Model architecture',
+      'Loss functions',
+      'Optimization',
+      'Regularization',
+    ],
+    architecturePatterns: ['CNN', 'RNN', 'Transformers', 'GAN'],
+    icon: (props) => (
+      <div className="size-[60px] rounded-lg bg-gradient-to-br from-[#EE4C2C] to-[#FF3709] p-2 shadow-lg transition-shadow hover:shadow-xl">
+        <IconBrandPython className="size-full text-white" {...props} />
+      </div>
+    ),
+  },
+  {
+    id: 'opencv',
+    title: 'OpenCV',
     proficiency: 82,
     experience: '2+ years',
-    type: 'Messaging',
-    description:
-      'Distributed event streaming platform for high-throughput data pipelines',
+    type: 'Computer Vision',
+    description: 'Computer vision and image processing library',
     features: [
-      'Event streaming',
-      'Message broking',
-      'Stream processing',
-      'Fault tolerance',
-      'Scalable architecture',
-      'Real-time processing',
-      'Data integration',
+      'Image processing',
+      'Object detection',
+      'Feature extraction',
+      'Video analysis',
+      'Camera calibration',
+      'Machine learning',
+      'Deep learning',
+      'GUI features',
     ],
+    frameworks: ['NumPy', 'MediaPipe', 'TensorFlow', 'PyTorch Vision'],
+    libraries: ['Matplotlib', 'PIL/Pillow', 'scikit-image', 'Dlib'],
     projects: 12,
-    frameworks: ['Kafka Streams', 'KSQL', 'Kafka Connect'],
-    libraries: ['node-rdkafka', 'kafkajs', 'Spring Kafka'],
     performance: {
-      throughput: '1M msg/sec',
-      latency: '<10ms',
+      throughput: 'Real-time capable',
+      latency: '<30ms',
+      scalability: 'CPU/GPU',
+    },
+    bestPractices: [
+      'Image preprocessing',
+      'Algorithm selection',
+      'Performance tuning',
+      'Error handling',
+    ],
+    architecturePatterns: [
+      'Pipeline pattern',
+      'Filter chain',
+      'Observer pattern',
+      'Strategy pattern',
+    ],
+    icon: (props) => (
+      <div className="size-[60px] rounded-lg bg-gradient-to-br from-[#5C3EE8] to-[#2717F5] p-2 shadow-lg transition-shadow hover:shadow-xl">
+        <IconCamera className="size-full text-white" {...props} />
+      </div>
+    ),
+  },
+  {
+    id: 'docker',
+    title: 'Docker',
+    proficiency: 80,
+    experience: '2+ years',
+    type: 'DevOps',
+    description: 'Container platform for application deployment',
+    features: [
+      'Containerization',
+      'Image management',
+      'Network isolation',
+      'Volume management',
+      'Docker Compose',
+      'Multi-stage builds',
+      'Health checks',
+      'Resource limits',
+    ],
+    frameworks: ['Docker Compose', 'Docker Swarm', 'Portainer', 'Watchtower'],
+    libraries: ['Docker SDK', 'Docker API', 'Docker CLI', 'Compose SDK'],
+    projects: 18,
+    performance: {
+      throughput: 'Container specific',
+      latency: 'Minimal overhead',
       scalability: 'Horizontal',
     },
     bestPractices: [
-      'Partition strategy',
-      'Consumer groups',
-      'Replication factor',
-      'Topic design',
+      'Image optimization',
+      'Security policies',
+      'Resource management',
+      'Network design',
     ],
     architecturePatterns: [
-      'Event sourcing',
-      'CQRS',
-      'Pub/Sub pattern',
-      'Streaming ETL',
+      'Microservices',
+      'Service mesh',
+      'Container patterns',
+      'Sidecar pattern',
     ],
-    securityFeatures: ['SSL/TLS', 'SASL auth', 'ACLs', 'Encryption'],
-    icon: () => (
-      <div className="size-[60px] rounded-lg bg-gradient-to-br from-[#000000] to-[#444444] p-2 shadow-lg transition-shadow hover:shadow-xl">
-        <SiApachekafka className="size-full text-white" />
+    securityFeatures: [
+      'Container isolation',
+      'Network policies',
+      'Secret management',
+      'Resource limits',
+    ],
+    icon: (props) => (
+      <div className="size-[60px] rounded-lg bg-gradient-to-br from-[#2496ED] to-[#2684FF] p-2 shadow-lg transition-shadow hover:shadow-xl">
+        <IconBrandDocker className="size-full text-white" {...props} />
       </div>
     ),
   },
   {
-    id: 'kubernetes',
-    title: 'Kubernetes',
-    proficiency: 85,
-    experience: '3+ years',
+    id: 'gitlab-cicd',
+    title: 'GitLab CI/CD',
+    proficiency: 78,
+    experience: '2+ years',
     type: 'DevOps',
-    description:
-      'Container orchestration platform for scalable microservices architecture',
+    description: 'Continuous integration and deployment platform',
     features: [
-      'Container orchestration',
-      'Service discovery',
-      'Load balancing',
-      'Auto-scaling',
-      'Rolling updates',
-      'Health monitoring',
-      'Resource management',
-      'Secret management',
+      'Pipeline automation',
+      'Container registry',
+      'Artifact management',
+      'Environment management',
+      'Auto DevOps',
+      'Code quality',
+      'Security scanning',
+      'Release automation',
     ],
-    projects: 18,
-    frameworks: ['Helm', 'Istio', 'Prometheus', 'Grafana'],
-    libraries: ['client-go', 'kubectl', 'kubeadm'],
+    frameworks: [
+      'GitLab Runner',
+      'GitLab Pages',
+      'GitLab Registry',
+      'GitLab Kubernetes',
+    ],
+    libraries: ['GitLab API', 'GitLab SDK', 'CI Lint', 'CI Variables'],
+    projects: 15,
     performance: {
-      throughput: 'Configurable',
-      latency: 'Policy-based',
-      scalability: 'Elastic',
+      throughput: 'Pipeline dependent',
+      latency: 'Job specific',
+      scalability: 'Runner based',
     },
-    certifications: ['CKA', 'CKAD', 'CKS'],
     bestPractices: [
-      'Resource quotas',
-      'Network policies',
-      'Pod security',
-      'High availability',
+      'Pipeline design',
+      'Cache usage',
+      'Job organization',
+      'Security scanning',
     ],
     architecturePatterns: [
-      'Sidecar pattern',
-      'Ambassador pattern',
-      'Multi-cluster',
+      'Pipeline patterns',
+      'Multi-stage builds',
+      'Deployment strategies',
       'GitOps',
     ],
     securityFeatures: [
-      'RBAC',
-      'Network policies',
-      'Pod security',
-      'Secret management',
+      'Secret variables',
+      'Protected runners',
+      'Security scanning',
+      'Access controls',
     ],
-    icon: () => (
-      <div className="size-[60px] rounded-lg bg-gradient-to-br from-[#326CE5] to-[#2951A3] p-2 shadow-lg transition-shadow hover:shadow-xl">
-        <SiKubernetes className="size-full text-white" />
+    icon: (props) => (
+      <div className="size-[60px] rounded-lg bg-gradient-to-br from-[#FC6D26] to-[#FCA326] p-2 shadow-lg transition-shadow hover:shadow-xl">
+        <IconBrandGitlab className="size-full text-white" {...props} />
       </div>
     ),
   },
@@ -344,11 +331,10 @@ export function Backend() {
     >
       <div className="mb-10">
         <h2 className="mb-3 text-3xl font-bold text-gray-800 dark:text-gray-200">
-          Backend Development
+          Software Development
         </h2>
         <p className="mb-6 text-lg text-gray-600 dark:text-gray-400">
-          Enterprise-grade server-side technologies and frameworks for building
-          scalable applications
+          Modern frameworks and tools for building scalable applications
         </p>
 
         <div className="mb-8 flex flex-wrap gap-3">
@@ -362,7 +348,7 @@ export function Backend() {
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300'
               }`}
             >
-              {type.charAt(0).toUpperCase() + type.slice(1)}
+              {type === 'all' ? 'All' : type}
             </button>
           ))}
         </div>
@@ -536,25 +522,6 @@ export function Backend() {
                     </div>
                   )}
 
-                  {skill.certifications && (
-                    <div>
-                      <h4 className="mb-2 flex items-center gap-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
-                        <span className="h-2 w-2 rounded-full bg-emerald-500" />
-                        Certifications
-                      </h4>
-                      <div className="flex flex-wrap gap-2">
-                        {skill.certifications.map((cert, index) => (
-                          <span
-                            key={index}
-                            className="rounded-full bg-emerald-100 px-3 py-1 text-sm text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200"
-                          >
-                            {cert}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
                   <div className="mt-4 flex items-center gap-4">
                     <div>
                       <span className="text-lg font-semibold text-gray-700 dark:text-gray-300">
@@ -562,13 +529,13 @@ export function Backend() {
                       </span>{' '}
                       <span
                         className={`mt-1 inline-block rounded-full px-3 py-1 text-sm font-medium ${
-                          skill.type === 'Runtime'
+                          skill.type === 'Framework'
                             ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
-                            : skill.type === 'Framework'
+                            : skill.type === 'Machine Learning'
                               ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-                              : skill.type === 'DevOps'
+                              : skill.type === 'Computer Vision'
                                 ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
-                                : skill.type === 'Messaging'
+                                : skill.type === 'DevOps'
                                   ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
                                   : 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
                         }`}
@@ -594,3 +561,5 @@ export function Backend() {
     </motion.div>
   )
 }
+
+export default Backend

@@ -1,6 +1,5 @@
-import { IconBrandCss3, IconBrandHtml5 } from '@tabler/icons-react'
 import { motion, useInView } from 'framer-motion'
-import Image from 'next/image'
+import { Code } from 'lucide-react'
 import { useRef, useState } from 'react'
 import SkillCard from './skill-card'
 
@@ -10,17 +9,17 @@ interface Language {
   proficiency: number
   experience: string
   description: string
-  category: 'Markup' | 'Scripting' | 'Typed' | 'Style'
-  icon: React.FC<{ stroke?: number }>
+  category: 'Systems' | 'Object-Oriented' | 'Scripting'
+  icon: React.FC<{ className?: string; stroke?: number }>
   keyFeatures: string[]
   tools: string[]
   projects?: number
   certifications?: string[]
   bestPractices?: string[]
   performance?: {
-    parsing?: string
+    compilation?: string
     execution?: string
-    compatibility?: string
+    memoryUsage?: string
   }
   architecturePatterns?: string[]
   relatedTech?: string[]
@@ -29,240 +28,282 @@ interface Language {
 
 const languageSkills: Language[] = [
   {
-    id: 'html5',
-    title: 'HTML 5',
-    proficiency: 95,
-    experience: '5+ years',
-    description: 'Expert in semantic markup and modern HTML5 features',
-    category: 'Markup',
+    id: 'c',
+    title: 'C',
+    proficiency: 90,
+    experience: '4+ years',
+    description: 'High-performance systems programming language',
+    category: 'Systems',
     keyFeatures: [
-      'Semantic Elements',
-      'Accessibility (ARIA)',
-      'Forms & Validation',
-      'SEO Optimization',
-      'Media Elements',
-      'Web Components',
-      'Custom Elements',
-      'Shadow DOM',
+      'Memory management',
+      'Pointer operations',
+      'System calls',
+      'Low-level optimization',
+      'Data structures',
+      'Bit manipulation',
+      'Process control',
+      'I/O operations',
     ],
     tools: [
-      'HTML Validator',
-      'ARIA Checker',
-      'Schema Markup',
-      'Microdata',
-      'Open Graph',
-      'Rich Snippets',
-      'HTML Minifier',
-      'Emmet',
+      'GCC',
+      'Make',
+      'GDB',
+      'Valgrind',
+      'CMake',
+      'Linux APIs',
+      'strace',
+      'perf',
     ],
-    projects: 50,
-    certifications: [
-      'W3C HTML5',
-      'Web Accessibility',
-      'SEO Fundamentals',
-      'Semantic Web',
-    ],
+    projects: 25,
     bestPractices: [
-      'Semantic Structure',
-      'Progressive Enhancement',
-      'Cross-browser Support',
-      'Mobile-first Design',
+      'Memory safety',
+      'Error handling',
+      'Code optimization',
+      'Resource management',
     ],
     performance: {
-      parsing: 'Optimized DOM',
-      execution: 'Fast Rendering',
-      compatibility: 'Cross-platform',
+      compilation: 'Fast',
+      execution: 'Native speed',
+      memoryUsage: 'Manual control',
     },
     architecturePatterns: [
-      'Component-based',
-      'Progressive Enhancement',
-      'Semantic Structure',
-      'Accessibility Patterns',
+      'Modular design',
+      'Data abstraction',
+      'Event handling',
+      'State machines',
     ],
-    relatedTech: ['WAI-ARIA', 'Microdata', 'Web Components', 'Shadow DOM'],
-    resources: ['MDN Web Docs', 'W3C Specs', 'HTML Living Standard', 'WHATWG'],
-    icon: (props) => (
-      <div className="size-[60px] rounded-lg bg-gradient-to-br from-[#E44D26] to-[#F16529] p-2 shadow-lg transition-shadow hover:shadow-xl">
-        <IconBrandHtml5 className="size-full text-white" {...props} />
+    relatedTech: [
+      'Assembly',
+      'Linux kernel',
+      'Embedded systems',
+      'Device drivers',
+    ],
+    icon: ({ className }) => (
+      <div className="size-[60px] rounded-lg bg-gradient-to-br from-[#5C6BC0] to-[#3949AB] p-2 shadow-lg transition-shadow hover:shadow-xl">
+        <Code className={`size-full text-white ${className}`} />
       </div>
     ),
   },
   {
-    id: 'css3',
-    title: 'CSS 3',
-    proficiency: 90,
-    experience: '5+ years',
-    description: 'Proficient in modern CSS techniques and frameworks',
-    category: 'Style',
+    id: 'cpp',
+    title: 'C++',
+    proficiency: 85,
+    experience: '3+ years',
+    description: 'Object-oriented systems and application development',
+    category: 'Object-Oriented',
     keyFeatures: [
-      'Flexbox & Grid',
-      'Animations & Transitions',
-      'Responsive Design',
-      'CSS Modules',
-      'Custom Properties',
-      'CSS Grid',
-      'Container Queries',
-      'Layer Queries',
+      'OOP principles',
+      'Templates',
+      'STL library',
+      'Smart pointers',
+      'RAII pattern',
+      'Exception handling',
+      'Multiple inheritance',
+      'Operator overloading',
     ],
     tools: [
-      'Sass/SCSS',
-      'PostCSS',
-      'CSS Modules',
-      'Stylelint',
-      'CSS-in-JS',
-      'TailwindCSS',
-      'CSS Frameworks',
-      'Browser DevTools',
+      'Clang++',
+      'Visual Studio',
+      'Boost',
+      'Qt',
+      'Catch2',
+      'CMake',
+      'Conan',
+      'vcpkg',
     ],
-    projects: 45,
-    certifications: [
-      'CSS Advanced Layouts',
-      'Responsive Web Design',
-      'Animation Expert',
-      'CSS Architecture',
-    ],
+    projects: 20,
     bestPractices: [
-      'BEM Methodology',
-      'CSS Architecture',
-      'Performance Optimization',
-      'Maintainable CSS',
+      'SOLID principles',
+      'Exception safety',
+      'Resource management',
+      'Modern C++ features',
     ],
     performance: {
-      parsing: 'Efficient Selectors',
-      execution: 'Hardware Acceleration',
-      compatibility: 'Progressive Enhancement',
+      compilation: 'Template heavy',
+      execution: 'Zero-cost abstractions',
+      memoryUsage: 'RAII-based',
     },
-    architecturePatterns: ['ITCSS', 'SMACSS', 'BEM', 'Atomic Design'],
-    relatedTech: ['Sass', 'Less', 'PostCSS', 'CSS-in-JS'],
-    icon: (props) => (
-      <div className="size-[60px] rounded-lg bg-gradient-to-br from-[#264DE4] to-[#2965F1] p-2 shadow-lg transition-shadow hover:shadow-xl">
-        <IconBrandCss3 className="size-full text-white" {...props} />
+    architecturePatterns: [
+      'Factory pattern',
+      'Observer pattern',
+      'PIMPL idiom',
+      'Command pattern',
+    ],
+    relatedTech: ['STL', 'Boost', 'Qt', 'OpenGL'],
+    icon: ({ className }) => (
+      <div className="size-[60px] rounded-lg bg-gradient-to-br from-[#00599C] to-[#004482] p-2 shadow-lg transition-shadow hover:shadow-xl">
+        <Code className={`size-full text-white ${className}`} />
+      </div>
+    ),
+  },
+  {
+    id: 'python',
+    title: 'Python',
+    proficiency: 92,
+    experience: '5+ years',
+    description: 'Versatile language for automation and scientific computing',
+    category: 'Scripting',
+    keyFeatures: [
+      'Data analysis',
+      'Machine learning',
+      'Web frameworks',
+      'Scientific computing',
+      'Automation',
+      'Scripting',
+      'Package management',
+      'Testing frameworks',
+    ],
+    tools: [
+      'NumPy',
+      'Pandas',
+      'TensorFlow',
+      'Django',
+      'Flask',
+      'PyTest',
+      'Poetry',
+      'Jupyter',
+    ],
+    projects: 35,
+    bestPractices: [
+      'PEP 8 style guide',
+      'Virtual environments',
+      'Documentation',
+      'Type hints',
+    ],
+    performance: {
+      compilation: 'Interpreted',
+      execution: 'GIL-based',
+      memoryUsage: 'Garbage collected',
+    },
+    architecturePatterns: [
+      'MVC pattern',
+      'Factory pattern',
+      'Singleton pattern',
+      'Observer pattern',
+    ],
+    relatedTech: [
+      'Data Science',
+      'Web Development',
+      'Machine Learning',
+      'DevOps',
+    ],
+    icon: ({ className }) => (
+      <div className="size-[60px] rounded-lg bg-gradient-to-br from-[#FFD43B] to-[#306998] p-2 shadow-lg transition-shadow hover:shadow-xl">
+        <Code className={`size-full text-white ${className}`} />
+      </div>
+    ),
+  },
+  {
+    id: 'rust',
+    title: 'Rust',
+    proficiency: 75,
+    experience: '2+ years',
+    description: 'Systems programming with memory safety guarantees',
+    category: 'Systems',
+    keyFeatures: [
+      'Memory safety',
+      'Concurrency',
+      'Zero-cost abstractions',
+      'Pattern matching',
+      'Ownership model',
+      'No null or dangling pointers',
+      'Compile-time guarantees',
+      'Trait-based generics',
+    ],
+    tools: [
+      'Cargo',
+      'Rustup',
+      'Clippy',
+      'Rayon',
+      'Tokio',
+      'serde',
+      'diesel',
+      'rocket',
+    ],
+    projects: 15,
+    bestPractices: [
+      'Ownership rules',
+      'Lifetimes',
+      'Error handling',
+      'Functional programming',
+    ],
+    performance: {
+      compilation: 'Strict checks',
+      execution: 'Near C performance',
+      memoryUsage: 'Compile-time managed',
+    },
+    architecturePatterns: [
+      'Actor model',
+      'Functional composition',
+      'Trait objects',
+      'Macro system',
+    ],
+    relatedTech: [
+      'Systems Programming',
+      'WebAssembly',
+      'Embedded Systems',
+      'Network Services',
+    ],
+    icon: ({ className }) => (
+      <div className="size-[60px] rounded-lg bg-gradient-to-br from-[#DEA584] to-[#000000] p-2 shadow-lg transition-shadow hover:shadow-xl">
+        <Code className={`size-full text-white ${className}`} />
       </div>
     ),
   },
   {
     id: 'javascript',
     title: 'JavaScript',
-    proficiency: 85,
+    proficiency: 88,
     experience: '4+ years',
-    description: 'Strong foundation in modern JavaScript development',
+    description: 'Dynamic web development and full-stack applications',
     category: 'Scripting',
     keyFeatures: [
-      'ES6+ Features',
-      'Async Programming',
-      'DOM Manipulation',
-      'Design Patterns',
-      'Functional Programming',
-      'Event Loop',
-      'Memory Management',
-      'Web APIs',
+      'Frontend frameworks',
+      'Node.js backend',
+      'Asynchronous programming',
+      'DOM manipulation',
+      'Event-driven',
+      'Functional programming',
+      'ES6+ features',
+      'TypeScript support',
     ],
     tools: [
-      'ESLint',
-      'Prettier',
-      'Babel',
+      'React',
+      'Node.js',
+      'Express',
       'Webpack',
-      'Jest',
-      'npm/yarn',
-      'Chrome DevTools',
-      'VS Code',
-    ],
-    projects: 40,
-    certifications: [
-      'JavaScript Advanced Concepts',
-      'ES6 Specialist',
-      'Functional Programming',
-      'Design Patterns',
-    ],
-    bestPractices: [
-      'Clean Code',
-      'SOLID Principles',
-      'Performance Optimization',
-      'Error Handling',
-    ],
-    performance: {
-      parsing: 'V8 Optimization',
-      execution: 'Memory Efficient',
-      compatibility: 'Cross-browser',
-    },
-    architecturePatterns: [
-      'Module Pattern',
-      'Observer Pattern',
-      'Factory Pattern',
-      'Singleton Pattern',
-    ],
-    icon: () => (
-      <div className="size-[60px] rounded-lg bg-gradient-to-br from-[#F7DF1E] to-[#F7DF1E] p-2 shadow-lg transition-shadow hover:shadow-xl">
-        <Image
-          src="/assets/icons/logo-javascript.svg"
-          alt="JavaScript"
-          width={48}
-          height={48}
-          className="size-full"
-        />
-      </div>
-    ),
-  },
-  {
-    id: 'typescript',
-    title: 'TypeScript',
-    proficiency: 88,
-    experience: '3+ years',
-    description: 'Advanced TypeScript development with focus on type safety',
-    category: 'Typed',
-    keyFeatures: [
-      'Type Systems',
-      'Generics',
-      'Decorators',
-      'Advanced Types',
-      'Type Inference',
-      'Utility Types',
-      'Mapped Types',
-      'Conditional Types',
-    ],
-    tools: [
-      'TSC',
-      'TSLint',
-      'TS-Node',
-      'Type-Fest',
-      'TypeScript ESLint',
-      'ts-jest',
-      'tsconfig-paths',
-      'TypeScript Playground',
+      'Babel',
+      'TypeScript',
+      'Next.js',
+      'Vite',
     ],
     projects: 30,
-    certifications: [
-      'TypeScript Professional',
-      'Advanced TypeScript',
-      'Type Systems Expert',
-      'Enterprise TypeScript',
-    ],
     bestPractices: [
-      'Type Safety',
-      'Interface Design',
-      'Generic Patterns',
-      'Error Handling',
+      'Modular design',
+      'Async/await',
+      'Functional components',
+      'State management',
     ],
     performance: {
-      parsing: 'Type Checking',
-      execution: 'Runtime Safety',
-      compatibility: 'JavaScript Interop',
+      compilation: 'Interpreted/JIT',
+      execution: 'V8 engine optimized',
+      memoryUsage: 'Garbage collected',
     },
     architecturePatterns: [
-      'Repository Pattern',
-      'Factory Pattern',
-      'Dependency Injection',
-      'Builder Pattern',
+      'Component-based',
+      'Reactive programming',
+      'Flux/Redux',
+      'Microservices',
     ],
-    icon: () => (
-      <div className="size-[60px] rounded-lg bg-gradient-to-br from-[#007ACC] to-[#007ACC] p-2 shadow-lg transition-shadow hover:shadow-xl">
-        <Image
-          src="/assets/icons/typescript.svg"
-          alt="TypeScript"
-          width={48}
-          height={48}
-          className="size-full"
-        />
+    relatedTech: [
+      'Web Development',
+      'Full-stack',
+      'Mobile Development',
+      'Cloud Services',
+    ],
+    icon: ({ className }) => (
+      <div className="size-[60px] rounded-lg bg-gradient-to-br from-[#F0DB4F] to-[#323330] p-2 shadow-lg transition-shadow hover:shadow-xl">
+        <Code className={`size-full text-white ${className}`} />
       </div>
     ),
   },
@@ -319,7 +360,7 @@ export function Languages() {
           Programming Languages
         </h2>
         <p className="mb-6 text-lg text-gray-600 dark:text-gray-400">
-          Core programming languages and markup technologies I specialize in
+          Core programming languages for systems, applications, and automation
         </p>
 
         <div className="mb-8 flex flex-wrap gap-3">
@@ -333,7 +374,7 @@ export function Languages() {
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300'
               }`}
             >
-              {category.charAt(0).toUpperCase() + category.slice(1)}
+              {category === 'all' ? 'All' : category}
             </button>
           ))}
         </div>
@@ -398,7 +439,7 @@ export function Languages() {
                     <div>
                       <h4 className="mb-2 flex items-center gap-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
                         <span className="h-2 w-2 rounded-full bg-green-500" />
-                        Performance Metrics
+                        Performance Characteristics
                       </h4>
                       <div className="grid grid-cols-2 gap-2">
                         {Object.entries(skill.performance).map(
@@ -490,25 +531,6 @@ export function Languages() {
                     </div>
                   )}
 
-                  {skill.certifications && (
-                    <div>
-                      <h4 className="mb-2 flex items-center gap-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
-                        <span className="h-2 w-2 rounded-full bg-emerald-500" />
-                        Certifications
-                      </h4>
-                      <div className="flex flex-wrap gap-2">
-                        {skill.certifications.map((cert, index) => (
-                          <span
-                            key={index}
-                            className="rounded-full bg-emerald-100 px-3 py-1 text-sm text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200"
-                          >
-                            {cert}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
                   <div className="mt-4 flex items-center gap-4">
                     <div>
                       <span className="text-lg font-semibold text-gray-700 dark:text-gray-300">
@@ -516,15 +538,13 @@ export function Languages() {
                       </span>{' '}
                       <span
                         className={`mt-1 inline-block rounded-full px-3 py-1 text-sm font-medium ${
-                          skill.category === 'Markup'
+                          skill.category === 'Systems'
                             ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
-                            : skill.category === 'Style'
-                              ? 'bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-200'
+                            : skill.category === 'Object-Oriented'
+                              ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
                               : skill.category === 'Scripting'
-                                ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
-                                : skill.category === 'Typed'
-                                  ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
-                                  : 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
+                                ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+                                : 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
                         }`}
                       >
                         {skill.category}
@@ -548,3 +568,5 @@ export function Languages() {
     </motion.div>
   )
 }
+
+export default Languages
