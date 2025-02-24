@@ -1,6 +1,6 @@
 import { motion, useAnimation } from 'framer-motion'
 import { ChevronDown, Star } from 'lucide-react'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 interface SkillCardProps {
   children: React.ReactNode
@@ -24,7 +24,7 @@ const progressBarVariants = {
   animate: (proficiency: number) => ({
     width: `${proficiency}%`,
     transition: {
-      duration: 1.2,
+      duration: 1.3,
       ease: [0.87, 0, 0.13, 1],
       delay: 0.3,
     },
@@ -43,14 +43,14 @@ const cardVariants = {
   },
   hover: {
     scale: 1.02,
-    y: -4,
+    y: 0,
     transition: {
-      duration: 0.2,
+      duration: 0.8,
       ease: 'easeInOut',
     },
   },
   tap: {
-    scale: 0.98,
+    scale: 1.02,
   },
 }
 
@@ -72,7 +72,7 @@ const LevelBadge = ({ level }: { level: string }) => {
 
   return (
     <span
-      className={`rounded-full px-3 py-1 text-xs font-medium ${getBadgeColor()}`}
+      className={`rounded-lg px-3 py-1 text-xs font-medium ${getBadgeColor()}`}
     >
       {level}
     </span>
@@ -103,21 +103,108 @@ const FrequencyIndicator = ({ frequency }: { frequency: string }) => {
   )
 }
 
-const StarRating = ({ rating }: { rating: number }) => {
+// Enhanced Star Rating Component
+interface StarRatingProps {
+  rating: number
+  readonly?: boolean
+  size?: number
+  precision?: 'full' | 'half'
+  onChange?: (rating: number) => void
+  showValue?: boolean
+}
+
+const StarRating = ({
+  rating,
+  readonly = true,
+  size = 16,
+  precision = 'half',
+  onChange,
+  showValue = false,
+}: StarRatingProps) => {
+  const [internalRating, setInternalRating] = useState(rating)
+  const [hoverRating, setHoverRating] = useState(0)
+
+  // Update internal rating when prop changes
+  useEffect(() => {
+    setInternalRating(rating)
+  }, [rating])
+
+  // Handle star click
+  const handleClick = (selectedRating: number) => {
+    if (readonly) return
+
+    setInternalRating(selectedRating)
+    onChange?.(selectedRating)
+  }
+
+  // Get star fill based on rating and hover state
+  const getStarFill = (starPosition: number) => {
+    const currentRating = hoverRating || internalRating
+
+    if (precision === 'half') {
+      // Full star
+      if (starPosition <= Math.floor(currentRating)) {
+        return 'currentColor'
+      }
+      // Half star
+      if (
+        starPosition === Math.ceil(currentRating) &&
+        !Number.isInteger(currentRating)
+      ) {
+        return 'url(#halfGradient)'
+      }
+    } else {
+      // Only full stars
+      if (starPosition <= currentRating) {
+        return 'currentColor'
+      }
+    }
+
+    return 'none'
+  }
+
   return (
-    <div className="flex items-center gap-1">
-      {[1, 2, 3, 4, 5].map((star) => (
-        <Star
-          key={star}
-          size={16}
-          className={
-            star <= rating
-              ? 'fill-current text-yellow-400'
-              : 'text-gray-300 dark:text-gray-600'
-          }
-          fill={star <= rating ? 'currentColor' : 'none'}
-        />
-      ))}
+    <div className="relative flex items-center gap-1">
+      {/* SVG gradient definition for half stars */}
+      <svg width="0" height="0" className="absolute">
+        <defs>
+          <linearGradient id="halfGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="50%" stopColor="currentColor" />
+            <stop offset="50%" stopColor="transparent" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+      </svg>
+
+      <div
+        className="flex items-center gap-1"
+        onMouseLeave={() => !readonly && setHoverRating(0)}
+      >
+        {[1, 2, 3, 4, 5].map((star) => (
+          <div
+            key={star}
+            onClick={() => handleClick(star)}
+            onMouseEnter={() => !readonly && setHoverRating(star)}
+            className={!readonly ? 'cursor-pointer' : ''}
+          >
+            <Star
+              size={size}
+              className={`transition-all duration-200 ${
+                (hoverRating || internalRating) >= star
+                  ? 'text-yellow-400'
+                  : 'text-gray-300 dark:text-gray-600'
+              } ${!readonly && 'hover:scale-110'}`}
+              fill={getStarFill(star)}
+              strokeWidth={1.5}
+            />
+          </div>
+        ))}
+      </div>
+
+      {showValue && (
+        <span className="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+          {internalRating.toFixed(precision === 'half' ? 1 : 0)}
+        </span>
+      )}
     </div>
   )
 }
@@ -141,6 +228,8 @@ export default function SkillCard({
   const controls = useAnimation()
   const [isHovered, setIsHovered] = useState(false)
   const [showDetails, setShowDetails] = useState(false)
+  const [skillRating, setSkillRating] = useState(rating)
+  const cardRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (isSelected) {
@@ -149,6 +238,22 @@ export default function SkillCard({
       controls.start('hidden')
     }
   }, [isSelected, controls])
+
+  // Update internal rating when prop changes
+  useEffect(() => {
+    setSkillRating(rating)
+  }, [rating])
+
+  useEffect(() => {
+    if (showDetails && cardRef.current) {
+      setTimeout(() => {
+        cardRef.current?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'nearest',
+        })
+      }, 100)
+    }
+  }, [showDetails])
 
   const getProgressColor = (value: number) => {
     if (value >= 90) return 'from-emerald-500 to-emerald-400'
@@ -178,7 +283,7 @@ export default function SkillCard({
     >
       {/* Highlight glow effect */}
       <motion.div
-        className="pointer-events-none absolute inset-0 rounded-xl bg-gradient-to-r from-orange-500/20 to-white-500/20 opacity-0 blur-xl transition-opacity"
+        className="to-white-500/20 pointer-events-none absolute inset-0 rounded-xl bg-gradient-to-r from-orange-500/20 opacity-0 blur-xl transition-opacity"
         animate={{ opacity: isHovered ? 0.3 : 0 }}
       />
 
@@ -187,8 +292,10 @@ export default function SkillCard({
         {/* Icon section with hover effect */}
         <motion.div
           className="flex items-center justify-center"
-          whileHover={{ scale: 1.05, rotate: 360 }}
-          transition={{ duration: 3 }}
+          animate={
+            isHovered ? { rotate: 360, scale: 1.02 } : { rotate: 0, scale: 1 }
+          }
+          transition={{ duration: 4, ease: 'easeInOut' }}
         >
           {children}
         </motion.div>
@@ -223,7 +330,12 @@ export default function SkillCard({
             <p className="text-sm text-gray-600 dark:text-gray-300">
               {description}
             </p>
-            <StarRating rating={rating} />
+            <StarRating
+              rating={skillRating}
+              readonly={!isSelected}
+              precision="half"
+              onChange={(newRating) => setSkillRating(newRating)}
+            />
           </div>
 
           {/* Progress section */}
@@ -259,44 +371,48 @@ export default function SkillCard({
           <motion.div
             initial={false}
             animate={{ height: showDetails ? 'auto' : 0 }}
+            transition={{ duration: 0.5, ease: 'easeInOut' }}
             className="overflow-hidden"
           >
-            {highlights.length > 0 && (
-              <div className="mt-4 space-y-2">
-                <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                  Key Highlights
-                </h3>
-                <ul className="grid grid-cols-2 gap-2">
-                  {highlights.map((highlight, index) => (
-                    <li
-                      key={index}
-                      className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400"
-                    >
-                      <span className="h-1 w-1 rounded-full bg-blue-500" />
-                      {highlight}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            {certifications.length > 0 && (
-              <div className="mt-4 space-y-2">
-                <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                  Certifications
-                </h3>
-                <div className="flex flex-wrap gap-2">
-                  {certifications.map((cert, index) => (
-                    <span
-                      key={index}
-                      className="rounded-full bg-purple-100 px-3 py-1 text-xs text-purple-800 dark:bg-purple-900 dark:text-purple-200"
-                    >
-                      {cert}
-                    </span>
-                  ))}
+            <div className="max-h-80 overflow-y-auto pr-2">
+              {' '}
+              {/* Add this wrapper with max height and scrolling */}
+              {highlights.length > 0 && (
+                <div className="mt-4 space-y-2">
+                  <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                    Key Highlights
+                  </h3>
+                  <ul className="grid grid-cols-2 gap-2">
+                    {highlights.map((highlight, index) => (
+                      <li
+                        key={index}
+                        className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400"
+                      >
+                        <span className="h-1 w-1 rounded-full bg-blue-500" />
+                        {highlight}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-              </div>
-            )}
+              )}
+              {certifications.length > 0 && (
+                <div className="mt-4 space-y-2">
+                  <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                    Certifications
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {certifications.map((cert, index) => (
+                      <span
+                        key={index}
+                        className="rounded-full bg-purple-100 px-3 py-1 text-xs text-purple-800 dark:bg-purple-900 dark:text-purple-200"
+                      >
+                        {cert}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
           </motion.div>
         </div>
       </div>

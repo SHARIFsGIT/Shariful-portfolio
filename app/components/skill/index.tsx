@@ -1,5 +1,4 @@
 import {
-  IconArrowNarrowRight,
   IconBrandReact,
   IconBrandWindows,
   IconCode,
@@ -42,9 +41,7 @@ type IconComponent = React.ComponentType<{
   className?: string
   stroke?: number
   size?: number
-}> & {
-  displayName?: string
-}
+}>
 
 // Skill category interface
 interface SkillCategory {
@@ -94,7 +91,6 @@ const allSkills: Skill[] = [
     description: 'High-level programming language',
     tags: ['scripting', 'automation', 'data-science'],
   },
-  // Add similar entries for other categories...
 ]
 
 // Updated skill categories configuration
@@ -157,7 +153,7 @@ const sidebarVariants = {
     x: 0,
     opacity: 1,
     transition: {
-      duration: 0.5,
+      duration: 0.9,
       ease: 'easeOut',
     },
   },
@@ -169,7 +165,7 @@ const contentVariants = {
     opacity: 1,
     x: 0,
     transition: {
-      duration: 0.4,
+      duration: 0.5,
       ease: 'easeOut',
     },
   },
@@ -347,10 +343,6 @@ export function Skill() {
                             ))}
                           </div>
                         </div>
-                        <IconArrowNarrowRight
-                          className="hover:text-primary-500 text-gray-400"
-                          size={24}
-                        />
                       </li>
                     ))}
                   </ul>
