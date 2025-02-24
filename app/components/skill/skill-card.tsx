@@ -54,6 +54,26 @@ const cardVariants = {
   },
 }
 
+// Immediate expansion for details section - much faster animation
+const detailsVariants = {
+  collapsed: {
+    height: 0,
+    opacity: 0,
+    transition: {
+      height: { duration: 0.05 }, // Even faster transition
+      opacity: { duration: 0.05 },
+    },
+  },
+  expanded: {
+    height: 'auto',
+    opacity: 1,
+    transition: {
+      height: { duration: 0.1 }, // Almost instant for better UX
+      opacity: { duration: 0.1 },
+    },
+  },
+}
+
 const LevelBadge = ({ level }: { level: string }) => {
   const getBadgeColor = () => {
     switch (level) {
@@ -231,11 +251,14 @@ export default function SkillCard({
   const [skillRating, setSkillRating] = useState(rating)
   const cardRef = useRef<HTMLDivElement>(null)
 
+  // Synchronize isSelected prop with local state
   useEffect(() => {
     if (isSelected) {
       controls.start('visible')
+      setShowDetails(true)
     } else {
       controls.start('hidden')
+      setShowDetails(false)
     }
   }, [isSelected, controls])
 
@@ -244,6 +267,7 @@ export default function SkillCard({
     setSkillRating(rating)
   }, [rating])
 
+  // Scroll into view when expanding
   useEffect(() => {
     if (showDetails && cardRef.current) {
       setTimeout(() => {
@@ -251,7 +275,7 @@ export default function SkillCard({
           behavior: 'smooth',
           block: 'nearest',
         })
-      }, 100)
+      }, 10) // Further reduced time for immediate scrolling
     }
   }, [showDetails])
 
@@ -262,17 +286,20 @@ export default function SkillCard({
     return 'from-orange-500 to-orange-400'
   }
 
+  const handleCardClick = () => {
+    onClick?.()
+    setShowDetails(!showDetails)
+  }
+
   return (
     <motion.div
+      ref={cardRef}
       variants={cardVariants}
       initial="initial"
       animate="animate"
       whileHover="hover"
       whileTap="tap"
-      onClick={() => {
-        onClick?.()
-        setShowDetails(!showDetails)
-      }}
+      onClick={handleCardClick}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
       className={`group relative overflow-hidden rounded-xl bg-white p-6 ${
@@ -283,7 +310,7 @@ export default function SkillCard({
     >
       {/* Highlight glow effect */}
       <motion.div
-        className="to-white-500/20 pointer-events-none absolute inset-0 rounded-xl bg-gradient-to-r from-orange-500/20 opacity-0 blur-xl transition-opacity"
+        className="pointer-events-none absolute inset-0 rounded-xl bg-gradient-to-r from-orange-500/30 to-white/20 opacity-0 blur-xl transition-opacity dark:from-white/20 dark:to-black/20"
         animate={{ opacity: isHovered ? 0.3 : 0 }}
       />
 
@@ -295,7 +322,7 @@ export default function SkillCard({
           animate={
             isHovered ? { rotate: 360, scale: 1.02 } : { rotate: 0, scale: 1 }
           }
-          transition={{ duration: 4, ease: 'easeInOut' }}
+          transition={{ duration: 3, ease: 'easeInOut' }}
         >
           {children}
         </motion.div>
@@ -352,7 +379,8 @@ export default function SkillCard({
               />
             </div>
 
-            <div className="flex items-center justify-between text-sm">
+            {/* Added pb-4 below to create space between percentage and dropdown button */}
+            <div className="flex items-center justify-between pb-5 text-sm">
               <span className="font-medium text-gray-700 dark:text-gray-300">
                 Proficiency
               </span>
@@ -366,72 +394,71 @@ export default function SkillCard({
               </motion.span>
             </div>
           </div>
-
-          {/* Expandable details section */}
-          <motion.div
-            initial={false}
-            animate={{ height: showDetails ? 'auto' : 0 }}
-            transition={{ duration: 0.5, ease: 'easeInOut' }}
-            className="overflow-hidden"
-          >
-            <div className="max-h-80 overflow-y-auto pr-2">
-              {' '}
-              {/* Add this wrapper with max height and scrolling */}
-              {highlights.length > 0 && (
-                <div className="mt-4 space-y-2">
-                  <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                    Key Highlights
-                  </h3>
-                  <ul className="grid grid-cols-2 gap-2">
-                    {highlights.map((highlight, index) => (
-                      <li
-                        key={index}
-                        className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400"
-                      >
-                        <span className="h-1 w-1 rounded-full bg-blue-500" />
-                        {highlight}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-              {certifications.length > 0 && (
-                <div className="mt-4 space-y-2">
-                  <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                    Certifications
-                  </h3>
-                  <div className="flex flex-wrap gap-2">
-                    {certifications.map((cert, index) => (
-                      <span
-                        key={index}
-                        className="rounded-full bg-purple-100 px-3 py-1 text-xs text-purple-800 dark:bg-purple-900 dark:text-purple-200"
-                      >
-                        {cert}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          </motion.div>
         </div>
       </div>
 
-      {/* Expand/collapse indicator */}
+      {/* Expand/collapse indicator - improved positioning and visibility */}
       <motion.div
-        className="absolute bottom-2 right-2"
+        className="absolute bottom-1 right-5 flex h-8 w-8 items-center justify-center"
         animate={{ rotate: showDetails ? 180 : 0 }}
+        transition={{ duration: 0.2 }}
       >
-        <ChevronDown className="size-5 text-gray-400 transition-colors group-hover:text-gray-600 dark:text-gray-500 dark:group-hover:text-gray-300" />
+        <ChevronDown className="size-5 text-gray-500 transition-colors group-hover:text-gray-700 dark:text-gray-400 dark:group-hover:text-gray-200" />
       </motion.div>
 
       {/* Selection indicator */}
       <motion.div
-        className="bg-primary-500 absolute bottom-0 left-0 top-0 w-1"
+        className="absolute bottom-0 left-0 top-0 w-1 bg-blue-500/80"
         initial={{ scaleY: 0 }}
         animate={{ scaleY: isSelected ? 1 : 0 }}
         transition={{ duration: 0.3 }}
       />
+
+      {/* Expandable details section - with IMMEDIATE animation */}
+      <motion.div
+        initial="collapsed"
+        animate={showDetails ? 'expanded' : 'collapsed'}
+        variants={detailsVariants}
+        className="overflow-hidden"
+      >
+        <div className="mt-6 max-h-96 overflow-y-auto pr-2">
+          {highlights.length > 0 && (
+            <div className="space-y-2">
+              <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                Key Highlights
+              </h3>
+              <ul className="grid grid-cols-2 gap-2">
+                {highlights.map((highlight, index) => (
+                  <li
+                    key={index}
+                    className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400"
+                  >
+                    <span className="h-1 w-1 rounded-full bg-blue-500" />
+                    {highlight}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {certifications.length > 0 && (
+            <div className="mt-4 space-y-2">
+              <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                Certifications
+              </h3>
+              <div className="flex flex-wrap gap-2">
+                {certifications.map((cert, index) => (
+                  <span
+                    key={index}
+                    className="rounded-full bg-purple-100 px-3 py-1 text-xs text-purple-800 dark:bg-purple-900 dark:text-purple-200"
+                  >
+                    {cert}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </motion.div>
     </motion.div>
   )
 }

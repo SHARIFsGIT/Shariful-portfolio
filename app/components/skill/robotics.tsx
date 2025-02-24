@@ -199,10 +199,10 @@ export function Robotics() {
             <button
               key={category}
               onClick={() => setFilterCategory(category)}
-              className={`rounded-full px-4 py-2 text-sm font-medium transition-all ${
+              className={`rounded-lg px-4 py-2 text-sm font-medium transition-all ${
                 filterCategory === category
                   ? 'bg-blue-500 text-white'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:text-gray-800'
               }`}
             >
               {category === 'all' ? 'All' : category}
