@@ -124,7 +124,7 @@ const languageSkills: Language[] = [
       'Arrays & Strings',
     ],
     tools: ['C++', 'LeetCode', 'HackerRank', 'CodeForces', 'Visual Studio'],
-    projects: 400,
+    projects: 670,
     certifications: ['Phitron', 'CPS academy'],
     architecturePatterns: [
       'Memory management',
@@ -163,7 +163,7 @@ const languageSkills: Language[] = [
       'UVa Online Judge',
       'Algorithm Visualizer',
     ],
-    projects: 300,
+    projects: 500,
     certifications: ['Phitron', 'CPS academy'],
     architecturePatterns: [
       'Complexity analysis',
@@ -212,7 +212,7 @@ const languageSkills: Language[] = [
     certifications: ['Phitron', 'Udemy', 'Coursera', 'edX', 'The construct'],
     architecturePatterns: ['OOP concepts', 'Module management'],
     securityFeatures: ['Encryption', 'Authentication'],
-    level: 'Intermediate',
+    level: 'Advanced',
     usageFrequency: 'Daily',
     icon: (props) => (
       <div className="size-[60px] rounded-lg bg-[#3776AB] p-2 shadow-lg transition-shadow hover:shadow-xl">

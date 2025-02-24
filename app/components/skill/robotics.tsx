@@ -1,70 +1,145 @@
 import { motion, useInView } from 'framer-motion'
-import { Cpu, LucideIcon, Settings } from 'lucide-react'
+import { Bot, CircuitBoard, Server } from 'lucide-react'
 import React, { useRef, useState } from 'react'
+import SkillCard from './skill-card'
 
-// Types
+// Types and interfaces
 interface RoboticsSkill {
   id: string
   title: string
   proficiency: number
   experience: string
   description: string
-  type: 'Framework' | 'Hardware' | 'Simulation' | 'Control' | 'Scripting'
-  icon: LucideIcon
-  projects?: number
-  features: string[]
-  tools?: string[]
-  libraries?: string[]
-  performance?: {
-    speed?: string
-    reliability?: string
-    compatibility?: string
-  }
-  bestPractices?: string[]
-  architecturePatterns?: string[]
+  category: 'Framework' | 'Hardware' | 'Simulation' | 'Control' | 'Scripting'
+  icon: React.FC<{ className?: string; stroke?: string }>
+  keyFeatures: string[]
+  tools: string[]
+  projects: number
+  certifications: string[]
+  architecturePatterns: string[]
+  securityFeatures: string[]
+  level: 'Beginner' | 'Intermediate' | 'Advanced' | 'Expert'
+  usageFrequency: 'Daily' | 'Weekly' | 'Monthly' | 'Occasional'
 }
 
-// Define SkillCard component
-const SkillCard = ({
-  title,
-  proficiency,
-  experience,
-  description,
-  onClick,
-  children,
-}: {
-  title: string
-  proficiency: number
-  experience: string
-  description: string
-  onClick: () => void
-  children: React.ReactNode
-}) => (
-  <div
-    onClick={onClick}
-    className="cursor-pointer rounded-xl p-6 transition-all duration-300"
-  >
-    <div className="flex items-start gap-4">
-      {children}
-      <div className="flex-1">
-        <h3 className="text-xl font-bold text-gray-800 dark:text-gray-200">
-          {title}
-        </h3>
-        <div className="mt-2 flex items-center gap-4">
-          <div className="text-sm text-gray-600 dark:text-gray-400">
-            Proficiency: {proficiency}%
-          </div>
-          <div className="text-sm text-gray-600 dark:text-gray-400">
-            Experience: {experience}
-          </div>
-        </div>
-        <p className="mt-2 text-gray-600 dark:text-gray-400">{description}</p>
+const roboticsSkills: RoboticsSkill[] = [
+  {
+    id: 'ros',
+    title: 'ROS',
+    proficiency: 75,
+    experience: '1+ years',
+    description: 'Robot Operating System for robotic application development',
+    category: 'Framework',
+    keyFeatures: [
+      'ROS basics',
+      'Kalman filters',
+      'Robot dynamics',
+      'Robot navigation',
+      'Robot kinematics',
+      'Robot perception',
+      'Object manipulation',
+      'Robot modeling with URDF',
+      'Robot frame transformations with TF',
+      'Build robot controllers',
+      'Path planning algorithms',
+    ],
+    tools: [
+      'RViz',
+      'Gazebo',
+      'rqt',
+      'rosbag',
+      'catkin',
+      'roslaunch',
+      'Docker',
+      'Jenkins',
+    ],
+    projects: 15,
+    certifications: ['ETH Zürich', 'The Construct'],
+    architecturePatterns: [
+      'Publisher/Subscriber',
+      'Service/Client',
+      'Action/Server',
+    ],
+    securityFeatures: [
+      'Access control',
+      'Node isolation',
+      'Network policies',
+      'Transport security',
+    ],
+    level: 'Intermediate',
+    usageFrequency: 'Daily',
+    icon: () => (
+      <div className="flex h-[60px] w-[60px] items-center justify-center rounded-lg bg-gradient-to-br from-[#22A699] to-[#147869] shadow-lg transition-shadow hover:shadow-xl">
+        <Bot size={32} className="text-white" />
       </div>
-    </div>
-  </div>
-)
+    ),
+  },
+  {
+    id: 'arduino',
+    title: 'Arduino',
+    proficiency: 70,
+    experience: '2+ years',
+    description:
+      'Experienced in microcontroller programming with hands-on expertise using Arduino',
+    category: 'Hardware',
+    keyFeatures: [
+      'PWM control',
+      'Digital I/O',
+      'Motor control',
+      'Analog reading',
+      'Timer management',
+      'Sensor integration',
+      'Serial communication',
+    ],
+    tools: ['Arduino IDE', 'Serial Monitor'],
+    projects: 7,
+    certifications: ['Null'],
+    architecturePatterns: ['Null'],
+    securityFeatures: ['Null'],
+    level: 'Advanced',
+    usageFrequency: 'Monthly',
+    icon: () => (
+      <div className="flex h-[60px] w-[60px] items-center justify-center rounded-lg bg-gradient-to-br from-[#00979D] to-[#007982] shadow-lg transition-shadow hover:shadow-xl">
+        <CircuitBoard size={32} className="text-white" />
+      </div>
+    ),
+  },
+  {
+    id: 'gazebo',
+    title: 'Gazebo',
+    proficiency: 72,
+    experience: '1+ years',
+    description: 'Used for 3D robotics simulation environment',
+    category: 'Simulation',
+    keyFeatures: [
+      'Robot modeling',
+      'World creation',
+      'ROS integration',
+      '3D visualization',
+      'Sensor simulation',
+      'Plugin development',
+      'Multi-robot simulation',
+    ],
+    tools: ['Gazebo GUI'],
+    projects: 15,
+    certifications: ['ETH Zürich', 'The Construct'],
+    architecturePatterns: [
+      'World updates',
+      'Event handling',
+      'Sensor processing',
+      'Plugin architecture',
+    ],
+    securityFeatures: ['Access control'],
+    level: 'Intermediate',
+    usageFrequency: 'Daily',
+    icon: () => (
+      <div className="flex h-[60px] w-[60px] items-center justify-center rounded-lg bg-gradient-to-br from-[#FF6B6B] to-[#D83A3A] shadow-lg transition-shadow hover:shadow-xl">
+        <Server size={32} className="text-white" />
+      </div>
+    ),
+  },
+]
 
-// Animation variants
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
@@ -87,108 +162,21 @@ const cardVariants = {
   },
 }
 
-// Skills data
-const roboticsSkills: RoboticsSkill[] = [
-  {
-    id: 'ros',
-    title: 'ROS',
-    proficiency: 85,
-    experience: '2+ years',
-    type: 'Framework',
-    description: 'Robot Operating System for robotic application development',
-    features: [
-      'Node architecture',
-      'Topic communication',
-      'Service calls',
-      'Action servers',
-      'Parameter handling',
-      'Launch files',
-      'Diagnostics',
-      'Navigation stack',
-    ],
-    tools: ['RViz', 'Gazebo', 'rqt', 'rosbag', 'catkin', 'roslaunch'],
-    libraries: ['MoveIt', 'Navigation', 'Image Transport', 'TF2', 'PCL'],
-    projects: 15,
-    performance: {
-      speed: 'Real-time capable',
-      reliability: 'High',
-      compatibility: 'Cross-platform',
-    },
-    bestPractices: [
-      'Node organization',
-      'Message design',
-      'Error handling',
-      'Resource management',
-    ],
-    architecturePatterns: [
-      'Publisher/Subscriber',
-      'Service/Client',
-      'Action/Server',
-      'Parameter Server',
-    ],
-    icon: Settings,
-  },
-  {
-    id: 'arduino',
-    title: 'Arduino',
-    proficiency: 88,
-    experience: '3+ years',
-    type: 'Hardware',
-    description: 'Microcontroller programming and prototyping platform',
-    features: [
-      'Digital I/O',
-      'Analog reading',
-      'PWM control',
-      'Serial communication',
-      'Interrupt handling',
-      'Timer management',
-      'Sensor integration',
-      'Motor control',
-    ],
-    tools: [
-      'Arduino IDE',
-      'PlatformIO',
-      'Serial Monitor',
-      'Library Manager',
-      'Board Manager',
-    ],
-    libraries: ['Servo', 'Wire', 'SPI', 'EEPROM', 'Stepper'],
-    projects: 20,
-    performance: {
-      speed: 'Hardware dependent',
-      reliability: 'Very high',
-      compatibility: 'Cross-board',
-    },
-    bestPractices: [
-      'Code organization',
-      'Memory management',
-      'Timing control',
-      'Power efficiency',
-    ],
-    architecturePatterns: [
-      'State machine',
-      'Event handling',
-      'Task scheduling',
-      'Sensor fusion',
-    ],
-    icon: Cpu,
-  },
-  // Add other skills here...
-]
-
-// Main component
-const Robotics = () => {
+export function Robotics() {
   const containerRef = useRef<HTMLDivElement>(null)
   const isInView = useInView(containerRef, { once: true, margin: '-100px' })
   const [selectedSkill, setSelectedSkill] = useState<string | null>(null)
-  const [filterType, setFilterType] = useState<string>('all')
+  const [filterCategory, setFilterCategory] = useState<string>('all')
 
   const filteredSkills =
-    filterType === 'all'
+    filterCategory === 'all'
       ? roboticsSkills
-      : roboticsSkills.filter((skill) => skill.type === filterType)
+      : roboticsSkills.filter((skill) => skill.category === filterCategory)
 
-  const types = ['all', ...new Set(roboticsSkills.map((skill) => skill.type))]
+  const categories = [
+    'all',
+    ...new Set(roboticsSkills.map((skill) => skill.category)),
+  ]
 
   return (
     <motion.div
@@ -207,17 +195,17 @@ const Robotics = () => {
         </p>
 
         <div className="mb-8 flex flex-wrap gap-3">
-          {types.map((type) => (
+          {categories.map((category) => (
             <button
-              key={type}
-              onClick={() => setFilterType(type)}
+              key={category}
+              onClick={() => setFilterCategory(category)}
               className={`rounded-full px-4 py-2 text-sm font-medium transition-all ${
-                filterType === type
+                filterCategory === category
                   ? 'bg-blue-500 text-white'
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300'
               }`}
             >
-              {type === 'all' ? 'All' : type}
+              {category === 'all' ? 'All' : category}
             </button>
           ))}
         </div>
@@ -232,144 +220,161 @@ const Robotics = () => {
           >
             <SkillCard
               title={skill.title}
+              className={skill.id}
               proficiency={skill.proficiency}
               experience={skill.experience}
               description={skill.description}
+              level={skill.level}
+              usageFrequency={skill.usageFrequency}
+              isSelected={selectedSkill === skill.id}
               onClick={() =>
                 setSelectedSkill(selectedSkill === skill.id ? null : skill.id)
               }
             >
               <motion.div
-                whileHover={{ scale: 1.05 }}
+                whileHover={{
+                  scale: 1.05,
+                  transition: { duration: 0.2 },
+                }}
                 whileTap={{ scale: 0.95 }}
-                className="flex h-16 w-16 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 p-3 text-white shadow-lg"
               >
-                <skill.icon className="size-full" />
+                <skill.icon stroke="1.5" />
               </motion.div>
             </SkillCard>
 
-            {selectedSkill === skill.id && (
-              <motion.div
-                className="mt-4 pl-20"
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                transition={{ duration: 0.3 }}
-              >
-                <div className="grid gap-6 text-sm text-gray-600 md:grid-cols-2 dark:text-gray-400">
-                  <div className="space-y-4">
-                    <div>
-                      <h4 className="mb-2 flex items-center gap-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
-                        <span className="h-2 w-2 rounded-full bg-blue-500" />
-                        Features
-                      </h4>
-                      <div className="grid grid-cols-2 gap-2">
-                        {skill.features.map((feature, index) => (
+            <motion.div
+              className="mt-4 pl-20"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{
+                opacity: selectedSkill === skill.id ? 1 : 0,
+                height: selectedSkill === skill.id ? 'auto' : 0,
+              }}
+              transition={{ duration: 0.3 }}
+            >
+              <div className="grid gap-6 text-sm text-gray-600 md:grid-cols-2 dark:text-gray-400">
+                <div className="space-y-4">
+                  <div>
+                    <h4 className="mb-2 flex items-center gap-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
+                      <span className="h-2 w-2 rounded-full bg-blue-500" />
+                      Key Features
+                    </h4>
+                    <div className="grid grid-cols-2 gap-2">
+                      {skill.keyFeatures.map(
+                        (feature: string, index: number) => (
                           <div key={index} className="flex items-center gap-2">
                             <span className="h-1 w-1 rounded-full bg-gray-400" />
                             {feature}
                           </div>
-                        ))}
-                      </div>
+                        )
+                      )}
                     </div>
-
-                    {skill.performance && (
-                      <div>
-                        <h4 className="mb-2 flex items-center gap-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
-                          <span className="h-2 w-2 rounded-full bg-green-500" />
-                          Performance
-                        </h4>
-                        <div className="grid grid-cols-2 gap-2">
-                          {Object.entries(skill.performance).map(
-                            ([key, value]) => (
-                              <div
-                                key={key}
-                                className="flex items-center gap-2"
-                              >
-                                <span className="h-1 w-1 rounded-full bg-gray-400" />
-                                <span className="font-medium">{key}:</span>{' '}
-                                {value}
-                              </div>
-                            )
-                          )}
-                        </div>
-                      </div>
-                    )}
                   </div>
 
-                  <div className="space-y-4">
-                    {skill.tools && (
-                      <div>
-                        <h4 className="mb-2 flex items-center gap-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
-                          <span className="h-2 w-2 rounded-full bg-indigo-500" />
-                          Tools
-                        </h4>
-                        <div className="flex flex-wrap gap-2">
-                          {skill.tools.map((tool, index) => (
-                            <span
-                              key={index}
-                              className="rounded-full bg-indigo-100 px-3 py-1 text-sm text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200"
-                            >
-                              {tool}
-                            </span>
-                          ))}
+                  <div>
+                    <h4 className="mb-2 flex items-center gap-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
+                      <span className="h-2 w-2 rounded-full bg-green-500" />
+                      Tools & Technologies
+                    </h4>
+                    <div className="grid grid-cols-2 gap-2">
+                      {skill.tools.map((tool: string, index: number) => (
+                        <div key={index} className="flex items-center gap-2">
+                          <span className="h-1 w-1 rounded-full bg-gray-400" />
+                          {tool}
                         </div>
-                      </div>
-                    )}
-
-                    {skill.libraries && (
-                      <div>
-                        <h4 className="mb-2 flex items-center gap-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
-                          <span className="h-2 w-2 rounded-full bg-yellow-500" />
-                          Libraries
-                        </h4>
-                        <div className="flex flex-wrap gap-2">
-                          {skill.libraries.map((library, index) => (
-                            <span
-                              key={index}
-                              className="rounded-full bg-yellow-100 px-3 py-1 text-sm text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
-                            >
-                              {library}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    <div className="mt-4 flex items-center gap-4">
-                      <div>
-                        <span className="text-lg font-semibold text-gray-700 dark:text-gray-300">
-                          Type:
-                        </span>{' '}
-                        <span
-                          className={`mt-1 inline-block rounded-full px-3 py-1 text-sm font-medium ${
-                            skill.type === 'Framework'
-                              ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
-                              : skill.type === 'Hardware'
-                                ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-                                : skill.type === 'Simulation'
-                                  ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
-                                  : skill.type === 'Control'
-                                    ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
-                                    : 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200'
-                          }`}
-                        >
-                          {skill.type}
-                        </span>
-                      </div>
-                      <div>
-                        <span className="text-lg font-semibold text-gray-700 dark:text-gray-300">
-                          Projects:
-                        </span>{' '}
-                        <span className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-                          {skill.projects}
-                        </span>
-                      </div>
+                      ))}
                     </div>
                   </div>
                 </div>
-              </motion.div>
-            )}
+
+                <div className="space-y-4">
+                  <div>
+                    <h4 className="mb-2 flex items-center gap-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
+                      <span className="h-2 w-2 rounded-full bg-purple-500" />
+                      Architecture Patterns
+                    </h4>
+                    <div className="flex flex-wrap gap-2">
+                      {skill.architecturePatterns.map(
+                        (pattern: string, index: number) => (
+                          <span
+                            key={index}
+                            className="rounded-full bg-purple-100 px-3 py-1 text-sm text-purple-800 dark:bg-purple-900 dark:text-purple-200"
+                          >
+                            {pattern}
+                          </span>
+                        )
+                      )}
+                    </div>
+                  </div>
+
+                  <div>
+                    <h4 className="mb-2 flex items-center gap-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
+                      <span className="h-2 w-2 rounded-full bg-red-500" />
+                      Security Features
+                    </h4>
+                    <div className="flex flex-wrap gap-2">
+                      {skill.securityFeatures.map(
+                        (feature: string, index: number) => (
+                          <span
+                            key={index}
+                            className="rounded-full bg-red-100 px-3 py-1 text-sm text-red-800 dark:bg-red-900 dark:text-red-200"
+                          >
+                            {feature}
+                          </span>
+                        )
+                      )}
+                    </div>
+                  </div>
+
+                  <div>
+                    <h4 className="mb-2 flex items-center gap-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
+                      <span className="h-2 w-2 rounded-full bg-yellow-500" />
+                      Certifications
+                    </h4>
+                    <div className="flex flex-wrap gap-2">
+                      {skill.certifications.map(
+                        (cert: string, index: number) => (
+                          <span
+                            key={index}
+                            className="rounded-full bg-yellow-100 px-3 py-1 text-sm text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+                          >
+                            {cert}
+                          </span>
+                        )
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="mt-4 flex items-center gap-4">
+                    <div>
+                      <span className="text-lg font-semibold text-gray-700 dark:text-gray-300">
+                        Category:
+                      </span>{' '}
+                      <span
+                        className={`mt-1 inline-block rounded-full px-3 py-1 text-sm font-medium ${
+                          skill.category === 'Framework'
+                            ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
+                            : skill.category === 'Hardware'
+                              ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+                              : skill.category === 'Simulation'
+                                ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
+                                : 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200'
+                        }`}
+                      >
+                        {skill.category}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-lg font-semibold text-gray-700 dark:text-gray-300">
+                        Projects:
+                      </span>{' '}
+                      <span className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                        {skill.projects}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
           </motion.div>
         ))}
       </div>

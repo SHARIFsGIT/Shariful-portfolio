@@ -178,7 +178,7 @@ export default function SkillCard({
     >
       {/* Highlight glow effect */}
       <motion.div
-        className="to-white-500/20 pointer-events-none absolute inset-0 rounded-xl bg-gradient-to-r from-orange-500/20 opacity-0 blur-xl transition-opacity"
+        className="pointer-events-none absolute inset-0 rounded-xl bg-gradient-to-r from-orange-500/20 to-white-500/20 opacity-0 blur-xl transition-opacity"
         animate={{ opacity: isHovered ? 0.3 : 0 }}
       />
 
