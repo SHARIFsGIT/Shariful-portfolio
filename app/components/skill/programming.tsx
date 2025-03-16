@@ -26,8 +26,6 @@ interface Language {
   tools: string[]
   projects: number
   certifications: string[]
-  architecturePatterns: string[]
-  securityFeatures: string[]
   level: 'Beginner' | 'Intermediate' | 'Advanced' | 'Expert'
   usageFrequency: 'Daily' | 'Weekly' | 'Monthly' | 'Occasional'
 }
@@ -55,16 +53,6 @@ const languageSkills: Language[] = [
     tools: ['GCC', 'Codeblocks', 'Visual Studio'],
     projects: 400,
     certifications: ['AIUB', 'Phitron', 'CPS academy'],
-    architecturePatterns: [
-      'Error handling',
-      'Memory management',
-      'Code optimization',
-    ],
-    securityFeatures: [
-      'Buffer overflow protection',
-      'Memory sanitization',
-      'Input validation',
-    ],
     level: 'Advanced',
     usageFrequency: 'Daily',
     icon: (props) => (
@@ -92,12 +80,6 @@ const languageSkills: Language[] = [
     tools: ['Clang++', 'Visual Studio', 'Codeblocks'],
     projects: 1000,
     certifications: ['AIUB', 'Phitron', 'CPS academy', 'The construct'],
-    architecturePatterns: [
-      'OOP organization',
-      'Memory management',
-      'Code optimization',
-    ],
-    securityFeatures: ['Memory overflow protection'],
     level: 'Advanced',
     usageFrequency: 'Daily',
     icon: (props) => (
@@ -126,11 +108,6 @@ const languageSkills: Language[] = [
     tools: ['C++', 'LeetCode', 'HackerRank', 'CodeForces', 'Visual Studio'],
     projects: 670,
     certifications: ['Phitron', 'CPS academy'],
-    architecturePatterns: [
-      'Memory management',
-      'Time & Space complexity analysis',
-    ],
-    securityFeatures: ['Data integrity'],
     level: 'Intermediate',
     usageFrequency: 'Daily',
     icon: (props) => (
@@ -165,12 +142,6 @@ const languageSkills: Language[] = [
     ],
     projects: 500,
     certifications: ['Phitron', 'CPS academy'],
-    architecturePatterns: [
-      'Complexity analysis',
-      'Optimization techniques',
-      'Algorithm design patterns',
-    ],
-    securityFeatures: ['Input validation', 'Boundary checking'],
     level: 'Intermediate',
     usageFrequency: 'Daily',
     icon: (props) => (
@@ -210,8 +181,6 @@ const languageSkills: Language[] = [
     ],
     projects: 10,
     certifications: ['Phitron', 'Udemy', 'Coursera', 'edX', 'The construct'],
-    architecturePatterns: ['OOP concepts', 'Module management'],
-    securityFeatures: ['Encryption', 'Authentication'],
     level: 'Advanced',
     usageFrequency: 'Daily',
     icon: (props) => (
@@ -236,8 +205,6 @@ const languageSkills: Language[] = [
     tools: ['Vite', 'React', 'Express', 'Node.js', 'Next.js', 'TypeScript'],
     projects: 30,
     certifications: ['Programming hero'],
-    architecturePatterns: ['Flux/Redux', 'Component-based'],
-    securityFeatures: ['CORS policies', 'Content Security', 'Input validation'],
     level: 'Intermediate',
     usageFrequency: 'Monthly',
     icon: (props) => (
@@ -394,40 +361,6 @@ export function Languages() {
                 </div>
 
                 <div className="space-y-4">
-                  <div>
-                    <h4 className="mb-2 flex items-center gap-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
-                      <span className="h-2 w-2 rounded-full bg-purple-500" />
-                      Architecture Patterns
-                    </h4>
-                    <div className="flex flex-wrap gap-2">
-                      {skill.architecturePatterns.map((pattern, index) => (
-                        <span
-                          key={index}
-                          className="rounded-full bg-purple-100 px-3 py-1 text-sm text-purple-800 dark:bg-purple-900 dark:text-purple-200"
-                        >
-                          {pattern}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <h4 className="mb-2 flex items-center gap-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
-                      <span className="h-2 w-2 rounded-full bg-red-500" />
-                      Security Features
-                    </h4>
-                    <div className="flex flex-wrap gap-2">
-                      {skill.securityFeatures.map((feature, index) => (
-                        <span
-                          key={index}
-                          className="rounded-full bg-red-100 px-3 py-1 text-sm text-red-800 dark:bg-red-900 dark:text-red-200"
-                        >
-                          {feature}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
                   <div>
                     <h4 className="mb-2 flex items-center gap-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
                       <span className="h-2 w-2 rounded-full bg-yellow-500" />

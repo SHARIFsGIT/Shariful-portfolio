@@ -16,8 +16,6 @@ interface RoboticsSkill {
   tools: string[]
   projects: number
   certifications: string[]
-  architecturePatterns: string[]
-  securityFeatures: string[]
   level: 'Beginner' | 'Intermediate' | 'Advanced' | 'Expert'
   usageFrequency: 'Daily' | 'Weekly' | 'Monthly' | 'Occasional'
 }
@@ -55,17 +53,6 @@ const roboticsSkills: RoboticsSkill[] = [
     ],
     projects: 15,
     certifications: ['ETH Zürich', 'The Construct'],
-    architecturePatterns: [
-      'Publisher/Subscriber',
-      'Service/Client',
-      'Action/Server',
-    ],
-    securityFeatures: [
-      'Access control',
-      'Node isolation',
-      'Network policies',
-      'Transport security',
-    ],
     level: 'Intermediate',
     usageFrequency: 'Daily',
     icon: () => (
@@ -94,8 +81,6 @@ const roboticsSkills: RoboticsSkill[] = [
     tools: ['Arduino IDE', 'Serial Monitor'],
     projects: 7,
     certifications: ['Null'],
-    architecturePatterns: ['Null'],
-    securityFeatures: ['Null'],
     level: 'Advanced',
     usageFrequency: 'Monthly',
     icon: () => (
@@ -123,13 +108,6 @@ const roboticsSkills: RoboticsSkill[] = [
     tools: ['Gazebo GUI'],
     projects: 15,
     certifications: ['ETH Zürich', 'The Construct'],
-    architecturePatterns: [
-      'World updates',
-      'Event handling',
-      'Sensor processing',
-      'Plugin architecture',
-    ],
-    securityFeatures: ['Access control'],
     level: 'Intermediate',
     usageFrequency: 'Daily',
     icon: () => (
@@ -287,44 +265,6 @@ export function Robotics() {
                 </div>
 
                 <div className="space-y-4">
-                  <div>
-                    <h4 className="mb-2 flex items-center gap-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
-                      <span className="h-2 w-2 rounded-full bg-purple-500" />
-                      Architecture Patterns
-                    </h4>
-                    <div className="flex flex-wrap gap-2">
-                      {skill.architecturePatterns.map(
-                        (pattern: string, index: number) => (
-                          <span
-                            key={index}
-                            className="rounded-full bg-purple-100 px-3 py-1 text-sm text-purple-800 dark:bg-purple-900 dark:text-purple-200"
-                          >
-                            {pattern}
-                          </span>
-                        )
-                      )}
-                    </div>
-                  </div>
-
-                  <div>
-                    <h4 className="mb-2 flex items-center gap-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
-                      <span className="h-2 w-2 rounded-full bg-red-500" />
-                      Security Features
-                    </h4>
-                    <div className="flex flex-wrap gap-2">
-                      {skill.securityFeatures.map(
-                        (feature: string, index: number) => (
-                          <span
-                            key={index}
-                            className="rounded-full bg-red-100 px-3 py-1 text-sm text-red-800 dark:bg-red-900 dark:text-red-200"
-                          >
-                            {feature}
-                          </span>
-                        )
-                      )}
-                    </div>
-                  </div>
-
                   <div>
                     <h4 className="mb-2 flex items-center gap-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
                       <span className="h-2 w-2 rounded-full bg-yellow-500" />

@@ -15,8 +15,6 @@ interface OSSkill {
   tools: string[]
   projects: number
   certifications: string[]
-  architecturePatterns: string[]
-  securityFeatures: string[]
   level: 'Beginner' | 'Intermediate' | 'Advanced' | 'Expert'
   usageFrequency: 'Daily' | 'Weekly' | 'Monthly' | 'Occasional'
 }
@@ -51,8 +49,6 @@ const osSkills: OSSkill[] = [
     ],
     projects: 4,
     certifications: ['Linux for Robotics'],
-    architecturePatterns: ['Null'],
-    securityFeatures: ['Null'],
     icon: (props) => (
       <div className="size-[60px] rounded-lg bg-gradient-to-br from-[#FCC624] to-[#E34F26] p-2 shadow-lg transition-shadow hover:shadow-xl">
         <IconBrandUbuntu className="size-full text-white" {...props} />
@@ -77,8 +73,6 @@ const osSkills: OSSkill[] = [
     tools: ['PowerShell', 'Command prompt'],
     projects: 79,
     certifications: ['Null'],
-    architecturePatterns: ['Null'],
-    securityFeatures: ['Windows Defender'],
     icon: (props) => (
       <div className="size-[60px] rounded-lg bg-gradient-to-br from-[#00A4EF] to-[#0078D4] p-2 shadow-lg transition-shadow hover:shadow-xl">
         <IconBrandWindows className="size-full text-white" {...props} />
@@ -234,40 +228,6 @@ export function OperatingSystems() {
                 </div>
 
                 <div className="space-y-4">
-                  <div>
-                    <h4 className="mb-2 flex items-center gap-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
-                      <span className="h-2 w-2 rounded-full bg-purple-500" />
-                      Architecture Patterns
-                    </h4>
-                    <div className="flex flex-wrap gap-2">
-                      {skill.architecturePatterns.map((pattern, index) => (
-                        <span
-                          key={index}
-                          className="rounded-full bg-purple-100 px-3 py-1 text-sm text-purple-800 dark:bg-purple-900 dark:text-purple-200"
-                        >
-                          {pattern}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <h4 className="mb-2 flex items-center gap-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
-                      <span className="h-2 w-2 rounded-full bg-red-500" />
-                      Security Features
-                    </h4>
-                    <div className="flex flex-wrap gap-2">
-                      {skill.securityFeatures.map((feature, index) => (
-                        <span
-                          key={index}
-                          className="rounded-full bg-red-100 px-3 py-1 text-sm text-red-800 dark:bg-red-900 dark:text-red-200"
-                        >
-                          {feature}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
                   <div>
                     <h4 className="mb-2 flex items-center gap-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
                       <span className="h-2 w-2 rounded-full bg-yellow-500" />

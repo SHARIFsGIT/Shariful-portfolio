@@ -22,8 +22,6 @@ interface CircuitSkill {
   tools: string[]
   projects: number
   certifications: string[]
-  architecturePatterns: string[]
-  securityFeatures: string[]
   level: 'Beginner' | 'Intermediate' | 'Advanced' | 'Expert'
   usageFrequency: 'Daily' | 'Weekly' | 'Monthly' | 'Occasional'
 }
@@ -42,12 +40,6 @@ const circuitSkills: CircuitSkill[] = [
     tools: ['VHDL', 'Verilog', 'ModelSim'],
     projects: 3,
     certifications: ['AIUB'],
-    architecturePatterns: ['Bus interfaces'],
-    securityFeatures: [
-      'Access control',
-      'Design encryption',
-      'Hardware security',
-    ],
     icon: (props) => (
       <div className="size-[60px] rounded-lg bg-gradient-to-br from-[#4A90E2] to-[#2C3E50] p-2 shadow-lg transition-shadow hover:shadow-xl">
         <IconCpu className="size-full text-white" {...props} />
@@ -73,8 +65,6 @@ const circuitSkills: CircuitSkill[] = [
     tools: ['LTSpice', 'MATLAB', 'Simulink'],
     projects: 10,
     certifications: ['Analog Design', 'Signal Processing', 'Circuit Analysis'],
-    architecturePatterns: ['Feedback systems', 'Differential amplifiers'],
-    securityFeatures: ['Power integrity', 'Signal isolation'],
     icon: (props) => (
       <div className="size-[60px] rounded-lg bg-gradient-to-br from-[#16A085] to-[#2C3E50] p-2 shadow-lg transition-shadow hover:shadow-xl">
         <IconBolt className="size-full text-white" {...props} />
@@ -94,8 +84,6 @@ const circuitSkills: CircuitSkill[] = [
     tools: ['ADS'],
     projects: 2,
     certifications: ['AIUB'],
-    architecturePatterns: ['Power management'],
-    securityFeatures: ['Noise immunity', 'Signal protection'],
     icon: (props) => (
       <div className="size-[60px] rounded-lg bg-gradient-to-br from-[#9B59B6] to-[#8E44AD] p-2 shadow-lg transition-shadow hover:shadow-xl">
         <IconCircuitCell className="size-full text-white" {...props} />
@@ -120,8 +108,6 @@ const circuitSkills: CircuitSkill[] = [
     tools: ['Simulink'],
     projects: 15,
     certifications: ['AIUB'],
-    architecturePatterns: ['Model-based design', 'Digital signal processing'],
-    securityFeatures: ['Null'],
     icon: (props) => (
       <div className="size-[60px] rounded-lg bg-gradient-to-br from-[#E74C3C] to-[#C0392B] p-2 shadow-lg transition-shadow hover:shadow-xl">
         <IconWaveSine className="size-full text-white" {...props} />
@@ -145,8 +131,6 @@ const circuitSkills: CircuitSkill[] = [
     tools: ['Autodesk Eagle'],
     projects: 8,
     certifications: ['AIUB'],
-    architecturePatterns: ['Multi-layer design'],
-    securityFeatures: ['Null'],
     icon: (props) => (
       <div className="size-[60px] rounded-lg bg-gradient-to-br from-[#F39C12] to-[#D35400] p-2 shadow-lg transition-shadow hover:shadow-xl">
         <IconCircuitSwitchOpen className="size-full text-white" {...props} />
@@ -171,8 +155,6 @@ const circuitSkills: CircuitSkill[] = [
     tools: ['ISIS Schematic'],
     projects: 6,
     certifications: ['AIUB'],
-    architecturePatterns: ['System-level design', 'Virtual prototyping'],
-    securityFeatures: ['Code protection'],
     icon: (props) => (
       <div className="size-[60px] rounded-lg bg-gradient-to-br from-[#3498DB] to-[#2980B9] p-2 shadow-lg transition-shadow hover:shadow-xl">
         <IconDeviceDesktop className="size-full text-white" {...props} />
@@ -327,40 +309,6 @@ export function CircuitDesign() {
                 </div>
 
                 <div className="space-y-4">
-                  <div>
-                    <h4 className="mb-2 flex items-center gap-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
-                      <span className="h-2 w-2 rounded-full bg-purple-500" />
-                      Architecture Patterns
-                    </h4>
-                    <div className="flex flex-wrap gap-2">
-                      {skill.architecturePatterns.map((pattern, index) => (
-                        <span
-                          key={index}
-                          className="rounded-full bg-purple-100 px-3 py-1 text-sm text-purple-800 dark:bg-purple-900 dark:text-purple-200"
-                        >
-                          {pattern}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <h4 className="mb-2 flex items-center gap-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
-                      <span className="h-2 w-2 rounded-full bg-red-500" />
-                      Security Features
-                    </h4>
-                    <div className="flex flex-wrap gap-2">
-                      {skill.securityFeatures.map((feature, index) => (
-                        <span
-                          key={index}
-                          className="rounded-full bg-red-100 px-3 py-1 text-sm text-red-800 dark:bg-red-900 dark:text-red-200"
-                        >
-                          {feature}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
                   <div>
                     <h4 className="mb-2 flex items-center gap-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
                       <span className="h-2 w-2 rounded-full bg-yellow-500" />

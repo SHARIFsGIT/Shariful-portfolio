@@ -25,8 +25,6 @@ interface SoftwareDevelopmentSkill {
   tools: string[]
   projects: number
   certifications: string[]
-  architecturePatterns: string[]
-  securityFeatures: string[]
   level: 'Beginner' | 'Intermediate' | 'Advanced' | 'Expert'
   usageFrequency: 'Daily' | 'Weekly' | 'Monthly' | 'Occasional'
 }
@@ -49,8 +47,6 @@ const softwareDevelopmentSkills: SoftwareDevelopmentSkill[] = [
     tools: ['Prettier', 'ts-node', 'Webpack'],
     projects: 5,
     certifications: ['Programming hero'],
-    architecturePatterns: ['Generic programming', 'Functional programming'],
-    securityFeatures: ['Type safety', 'Code analysis'],
     level: 'Intermediate',
     usageFrequency: 'Monthly',
     icon: Code2,
@@ -72,8 +68,6 @@ const softwareDevelopmentSkills: SoftwareDevelopmentSkill[] = [
     tools: ['VS Code', 'Chrome DevTools'],
     projects: 80,
     certifications: ['Programming hero', 'Phitron'],
-    architecturePatterns: ['Responsive design'],
-    securityFeatures: ['Content security'],
     level: 'Expert',
     usageFrequency: 'Weekly',
     icon: Globe,
@@ -101,8 +95,6 @@ const softwareDevelopmentSkills: SoftwareDevelopmentSkill[] = [
     ],
     projects: 80,
     certifications: ['Programming hero', 'Phitron'],
-    architecturePatterns: ['CSS modules'],
-    securityFeatures: ['Null'],
     level: 'Expert',
     usageFrequency: 'Weekly',
     icon: LayoutGrid,
@@ -127,8 +119,6 @@ const softwareDevelopmentSkills: SoftwareDevelopmentSkill[] = [
       'Programming hero',
       'Institute for Artificial Intelligence',
     ],
-    architecturePatterns: ['Container organization'],
-    securityFeatures: ['Null'],
     level: 'Beginner',
     usageFrequency: 'Monthly',
     icon: Box,
@@ -148,8 +138,6 @@ const softwareDevelopmentSkills: SoftwareDevelopmentSkill[] = [
     tools: ['Jenkins Pipeline'],
     projects: 0,
     certifications: ['The construct'],
-    architecturePatterns: ['Null'],
-    securityFeatures: ['Pipeline security'],
     level: 'Beginner',
     usageFrequency: 'Monthly',
     icon: Rocket,
@@ -172,8 +160,6 @@ const softwareDevelopmentSkills: SoftwareDevelopmentSkill[] = [
     tools: ['MySQL Workbench'],
     projects: 20,
     certifications: ['Phitron', 'Programming hero'],
-    architecturePatterns: ['Query optimization'],
-    securityFeatures: ['Access control'],
     level: 'Expert',
     usageFrequency: 'Weekly',
     icon: Database,
@@ -195,8 +181,6 @@ const softwareDevelopmentSkills: SoftwareDevelopmentSkill[] = [
     tools: ['Socket.io', 'WebSocket API', 'Browser DevTools'],
     projects: 3,
     certifications: ['Institute for Artificial Intelligence'],
-    architecturePatterns: ['Pub/Sub pattern', 'Connection pooling'],
-    securityFeatures: ['Token auth', 'Rate limiting'],
     level: 'Intermediate',
     usageFrequency: 'Occasional',
     icon: Network,
@@ -212,8 +196,6 @@ const softwareDevelopmentSkills: SoftwareDevelopmentSkill[] = [
     tools: ['SQLAlchemy'],
     projects: 3,
     certifications: ['Institute for Artificial Intelligence'],
-    architecturePatterns: ['Null'],
-    securityFeatures: ['OAuth2', 'JWT auth'],
     level: 'Intermediate',
     usageFrequency: 'Occasional',
     icon: Webhook,
@@ -368,40 +350,6 @@ export function SoftwareDevelopment() {
                 </div>
 
                 <div className="space-y-4">
-                  <div>
-                    <h4 className="mb-2 flex items-center gap-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
-                      <span className="h-2 w-2 rounded-full bg-purple-500" />
-                      Architecture Patterns
-                    </h4>
-                    <div className="flex flex-wrap gap-2">
-                      {skill.architecturePatterns.map((pattern, index) => (
-                        <span
-                          key={index}
-                          className="rounded-full bg-purple-100 px-3 py-1 text-sm text-purple-800 dark:bg-purple-900 dark:text-purple-200"
-                        >
-                          {pattern}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <h4 className="mb-2 flex items-center gap-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
-                      <span className="h-2 w-2 rounded-full bg-red-500" />
-                      Security Features
-                    </h4>
-                    <div className="flex flex-wrap gap-2">
-                      {skill.securityFeatures.map((feature, index) => (
-                        <span
-                          key={index}
-                          className="rounded-full bg-red-100 px-3 py-1 text-sm text-red-800 dark:bg-red-900 dark:text-red-200"
-                        >
-                          {feature}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
                   <div>
                     <h4 className="mb-2 flex items-center gap-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
                       <span className="h-2 w-2 rounded-full bg-yellow-500" />

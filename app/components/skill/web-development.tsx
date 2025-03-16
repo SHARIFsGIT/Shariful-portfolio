@@ -21,8 +21,6 @@ interface WebDevelopmentSkill {
   tools: string[]
   projects: number
   certifications: string[]
-  architecturePatterns: string[]
-  securityFeatures: string[]
   level: 'Beginner' | 'Intermediate' | 'Advanced' | 'Expert'
   usageFrequency: 'Daily' | 'Weekly' | 'Monthly' | 'Occasional'
 }
@@ -45,12 +43,6 @@ const webDevelopmentSkills: WebDevelopmentSkill[] = [
     tools: ['Vite', 'Next.js', 'Create React App'],
     projects: 25,
     certifications: ['Programming hero'],
-    architecturePatterns: [
-      'Atomic design',
-      'Hooks pattern',
-      'Container/Presentational',
-    ],
-    securityFeatures: ['Access control', 'Branch protection'],
     level: 'Intermediate',
     usageFrequency: 'Weekly',
     icon: (props) => (
@@ -72,8 +64,6 @@ const webDevelopmentSkills: WebDevelopmentSkill[] = [
     tools: ['Express.js', 'Nest.js', 'nodemon'],
     projects: 18,
     certifications: ['Programming hero'],
-    architecturePatterns: ['Null'],
-    securityFeatures: ['Input validation'],
     icon: (props) => (
       <div className="size-[60px] rounded-lg bg-gradient-to-br from-[#339933] to-[#1F7A1F] p-2 shadow-lg transition-shadow hover:shadow-xl">
         <IconBrandNodejs className="size-full text-white" {...props} />
@@ -93,8 +83,6 @@ const webDevelopmentSkills: WebDevelopmentSkill[] = [
     tools: ['MongoDB Compass', 'Mongoose'],
     projects: 10,
     certifications: ['Programming hero'],
-    architecturePatterns: ['Document model'],
-    securityFeatures: ['Authentication', 'Encryption'],
     icon: (props) => (
       <div className="size-[60px] rounded-lg bg-gradient-to-br from-[#47A248] to-[#116149] p-2 shadow-lg transition-shadow hover:shadow-xl">
         <IconDatabase className="size-full text-white" {...props} />
@@ -119,8 +107,6 @@ const webDevelopmentSkills: WebDevelopmentSkill[] = [
     tools: ['Vercel', 'TypeScript'],
     projects: 12,
     certifications: ['Programming hero'],
-    architecturePatterns: ['Pages router', 'App router', 'API routes'],
-    securityFeatures: ['Authentication'],
     icon: (props) => (
       <div className="size-[60px] rounded-lg bg-gradient-to-br from-[#000000] to-[#111111] p-2 shadow-lg transition-shadow hover:shadow-xl">
         <IconBrandNextjs className="size-full text-white" {...props} />
@@ -145,8 +131,6 @@ const webDevelopmentSkills: WebDevelopmentSkill[] = [
     tools: ['PostCSS'],
     projects: 50,
     certifications: ['Programming hero'],
-    architecturePatterns: ['Component design', 'Theme system'],
-    securityFeatures: ['Create classes'],
     icon: (props) => (
       <div className="size-[60px] rounded-lg bg-gradient-to-br from-[#38BDF8] to-[#0EA5E9] p-2 shadow-lg transition-shadow hover:shadow-xl">
         <IconBrandTailwind className="size-full text-white" {...props} />
@@ -302,39 +286,6 @@ export function WebDevelopment() {
                 </div>
 
                 <div className="space-y-4">
-                  <div>
-                    <h4 className="mb-2 flex items-center gap-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
-                      <span className="h-2 w-2 rounded-full bg-purple-500" />
-                      Architecture Patterns
-                    </h4>
-                    <div className="flex flex-wrap gap-2">
-                      {skill.architecturePatterns.map((pattern, index) => (
-                        <span
-                          key={index}
-                          className="rounded-full bg-purple-100 px-3 py-1 text-sm text-purple-800 dark:bg-purple-900 dark:text-purple-200"
-                        >
-                          {pattern}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <h4 className="mb-2 flex items-center gap-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
-                      <span className="h-2 w-2 rounded-full bg-red-500" />
-                      Security Features
-                    </h4>
-                    <div className="flex flex-wrap gap-2">
-                      {skill.securityFeatures.map((feature, index) => (
-                        <span
-                          key={index}
-                          className="rounded-full bg-red-100 px-3 py-1 text-sm text-red-800 dark:bg-red-900 dark:text-red-200"
-                        >
-                          {feature}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
 
                   <div>
                     <h4 className="mb-2 flex items-center gap-2 text-lg font-semibold text-gray-700 dark:text-gray-300">

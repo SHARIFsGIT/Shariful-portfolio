@@ -21,8 +21,6 @@ interface ToolSkill {
   tools: string[]
   projects: number
   certifications: string[]
-  architecturePatterns: string[]
-  securityFeatures: string[]
   level: 'Beginner' | 'Intermediate' | 'Advanced' | 'Expert'
   usageFrequency: 'Daily' | 'Weekly' | 'Monthly' | 'Occasional'
 }
@@ -46,8 +44,6 @@ const toolSkills: ToolSkill[] = [
     tools: ['Git CLI', 'Git GUI', 'Git Bash'],
     projects: 7,
     certifications: ['Programming hero', 'Phitron', 'The construct'],
-    architecturePatterns: ['Gitflow workflow', 'Feature branching'],
-    securityFeatures: ['Access control', 'Branch protection'],
     level: 'Expert',
     usageFrequency: 'Daily',
     icon: (props) => (
@@ -73,8 +69,6 @@ const toolSkills: ToolSkill[] = [
     tools: ['GitHub API', 'GitHub CLI', 'GitHub Pages', 'GitHub Actions'],
     projects: 80,
     certifications: ['Programming hero', 'Phitron', 'The construct'],
-    architecturePatterns: ['Branch protection'],
-    securityFeatures: ['Access control'],
     level: 'Advanced',
     usageFrequency: 'Daily',
     icon: (props) => (
@@ -109,13 +103,6 @@ const toolSkills: ToolSkill[] = [
     ],
     projects: 55,
     certifications: ['Programming hero', 'Phitron'],
-    architecturePatterns: [
-      'Snippets usage',
-      'Keyboard shortcuts',
-      'Workspace settings',
-      'Extension management',
-    ],
-    securityFeatures: ['Remote security'],
     level: 'Expert',
     usageFrequency: 'Daily',
     icon: (props) => (
@@ -135,12 +122,6 @@ const toolSkills: ToolSkill[] = [
     tools: ['Python console'],
     projects: 5,
     certifications: ['Phitron'],
-    architecturePatterns: [
-      'Project structure',
-      'Code organization',
-      'Package management',
-    ],
-    securityFeatures: ['Code inspection'],
     level: 'Expert',
     usageFrequency: 'Weekly',
     icon: (props) => (
@@ -169,12 +150,6 @@ const toolSkills: ToolSkill[] = [
     tools: ['Card Repeater', 'Calendar View', 'Timeline View', 'Custom Fields'],
     projects: 7,
     certifications: ['Institute for Artificial Intelligence'],
-    architecturePatterns: [
-      'Label system',
-      'Task templates',
-      'Board organization',
-    ],
-    securityFeatures: ['Role-based access'],
     level: 'Intermediate',
     usageFrequency: 'Monthly',
     icon: (props) => (
@@ -330,40 +305,6 @@ export function Tools() {
                 </div>
 
                 <div className="space-y-4">
-                  <div>
-                    <h4 className="mb-2 flex items-center gap-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
-                      <span className="h-2 w-2 rounded-full bg-purple-500" />
-                      Architecture Patterns
-                    </h4>
-                    <div className="flex flex-wrap gap-2">
-                      {tool.architecturePatterns.map((pattern, index) => (
-                        <span
-                          key={index}
-                          className="rounded-full bg-purple-100 px-3 py-1 text-sm text-purple-800 dark:bg-purple-900 dark:text-purple-200"
-                        >
-                          {pattern}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <h4 className="mb-2 flex items-center gap-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
-                      <span className="h-2 w-2 rounded-full bg-red-500" />
-                      Security Features
-                    </h4>
-                    <div className="flex flex-wrap gap-2">
-                      {tool.securityFeatures.map((feature, index) => (
-                        <span
-                          key={index}
-                          className="rounded-full bg-red-100 px-3 py-1 text-sm text-red-800 dark:bg-red-900 dark:text-red-200"
-                        >
-                          {feature}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
                   <div>
                     <h4 className="mb-2 flex items-center gap-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
                       <span className="h-2 w-2 rounded-full bg-yellow-500" />
